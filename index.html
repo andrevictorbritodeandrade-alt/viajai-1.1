@@ -1,0 +1,38 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    
+    <!-- Configurações PWA / App Nativo -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="VIAJAÍ" />
+    <meta name="application-name" content="VIAJAÍ" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    
+    <!-- Estilo da Barra de Status -->
+    <meta name="theme-color" content="#007749" />
+    <meta name="msapplication-navbutton-color" content="#007749">
+    <meta name="description" content="VIAJAÍ - Seu guia inteligente para a melhor experiência de viagem." />
+    
+    <title>VIAJAÍ</title>
+    
+    <!-- Links PWA -->
+    <link rel="manifest" href="./manifest.json" />
+    
+    <!-- Ícones -->
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="apple-touch-icon" href="./favicon.svg" />
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+  </head>
+  <body class="bg-black text-slate-800 antialiased selection:bg-sa-gold selection:text-sa-black font-sans overscroll-none">
+    <div id="root"></div>
+    <script type="module" src="./index.tsx"></script>
+  </body>
+</html>

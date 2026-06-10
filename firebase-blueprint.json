@@ -1,0 +1,154 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "App users (clients and agents)",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "name": { "type": "string" },
+        "phone": { "type": "string" },
+        "password": { "type": "string" },
+        "role": { "type": "string", "enum": ["client", "agent"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "phone", "password", "role"]
+    },
+    "Trip": {
+      "title": "Trip",
+      "description": "Travel itineraries assigned to users",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "date": { "type": "string" },
+        "image": { "type": "string" },
+        "lat": { "type": "number" },
+        "lon": { "type": "number" },
+        "isDomestic": { "type": "boolean", "description": "True if trip is within Brazil" },
+        "content": { "type": "object", "description": "Full itinerary data" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "name", "date"]
+    },
+    "LeadResponse": {
+      "title": "Lead Response",
+      "description": "Profile responses from potential clients",
+      "type": "object",
+      "properties": {
+        "nome_cliente": { "type": "string" },
+        "whatsapp": { "type": "string" },
+        "companhia": { "type": "string" },
+        "detalhes_companhia": { "type": "string" },
+        "tipo_destino": { "type": "string" },
+        "nome_destino": { "type": "string" },
+        "estilo_viagem": { "type": "object" },
+        "tipo_data": { "type": "string" },
+        "mes_viagem": { "type": "string" },
+        "periodo_viagem": { "type": "string" },
+        "data_ida": { "type": "string" },
+        "data_volta": { "type": "string" },
+        "datas_flexiveis": { "type": "boolean" },
+        "transporte_principal": { "type": "string" },
+        "aeroporto_saida": { "type": "string" },
+        "bagagem": { "type": "string" },
+        "orcamento_diario_br": { "type": "string" },
+        "orcamento_diario_intl": { "type": "string" },
+        "forma_pagamento": { "type": "object" },
+        "obs_finais": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["nome_cliente", "whatsapp"]
+    },
+    "FinancialData": {
+      "title": "Financial Data",
+      "description": "User's financial tracking (wallets and pending costs)",
+      "type": "object",
+      "properties": {
+        "wallets": {
+          "type": "object",
+          "properties": {
+            "wise": { "type": "number" },
+            "nomad": { "type": "number" },
+            "inter": { "type": "number" },
+            "cash": { "type": "number" }
+          }
+        },
+        "hotelCost": { "type": "number" },
+        "busCost": { "type": "number" },
+        "lastUpdated": { "type": "string", "format": "date-time" }
+      }
+    },
+    "ExpenseLog": {
+      "title": "Expense Log",
+      "description": "List of real expenses during the trip",
+      "type": "object",
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "description": { "type": "string" },
+              "amount": { "type": "number" },
+              "currency": { "type": "string" },
+              "amountInBRL": { "type": "number" },
+              "date": { "type": "string" }
+            }
+          }
+        },
+        "lastUpdated": { "type": "string", "format": "date-time" }
+      }
+    },
+    "PackingList": {
+      "title": "Packing List",
+      "description": "User's packing checklist items",
+      "type": "object",
+      "properties": {
+        "André": { "type": "object" },
+        "Marcelly": { "type": "object" },
+        "lastUpdated": { "type": "string", "format": "date-time" }
+      }
+    },
+    "ClientConfig": {
+      "title": "Client Config",
+      "description": "Application visibility configurations",
+      "type": "object",
+      "properties": {
+        "hiddenIds": { "type": "array", "items": { "type": "string" } },
+        "lastUpdated": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles and credentials"
+    },
+    "/trips/{tripId}": {
+      "schema": "Trip",
+      "description": "Trip details and itineraries"
+    },
+    "/leads/{leadId}": {
+      "schema": "LeadResponse",
+      "description": "Inbound leads from the onboarding form"
+    },
+    "/financial_data/{userId}": {
+      "schema": "FinancialData",
+      "description": "User financial status"
+    },
+    "/expenses_log/{userId}": {
+      "schema": "ExpenseLog",
+      "description": "User expenses history"
+    },
+    "/packing_list_v5/{userId}": {
+      "schema": "PackingList",
+      "description": "User packing checklists"
+    },
+    "/client_config/{configId}": {
+      "schema": "ClientConfig",
+      "description": "App configuration"
+    }
+  }
+}

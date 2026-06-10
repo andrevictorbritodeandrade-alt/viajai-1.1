@@ -1,0 +1,137 @@
+// ===============================================================
+// Assumed Data Model
+// ===============================================================
+//
+// Collection: users
+// Fields:
+//   - name: string (required)
+//   - phone: string (required, unique identifier)
+//   - password: string (required)
+//   - role: string (required, 'client' | 'agent')
+//   - createdAt: timestamp
+//
+// Collection: trips
+// Fields:
+//   - userId: string (required, references users doc id)
+//   - name: string (required)
+//   - date: string (required)
+//   - image: string
+//   - lat: number
+//   - lon: number
+//   - content: map (itinerary details)
+//   - createdAt: timestamp
+//
+// ===============================================================
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && 
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'agent' || 
+         request.auth.token.email == "andrevictorbritodeandrade@gmail.com");
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['name', 'phone', 'password', 'role']) &&
+             data.name is string && data.name.size() > 0 && data.name.size() < 100 &&
+             data.phone is string && data.phone.size() >= 8 &&
+             data.password is string && data.password.size() >= 4 &&
+             data.role in ['client', 'agent'];
+    }
+
+    function isValidTrip(data) {
+      return data.keys().hasAll(['userId', 'name', 'date']) &&
+             data.userId is string &&
+             data.name is string && data.name.size() > 0 &&
+             data.date is string;
+    }
+
+    function isValidLead(data) {
+      return data.keys().hasAll(['nome_cliente', 'whatsapp']) &&
+             data.nome_cliente is string && data.nome_cliente.size() > 0 &&
+             data.whatsapp is string && data.whatsapp.size() >= 8;
+    }
+
+    function isValidFinancial(data) {
+      return data.keys().hasAll(['wallets']) &&
+             data.wallets is map &&
+             data.wallets.keys().hasAll(['wise', 'nomad', 'inter', 'cash']);
+    }
+
+    function isValidExpenses(data) {
+      return data.keys().hasAll(['list']) &&
+             data.list is list;
+    }
+
+    function isValidPacking(data) {
+      return data.keys().hasAll(['André', 'Marcelly']) &&
+             data['André'] is map && data['Marcelly'] is map;
+    }
+
+    function isValidConfig(data) {
+      return data.keys().hasAll(['hiddenIds']) &&
+             data.hiddenIds is list;
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /leads/{leadId} {
+      allow create: if isValidLead(request.resource.data);
+      allow read: if isAdmin();
+      allow update, delete: if isAdmin();
+    }
+
+    match /users/{userId} {
+      // Role-based auth simulation for standard users
+      allow read: if true; 
+      allow create: if isAdmin() && isValidUser(request.resource.data);
+      allow update: if isAdmin() && isValidUser(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /trips/{tripId} {
+      allow read: if true;
+      allow create: if isAdmin() && isValidTrip(request.resource.data);
+      allow update: if isAdmin() && isValidTrip(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /client_config/{configId} {
+      allow read: if true;
+      allow write: if isAdmin() && isValidConfig(request.resource.data);
+    }
+
+    match /financial_data/{userId} {
+      allow read, write: if isValidFinancial(request.resource.data);
+    }
+
+    match /packing_list_v5/{userId} {
+      allow read: if true;
+      allow write: if isValidPacking(request.resource.data);
+    }
+
+    match /expenses_log/{userId} {
+      allow read, write: if isValidExpenses(request.resource.data);
+    }
+
+    match /itineraries/{userId} {
+      allow read, write: if true;
+    }
+  }
+}
