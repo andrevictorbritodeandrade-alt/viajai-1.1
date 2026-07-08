@@ -72,15 +72,15 @@ export const notifySyncStatus = (status: SyncStatus) => {
   window.dispatchEvent(event);
 };
 
-export const syncDataToCloud = async (collectionName: string, data: any) => {
+export const syncDataToCloud = async (collectionName: string, data: any, customDocId?: string) => {
   if (!navigator.onLine || !isFirebaseInitialized || !db) return;
-  const userId = getUserDocId();
-  if (!userId) return;
+  const docId = customDocId || getUserDocId();
+  if (!docId) return;
 
-  const path = `${collectionName}/${userId}`;
+  const path = `${collectionName}/${docId}`;
   try {
     notifySyncStatus('saving');
-    await setDoc(doc(db, collectionName, userId), {
+    await setDoc(doc(db, collectionName, docId), {
       ...data,
       lastUpdated: new Date().toISOString()
     }, { merge: true });
@@ -91,18 +91,18 @@ export const syncDataToCloud = async (collectionName: string, data: any) => {
   }
 };
 
-export const subscribeToCloudData = (collectionName: string, callback: (data: any) => void) => {
+export const subscribeToCloudData = (collectionName: string, callback: (data: any) => void, customDocId?: string) => {
   if (!isFirebaseInitialized || !db) {
     setTimeout(() => callback(null), 10);
     return () => {};
   }
   
-  const userId = getUserDocId();
-  const path = `${collectionName}/${userId}`;
-  const docRef = doc(db, collectionName, userId);
+  const docId = customDocId || getUserDocId();
+  const path = `${collectionName}/${docId}`;
+  const docRef = doc(db, collectionName, docId);
   
   // Para o perfil compartilhado, se não houver dados, tentamos buscar dados antigos por compatibilidade
-  const isShared = userId === 'shared_andre_marcelly';
+  const isShared = docId === 'shared_andre_marcelly';
   const legacyIds = ['André Brito', 'Marcelly Bispo', 'andré brito', 'marcelly bispo'];
 
   return onSnapshot(docRef, async (docSnap) => {
@@ -121,7 +121,7 @@ export const subscribeToCloudData = (collectionName: string, callback: (data: an
             callback(legacySnap.data());
             foundLegacy = true;
             // Opcionalmente: salvar essa cópia no ID compartilhado para migração silenciosa
-            setDoc(doc(db!, collectionName, userId), legacySnap.data(), { merge: true });
+            setDoc(doc(db!, collectionName, docId), legacySnap.data(), { merge: true });
             setTimeout(() => notifySyncStatus('saved'), 1000);
             break;
           }

@@ -21,7 +21,7 @@ import CategoryHeader from './CategoryHeader';
 
 const ACCOMMODATION_DATA = [
   {
-    region: 'Porto da Barra',
+    region: 'Porto da Barra (16 a 24 de Julho — 8 noites)',
     options: [
       {
         id: 'rede_andrade',
@@ -30,13 +30,13 @@ const ACCOMMODATION_DATA = [
         neighborhood: 'Porto da Barra',
         rating: 7.0,
         pricePerDay: 274,
-        totalPrice: 822,
-        totalDays: 3,
+        totalPrice: 2192,
+        totalDays: 8,
         proximity: 'Perto de Praia do Porto e Farol',
         description: 'Piscina externa, buffet de café da manhã incluso, aceita pets.',
         amenities: ['Piscina externa', 'Café da manhã incluso', 'Aceita pets', 'Wi-Fi grátis', 'Restaurante'],
         image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=500&auto=format&fit=crop',
-        url: 'https://www.hoteis.com/ho272681/rede-andrade-barra-salvador-brasil/?chkin=2026-07-11&chkout=2026-07-14'
+        url: 'https://www.hoteis.com/ho272681/rede-andrade-barra-salvador-brasil/?chkin=2026-07-16&chkout=2026-07-24'
       },
       {
         id: 'apart_queen',
@@ -45,18 +45,18 @@ const ACCOMMODATION_DATA = [
         neighborhood: 'Porto da Barra',
         rating: 9.0,
         pricePerDay: 241,
-        totalPrice: 723,
-        totalDays: 3,
+        totalPrice: 1928,
+        totalDays: 8,
         proximity: 'Perto do Shopping Barra e praias',
         description: 'Piscina externa, Wi-Fi grátis, recepção 24h.',
         amenities: ['Piscina externa', 'Wi-Fi grátis', 'Recepção 24h', 'Cozinha', 'Estacionamento'],
         image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=500&auto=format&fit=crop',
-        url: 'https://www.hoteis.com/ho4177308000/apart-queen-barra/?chkin=2026-07-11&chkout=2026-07-14'
+        url: 'https://www.hoteis.com/ho4177308000/apart-queen-barra/?chkin=2026-07-16&chkout=2026-07-24'
       }
     ]
   },
   {
-    region: 'Rio Vermelho',
+    region: 'Rio Vermelho (16 a 24 de Julho — 8 noites)',
     options: [
       {
         id: 'mar_hotel',
@@ -65,13 +65,13 @@ const ACCOMMODATION_DATA = [
         neighborhood: 'Rio Vermelho',
         rating: 7.2,
         pricePerDay: 190,
-        totalPrice: 570,
-        totalDays: 3,
+        totalPrice: 1520,
+        totalDays: 8,
         proximity: 'Perto da Praia da Paciência',
         description: 'Piscina externa, café da manhã incluso, aceita pets.',
         amenities: ['Piscina externa', 'Café da manhã incluso', 'Aceita pets', 'Wi-Fi grátis', 'Ar-condicionado'],
         image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=500&auto=format&fit=crop',
-        url: 'https://www.hoteis.com/ho458703/mar-hotel-rio-vermelho-salvador-brasil/?chkin=2026-07-11&chkout=2026-07-14'
+        url: 'https://www.hoteis.com/ho458703/mar-hotel-rio-vermelho-salvador-brasil/?chkin=2026-07-16&chkout=2026-07-24'
       },
       {
         id: 'ibis_rio_vermelho',
@@ -80,13 +80,13 @@ const ACCOMMODATION_DATA = [
         neighborhood: 'Rio Vermelho',
         rating: 8.6,
         pricePerDay: 250,
-        totalPrice: 750,
-        totalDays: 3,
+        totalPrice: 2000,
+        totalDays: 8,
         proximity: 'Beira-mar (praia do Buracão)',
         description: 'Restaurante, estacionamento, pet-friendly.',
         amenities: ['Beira-mar', 'Restaurante', 'Bar/Lounge', 'Estacionamento', 'Wi-Fi grátis'],
         image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=500&auto=format&fit=crop',
-        url: 'https://www.hoteis.com/ho218419/ibis-salvador-rio-vermelho-salvador-brasil/?chkin=2026-07-11&chkout=2026-07-14'
+        url: 'https://www.hoteis.com/ho218419/ibis-salvador-rio-vermelho-salvador-brasil/?chkin=2026-07-16&chkout=2026-07-24'
       },
       {
         id: 'sol_nascente',
@@ -95,13 +95,13 @@ const ACCOMMODATION_DATA = [
         neighborhood: 'Rio Vermelho',
         rating: 9.2,
         pricePerDay: 223,
-        totalPrice: 669,
-        totalDays: 3,
+        totalPrice: 1784,
+        totalDays: 8,
         proximity: 'Perto da Praia da Paciência',
         description: 'Piscina particular, cozinha, sacada com vista.',
         amenities: ['Piscina particular', 'Cozinha', 'Sacada com vista', 'Ar-condicionado', 'Lavanderia'],
         image: 'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?q=80&w=500&auto=format&fit=crop',
-        url: 'https://www.hoteis.com/ho3502730976/?chkin=2026-07-11&chkout=2026-07-14'
+        url: 'https://www.hoteis.com/ho3502730976/?chkin=2026-07-16&chkout=2026-07-24'
       }
     ]
   }
@@ -303,9 +303,6 @@ const AccommodationCard: React.FC<{ acc: any }> = ({ acc }) => {
                                 </span>
                             ))}
                         </div>
-                        <a href={acc.url} target="_blank" rel="noopener noreferrer" className="block w-full py-3 bg-slate-900 text-white text-center rounded-xl font-black uppercase tracking-widest text-[11px] mt-2">
-                            {acc.url.includes('airbnb') ? 'Ver no Airbnb' : 'Ver no Hoteis.com'}
-                        </a>
                     </div>
                 )}
             </div>
@@ -322,6 +319,89 @@ const AccommodationCard: React.FC<{ acc: any }> = ({ acc }) => {
   );
 };
 
+const SALVADOR_ARACAJU_ACCOMMODATION_DATA = [
+  {
+    region: 'Salvador — Chegada (16 a 17 de Julho de 2026 — 1 noite)',
+    options: [
+      {
+        id: 'ssa_aju_airbnb_ssa_chegada',
+        name: 'Airbnb Caminho das Árvores, Salvador',
+        type: 'Apartamento Inteiro',
+        neighborhood: 'Caminho das Árvores',
+        rating: 4.95,
+        pricePerDay: 160.00,
+        totalPrice: 185.71,
+        totalDays: 1,
+        proximity: 'Ao lado do Salvador Shopping e da Av. Tancredo Neves. Ideal para o primeiro dia.',
+        description: 'Oferecido por Gustavo. Código de confirmação: HMJHTC29YF. Check-in 16/07, Checkout 17/07. Apartamento aconchegante, piscina rooftop, vaga de garagem rotativa inclusa (perfeito para o carro alugado), ar-condicionado silencioso, Wi-Fi ultra rápido. Preço total: R$ 185,71.',
+        amenities: ['Oferecido por Gustavo', 'Conf: HMJHTC29YF', 'Estacionamento Grátis', 'Piscina Rooftop', 'Cozinha', 'Ar-condicionado', 'Wi-Fi 300MB'],
+        image: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=500&auto=format&fit=crop',
+        url: 'https://www.airbnb.com.br/s/Salvador--Bahia'
+      }
+    ]
+  },
+  {
+    region: 'Maragogi — Temporada (17 a 19 de Julho de 2026 — 2 noites)',
+    options: [
+      {
+        id: 'ssa_aju_airbnb_maragogi',
+        name: 'Apartamento em Maragogi (JV APRTS 05)',
+        type: 'Quarto privativo • 1 cama',
+        neighborhood: 'Praia de Maragogi',
+        rating: 4.96,
+        pricePerDay: 97.20,
+        totalPrice: 225.64,
+        totalDays: 2,
+        proximity: 'Rua Fernando Paes. Apenas 3 minutos de caminhada até a praia!',
+        description: 'Oferecido por Fabiana. Código de confirmação: HM5SHNNWAR. Check-in depois das 14:00, Checkout antes das 12:00. Localização privilegiada com Wi-Fi, ar-condicionado e cozinha equipada. Preço total: R$ 225,64.',
+        amenities: ['Oferecido por Fabiana', 'Conf: HM5SHNNWAR', 'Cozinha Completa', 'Apenas 3 min da praia', 'Wi-Fi de Alta Velocidade', 'Ar-condicionado'],
+        image: 'https://images.unsplash.com/photo-1540518614846-7eded433c457?q=80&w=500&auto=format&fit=crop',
+        url: 'https://www.airbnb.com.br/s/Maragogi--Alagoas'
+      }
+    ]
+  },
+  {
+    region: 'Aracaju — Temporada (19 a 21 de Julho de 2026 — 2 noites)',
+    options: [
+      {
+        id: 'ssa_aju_airbnb_aju',
+        name: 'Airbnb Premium Orla de Atalaia, Aracaju',
+        type: 'Apartamento Inteiro (Vista Mar)',
+        neighborhood: 'Orla de Atalaia',
+        rating: 4.98,
+        pricePerDay: 156.51,
+        totalPrice: 313.03,
+        totalDays: 2,
+        proximity: 'Localizado na Passarela do Caranguejo, de frente para as quadras e lagos de Atalaia.',
+        description: 'Oferecido por Nadja. Código de confirmação: HM2YDD2J9T. Check-in 19/07, Checkout 21/07. Apartamento de alto padrão com varanda gourmet de frente para o mar, vaga de garagem demarcada de fácil acesso, Wi-Fi fibra de alta velocidade, cozinha totalmente equipada e piscina climatizada no condomínio. Preço total: R$ 313,03.',
+        amenities: ['Oferecido por Nadja', 'Conf: HM2YDD2J9T', 'Frente para o Mar', 'Garagem Privativa', 'Piscina Climatizada', 'Wi-Fi Fibra', 'Cozinha Completa'],
+        image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=500&auto=format&fit=crop',
+        url: 'https://www.airbnb.com.br/s/Aracaju--Sergipe'
+      }
+    ]
+  },
+  {
+    region: 'Salvador — Retorno (21 a 24 de Julho de 2026 — 3 noites)',
+    options: [
+      {
+        id: 'ssa_aju_airbnb_ssa_retorno',
+        name: 'Airbnb Caminho das Árvores, Salvador',
+        type: 'Apartamento Inteiro',
+        neighborhood: 'Caminho das Árvores',
+        rating: 4.91,
+        pricePerDay: 185.71,
+        totalPrice: 557.13,
+        totalDays: 3,
+        proximity: 'Ao lado do Salvador Shopping. Excelente localização central e segura para explorar a cidade.',
+        description: 'Oferecido por Lilia. Código de confirmação: HMT3Q9TBYB. Check-in 21/07, Checkout 24/07. Apartamento acolhedor e confortável, perfeito para relaxar, preparar as malas até o horário do voo de volta ao Rio de Janeiro. Preço total: R$ 557,13.',
+        amenities: ['Oferecido por Lilia', 'Conf: HMT3Q9TBYB', 'Garagem Coberta', 'Ar-condicionado', 'Wi-Fi Fibra', 'Cozinha equipada', 'Check-out fácil'],
+        image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=500&auto=format&fit=crop',
+        url: 'https://www.airbnb.com.br/s/Salvador--Bahia'
+      }
+    ]
+  }
+];
+
 const AccommodationList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const menuItem = MENU_ITEMS.find(item => item.id === 'hospedagem');
   const [selectedTrip, setSelectedTrip] = useState<any>(null);
@@ -336,12 +416,16 @@ const AccommodationList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   }, []);
 
   const isBuenosAiresTrip = selectedTrip?.id === 'am_foz_ass_ba' || selectedTrip?.name?.toLowerCase().includes('buenos aires');
-  const isColombiaTrip = selectedTrip?.id === 'am_bh_med_san' || selectedTrip?.name?.toLowerCase().includes('medellin');
+  const isColombiaTrip = selectedTrip?.id === 'am_bh_med_san' || selectedTrip?.id === 'am_rio_san' || selectedTrip?.name?.toLowerCase().includes('medellin') || selectedTrip?.name?.toLowerCase().includes('san andrés');
+  const isSalvadorAjuTrip = selectedTrip?.id === 'am_salvador_julho' || selectedTrip?.name?.toLowerCase().includes('aracaju') || selectedTrip?.name?.toLowerCase().includes('aracajú');
+
   const currentAccommodationData = isColombiaTrip 
     ? COLOMBIA_ACCOMMODATION_DATA 
-    : isBuenosAiresTrip 
-      ? BUENOS_AIRES_ACCOMMODATION_DATA 
-      : ACCOMMODATION_DATA;
+    : isSalvadorAjuTrip
+      ? SALVADOR_ARACAJU_ACCOMMODATION_DATA
+      : isBuenosAiresTrip 
+        ? BUENOS_AIRES_ACCOMMODATION_DATA 
+        : ACCOMMODATION_DATA;
 
   return (
     <div className="space-y-6 pb-20 animate-in fade-in slide-in-from-bottom-4">

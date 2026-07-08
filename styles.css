@@ -1,9 +1,12 @@
 
+@import url('https://fonts.googleapis.com/css2?family=Oleo+Script:wght@400;700&family=Lobster&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-display: 'Poppins', system-ui, -apple-system, sans-serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: 'Poppins', sans-serif;
+  --font-blenda: 'Poppins', sans-serif;
+  --font-brenda: 'Poppins', sans-serif;
 
   --color-sa-green: #007749;
   --color-sa-gold: #FFB81C;
@@ -18,15 +21,20 @@
   --color-tribal-red: #8b1e17;
 }
 
-/* Global font reset */
-body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  margin: 0;
-  overflow-x: hidden;
+/* Global font reset for Poppins & Inter style */
+body, input, select, textarea, button {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-h1, h2, h3, h4, h5, h6, button, input {
-  font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+/* Titles and headings override using Poppins */
+h1, h2, h3, h4, h5, h6, 
+.title-blenda, .title-brenda, .app-title, .section-title, .card-title {
+  font-family: 'Poppins', sans-serif !important;
+  font-weight: 700 !important; /* Slightly thicker, bold & elegant */
+}
+
+.size-72, .size-72 * {
+  font-size: 72px !important;
 }
 
 /* Custom scrollbar for better mobile feel */

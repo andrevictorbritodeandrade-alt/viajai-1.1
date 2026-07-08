@@ -103,6 +103,43 @@ const ANDRE_MARCELLY_TRIPS: Trip[] = [
     isDomestic: false,
     category: 'janeiro2027',
     price: 'Aéreo: R$ 3.701 / px'
+  },
+  {
+    id: 'am_rio_san',
+    name: 'Plano C: GIG ⇄ San Andrés (Mais Barato)',
+    date: 'Janeiro de 2027',
+    image: '/colombia_premium.jpg',
+    lat: 12.5847,
+    lon: -81.7006,
+    userId: 'shared_andre_marcelly',
+    isDomestic: false,
+    category: 'janeiro2027',
+    price: 'Aéreo: R$ 2.450 / px'
+  },
+  {
+    id: 'am_rio_foz_ba',
+    name: 'Plano D: Rio ⇄ Foz + Buenos Aires',
+    date: 'Dezembro a Janeiro',
+    image: '/foz_ba_premium.jpg',
+    lat: -25.5977,
+    lon: -58.3816,
+    userId: 'shared_andre_marcelly',
+    isDomestic: false,
+    category: 'janeiro2027',
+    price: 'Aéreo: R$ 1.427 / px'
+  },
+  {
+    id: 'am_salvador_julho',
+    name: 'Plano E: Salvador + Maragogi + Aracaju (Carro)',
+    date: '16 a 23 de Julho',
+    image: '/ssa_aju_premium.png',
+    lat: -12.9714,
+    lon: -38.5014,
+    userId: 'shared_andre_marcelly',
+    isDomestic: true,
+    category: 'julho',
+    price: 'Carro + Aéreo: R$ 1.152,53',
+    subtitle: 'Salvador, Maragogi & Aracaju • 16 a 23 de Julho'
   }
 ];
 
@@ -301,44 +338,54 @@ const TripSelection: React.FC<TripSelectionProps> = ({ onSelect, userName }) => 
   };
 
   return (
-    <div className="min-h-screen bg-[#07090e] font-sans pb-20 text-white overflow-x-hidden">
+    <div className="min-h-screen bg-[#0B0F19] font-sans pb-20 text-white overflow-x-hidden">
       
-      {/* HEADER SECTION: Inspired directly by Image 2, featuring rounded-b geometry and an elegant dark slate/indigo shade */}
-      <div className="bg-gradient-to-b from-[#0b0e14] to-[#040608] rounded-b-[2.5rem] md:rounded-b-[3.5rem] border-b border-white/5 pt-12 pb-14 px-6 md:px-12 shadow-2xl relative overflow-hidden">
+      {/* HEADER SECTION: Elegant natural landscape with a dark premium overlay */}
+      <div className="rounded-b-[2.5rem] md:rounded-b-[3.5rem] border-b border-white/10 pt-12 pb-14 px-6 md:px-12 shadow-2xl relative overflow-hidden bg-[#0B0F19]">
         
-        {/* Subtle Ambient light layer */}
+        {/* Background Layer with opacity */}
+        <div className="absolute inset-0 z-0 h-full w-full bg-[#080c14]">
+          <img 
+            src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?q=80&w=2074&auto=format&fit=crop" 
+            alt="Nature Landscape Destination" 
+            className="w-full h-full object-cover opacity-20"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0B0F19]/60 to-[#0B0F19]"></div>
+        </div>
+
+        {/* Ambient Glows */}
         <div className="absolute top-0 right-1/4 w-[400px] h-[200px] bg-emerald-500/10 rounded-full blur-[100px] pointer-events-none"></div>
-        <div className="absolute top-1/2 left-1/4 w-[300px] h-[150px] bg-purple-500/5 rounded-full blur-[80px] pointer-events-none"></div>
+        <div className="absolute top-1/2 left-1/4 w-[300px] h-[150px] bg-cyan-500/5 rounded-full blur-[80px] pointer-events-none"></div>
 
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10 w-full">
           
           <div className="flex items-center gap-4 text-left">
             {/* Elegant avatar holding first initial with styled borders */}
-            <div className="w-14 h-14 bg-emerald-500 rounded-full flex items-center justify-center text-slate-950 font-black text-xl shadow-[0_0_25px_rgba(16,185,129,0.35)] border-2 border-white/10 shrink-0">
-              {(userName || 'André').charAt(0).toUpperCase()}
+            <div className="w-14 h-14 bg-emerald-500 rounded-full flex items-center justify-center text-slate-950 font-black text-xl shadow-[0_0_20px_rgba(16,185,129,0.4)] border-2 border-white/20 shrink-0">
+              A
             </div>
             
             <div>
               <p className="text-[9.5px] font-black tracking-[0.25em] text-slate-400 uppercase leading-none mb-1.5">
-                Bem-vindo ao seu perfil
+                BEM-VINDO AO SEU PERFIL
               </p>
               <h2 className="text-xl font-black text-white hover:text-emerald-400 transition-colors uppercase">
-                {userName || 'André Brito'}
+                ANDRÉ BRITO
               </h2>
             </div>
           </div>
 
-          <div className="text-left md:text-right flex flex-col items-start md:items-end">
-            <h1 className="text-3xl sm:text-4xl font-display font-black tracking-tight uppercase leading-none mb-2 select-none">
-              Minhas <span className="text-emerald-400">Viagens</span>
+          <div className="text-center md:text-right flex flex-col items-center md:items-end">
+            <h1 className="text-white select-none leading-none drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)] uppercase tracking-wider font-black font-sans" style={{ fontSize: '28px' }}>
+              MINHAS VIAGENS
             </h1>
-            <p className="text-[10px] font-black text-slate-400 tracking-[0.2em] uppercase">
+            <p className="text-[10px] font-bold text-slate-400 tracking-[0.2em] uppercase mt-1">
               SELECIONE O ROTEIRO QUE DESEJA VISUALIZAR
             </p>
           </div>
 
-          <div className="shrink-0 self-start md:self-auto">
-            {/* Boxed modern exit button exactly as shown on Image 2 top right corner */}
+          <div className="shrink-0 self-center md:self-auto">
+            {/* Boxed modern exit button styled for dark theme */}
             <button 
               onClick={handleLogout}
               className="flex items-center justify-center p-3 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white rounded-xl border border-white/10 shadow-lg transition-all"
@@ -362,9 +409,9 @@ const TripSelection: React.FC<TripSelectionProps> = ({ onSelect, userName }) => 
             {/* CATEGORY 1: Opções para os próximos meses (Julho de 2026) */}
             {julyTrips.length > 0 && (
               <div>
-                <div className="flex items-center gap-2 mb-8 bg-white/5 border border-white/5 px-4 py-2 rounded-full w-fit shadow-inner">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 active-pulse"></span>
-                  <h2 className="text-[10px] font-black text-white uppercase tracking-[0.2em]">
+                <div className="flex items-center gap-2 mb-8 bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 rounded-full w-fit shadow-inner">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <h2 className="text-[10px] font-bold text-emerald-400 uppercase tracking-[0.2em]">
                     OPÇÕES PARA OS PRÓXIMOS MESES (JULHO DE 2026)
                   </h2>
                 </div>
@@ -380,9 +427,9 @@ const TripSelection: React.FC<TripSelectionProps> = ({ onSelect, userName }) => 
               {/* CATEGORY 2: Opções de Viagens (Janeiro de 2027) */}
               {jan2027Trips.length > 0 && (
                 <div className={`${doneTrips.length > 0 ? 'lg:col-span-3' : ''} space-y-8`}>
-                  <div className="flex items-center gap-2 bg-white/5 border border-white/5 px-4 py-2 rounded-full w-fit shadow-inner">
+                  <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 rounded-full w-fit shadow-inner">
                     <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-                    <h2 className="text-[10px] font-black text-white uppercase tracking-[0.2em]">
+                    <h2 className="text-[10px] font-bold text-emerald-400 uppercase tracking-[0.2em]">
                       ROTEIRO SELECIONADO: JANEIRO DE 2027
                     </h2>
                   </div>
@@ -396,8 +443,8 @@ const TripSelection: React.FC<TripSelectionProps> = ({ onSelect, userName }) => 
               {doneTrips.length > 0 && (
                 <div className="lg:col-span-1 space-y-8">
                   <div className="flex items-center gap-2 bg-white/5 border border-white/5 px-4 py-2 rounded-full w-fit shadow-inner">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-                    <h2 className="text-[10px] font-black text-white uppercase tracking-[0.2em]">
+                    <span className="w-2 h-2 rounded-full bg-slate-400"></span>
+                    <h2 className="text-[10px] font-bold text-slate-300 uppercase tracking-[0.2em]">
                       VIAGENS REALIZADAS (HISTÓRICO)
                     </h2>
                   </div>
@@ -416,7 +463,7 @@ const TripSelection: React.FC<TripSelectionProps> = ({ onSelect, userName }) => 
       {/* TRIP PRICE INSTANT EDIT MODAL DIALOG OVERLAY */}
       {editingTrip && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-[#0b0f19] border border-white/10 rounded-[2rem] max-w-sm w-full p-6 shadow-2xl relative animate-in zoom-in-95 duration-200">
+          <div className="bg-[#0b0f19] border border-white/10 rounded-[2rem] max-w-sm w-full p-6 shadow-2xl relative animate-in zoom-in-95 duration-200 text-white">
             <button 
               onClick={() => setEditingTrip(null)}
               className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors p-1"
@@ -424,7 +471,7 @@ const TripSelection: React.FC<TripSelectionProps> = ({ onSelect, userName }) => 
               <X className="w-5 h-5" />
             </button>
 
-            <h3 className="text-sm font-black uppercase tracking-wider text-white mb-2 flex items-center gap-2">
+            <h3 className="text-sm font-bold uppercase tracking-wider text-white mb-2 flex items-center gap-2">
               <Pencil className="w-4 h-4 text-emerald-400" />
               Preço Praticado
             </h3>
@@ -455,13 +502,13 @@ const TripSelection: React.FC<TripSelectionProps> = ({ onSelect, userName }) => 
             <div className="flex gap-3">
               <button 
                 onClick={() => setEditingTrip(null)}
-                className="flex-1 py-3 hover:bg-white/5 border border-white/10 text-slate-300 font-black rounded-xl text-[10px] uppercase tracking-widest transition-all"
+                className="flex-1 py-3 bg-slate-900 hover:bg-slate-850 border border-white/5 text-slate-300 font-bold rounded-xl text-[10px] uppercase tracking-widest transition-all"
               >
                 Cancelar
               </button>
               <button 
                 onClick={handleSavePrice}
-                className="flex-1 py-3 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black rounded-xl text-[10px] uppercase tracking-widest transition-all shadow-lg"
+                className="flex-1 py-3 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold rounded-xl text-[10px] uppercase tracking-widest transition-all shadow-lg"
               >
                 Salvar Valor
               </button>
@@ -471,8 +518,8 @@ const TripSelection: React.FC<TripSelectionProps> = ({ onSelect, userName }) => 
       )}
 
       {/* Modern minimal footer */}
-      <div className="mt-36 text-center py-12 border-t border-white/5 opacity-30 hover:opacity-100 transition-opacity">
-        <p className="text-[10px] text-white font-bold uppercase tracking-[0.50em]">
+      <div className="mt-36 text-center py-12 border-t border-white/10">
+        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.50em]">
           VIAJAÍ • Professional Travel Agency
         </p>
       </div>

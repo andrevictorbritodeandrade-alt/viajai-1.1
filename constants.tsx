@@ -123,6 +123,17 @@ export const MENU_ITEMS: MenuItem[] = [
     bgImage: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=500&auto=format&fit=crop'
   },
   {
+    id: 'reservas', 
+    title: 'Aluguel de Carro',
+    icon: <Car className="w-12 h-12 text-white" />,
+    themeColor: 'green',
+    gradientClass: 'bg-[#007749] border-white/20',
+    bgColor: '#007749',
+    category: 'Geral',
+    description: 'Voucher, retirada e devolução do carro.',
+    bgImage: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?q=80&w=500&auto=format&fit=crop'
+  },
+  {
     id: 'tradutor', 
     title: 'Idiomas',
     icon: <Languages className="w-12 h-12 text-white" />,
@@ -132,6 +143,17 @@ export const MENU_ITEMS: MenuItem[] = [
     category: 'Geral',
     description: 'Expressões em áudio e ajuda de tradução.',
     bgImage: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=500&auto=format&fit=crop'
+  },
+  {
+    id: 'abastecimento', 
+    title: 'Combustível',
+    icon: <Car className="w-12 h-12 text-white" />,
+    themeColor: 'green',
+    gradientClass: 'bg-[#007749] border-white/20',
+    bgColor: '#007749',
+    category: 'Geral',
+    description: 'Calculadora de combustível e viagem.',
+    bgImage: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?q=80&w=500&auto=format&fit=crop'
   },
   {
     id: 'melhores_destinos', 

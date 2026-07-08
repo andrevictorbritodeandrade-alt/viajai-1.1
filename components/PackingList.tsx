@@ -15,10 +15,14 @@ import {
   CloudLightning, 
   PlaneTakeoff, 
   PlaneLanding, 
-  Circle 
+  Circle,
+  Sparkles,
+  Loader2
 } from 'lucide-react';
 import { syncDataToCloud, subscribeToCloudData } from '../services/firebase';
+import { getSessionUser } from '../services/session';
 import CategoryHeader from './CategoryHeader';
+import { getPackingSuggestions, PackingSuggestion } from '../services/geminiService';
 
 type BagType = 'bag23kg' | 'bag10kg' | 'pouch5kg';
 type Person = 'André' | 'Marcelly';
@@ -188,22 +192,90 @@ const BagSection: React.FC<{
   );
 };
 
-const PackingList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
+const PackingList: React.FC<{ 
+  selectedTrip?: { id: string; name: string; isDomestic?: boolean } | null;
+  onBack: () => void;
+}> = ({ selectedTrip, onBack }) => {
   const [activePerson, setActivePerson] = useState<Person>('André');
+  const [aiSuggestions, setAiSuggestions] = useState<PackingSuggestion[]>([]);
+  const [loadingAi, setLoadingAi] = useState(false);
   
-  // OFFLINE-FIRST: Inicializa o estado DIRETAMENTE do localStorage.
+  // Determinar se a mala de 23kg deve ser excluída para esta viagem
+  const is23kgExcluded = useMemo(() => {
+    if (!selectedTrip) return true; // se não houver viagem ativa, por padrão esconde para as novas viagens propostas pelo usuário
+    const nameLower = selectedTrip.name.toLowerCase();
+    const idLower = selectedTrip.id.toLowerCase();
+    
+    // Lista de termos ou IDs onde 23kg é explicitamente descartado
+    // Como o usuário instruiu: "nessa viagem nao vamos ter que levar mala de 23 quilos!"
+    // Isto se aplica a todas as novas rotas de viagem propostas (Buenos Aires, Salvador, Caribe Colombiano, etc.)
+    if (
+      idLower === 'am_foz_ass_ba' || 
+      idLower === 'am_rio_foz_ba' || 
+      idLower === 'am_sp_ssa_aju' ||
+      idLower === 'am_salvador_julho' ||
+      idLower === 'am_bh_med_san' ||
+      idLower === 'am_rio_san' ||
+      nameLower.includes('buenos aires') || 
+      nameLower.includes('foz') || 
+      nameLower.includes('assunção') || 
+      nameLower.includes('maragogi') || 
+      nameLower.includes('aracaju') || 
+      nameLower.includes('salvador') || 
+      nameLower.includes('colombia')
+    ) {
+      return true;
+    }
+    return false;
+  }, [selectedTrip]);
+
+  const tripId = selectedTrip?.id || 'default';
+  const tripStorageKey = `viajai_packing_list_v5_${tripId}`;
+
+  // OFFLINE-FIRST: Inicializa o estado DIRETAMENTE do localStorage da viagem correspondente.
   // Isso evita a "piscada" de carregamento e faz o app parecer nativo/instantâneo.
   const [data, setData] = useState<PackingData>(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY);
+      const saved = localStorage.getItem(tripStorageKey);
       return saved ? JSON.parse(saved) : INITIAL_DATA;
     } catch (e) {
       return INITIAL_DATA;
     }
   });
 
-  // Sincronização em Background
+  // Atualiza os dados quando o tripId muda para carregar as informações corretas da viagem correspondente
   useEffect(() => {
+    try {
+      const saved = localStorage.getItem(tripStorageKey);
+      setData(saved ? JSON.parse(saved) : INITIAL_DATA);
+    } catch (e) {
+      setData(INITIAL_DATA);
+    }
+  }, [tripId]);
+
+  // Se a mala de 23kg estiver desativada, migra automaticamente os itens existentes para a mala de 10kg (evitando perda de dados)
+  useEffect(() => {
+    if (is23kgExcluded) {
+      let hasChanges = false;
+      const newData = JSON.parse(JSON.stringify(data));
+      (['André', 'Marcelly'] as Person[]).forEach(person => {
+        if (newData[person]?.bag23kg?.length > 0) {
+          newData[person].bag10kg = [...newData[person].bag10kg, ...newData[person].bag23kg];
+          newData[person].bag23kg = [];
+          hasChanges = true;
+        }
+      });
+      if (hasChanges) {
+        updateCloud(newData);
+      }
+    }
+  }, [is23kgExcluded, tripId]);
+
+  // Sincronização em Background baseada na viagem ativa
+  useEffect(() => {
+    const userId = getSessionUser() || "temp_guest";
+    const customDocId = `${userId}_${tripId}`;
+
     // Escuta mudanças na nuvem sem bloquear a UI
     const unsubscribe = subscribeToCloudData('packing_list_v5', (cloudData: any) => {
       if (cloudData) {
@@ -223,22 +295,24 @@ const PackingList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
             }
           });
         });
-        // Atualiza apenas se for diferente (em um app real, faríamos um merge mais inteligente)
-        // Aqui confiamos que a nuvem é a verdade se estivermos online
+        
         setData(migrated as PackingData);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(migrated));
+        localStorage.setItem(tripStorageKey, JSON.stringify(migrated));
       }
-    });
+    }, customDocId);
 
     return () => unsubscribe();
-  }, []);
+  }, [tripId]);
 
   const updateCloud = (newData: PackingData) => {
+    const userId = getSessionUser() || "temp_guest";
+    const customDocId = `${userId}_${tripId}`;
+
     // Atualiza localmente IMEDIATAMENTE (Optimistic UI)
     setData(newData);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(newData));
-    // Envia para nuvem em background
-    syncDataToCloud('packing_list_v5', newData);
+    localStorage.setItem(tripStorageKey, JSON.stringify(newData));
+    // Envia para nuvem em background usando a ID da viagem para isolamento de dados
+    syncDataToCloud('packing_list_v5', newData, customDocId);
   };
 
   const handleToggleIda = (person: Person, bag: BagType, itemId: string) => {
@@ -274,12 +348,75 @@ const PackingList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     updateCloud(newData);
   };
 
+  // Carrega sugestões de IA (com cache para não refazer chamadas idênticas)
+  useEffect(() => {
+    const loadAiTips = async () => {
+      const tripName = selectedTrip?.name || "África do Sul";
+      const cacheKey = `viajai_packing_ai_${selectedTrip?.id || 'default'}_${activePerson}`;
+      const cached = localStorage.getItem(cacheKey);
+      
+      if (cached) {
+        try {
+          setAiSuggestions(JSON.parse(cached));
+          return;
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      setLoadingAi(true);
+      try {
+        const tips = await getPackingSuggestions(tripName, activePerson, is23kgExcluded);
+        if (tips && tips.length > 0) {
+          setAiSuggestions(tips);
+          localStorage.setItem(cacheKey, JSON.stringify(tips));
+        }
+      } catch (err) {
+        console.error("Erro ao carregar dicas da mala:", err);
+      } finally {
+        setLoadingAi(false);
+      }
+    };
+
+    loadAiTips();
+  }, [selectedTrip, activePerson, is23kgExcluded]);
+
+  const handleRefreshAi = async () => {
+    const cacheKey = `viajai_packing_ai_${selectedTrip?.id || 'default'}_${activePerson}`;
+    localStorage.removeItem(cacheKey);
+    setLoadingAi(true);
+    try {
+      const tripName = selectedTrip?.name || "África do Sul";
+      const tips = await getPackingSuggestions(tripName, activePerson, is23kgExcluded);
+      if (tips && tips.length > 0) {
+        setAiSuggestions(tips);
+        localStorage.setItem(cacheKey, JSON.stringify(tips));
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoadingAi(false);
+    }
+  };
+
   const personData = data[activePerson];
 
   return (
     <div className="pb-48">
       <CategoryHeader title="Checklist" onBack={onBack} />
       <div className="p-4 space-y-6">
+      {is23kgExcluded && (
+        <div className="bg-orange-500/10 border border-orange-500/20 rounded-2xl p-4 mb-4 flex gap-3 items-start shadow-sm">
+          <Luggage className="w-5 h-5 text-orange-600 shrink-0 mt-0.5 animate-pulse" />
+          <div>
+            <h3 className="text-orange-700 font-bold text-xs uppercase tracking-wider font-mono">BAGGAGE LIMIT (10KG + BOLSA DE MÃO)</h3>
+            <p className="text-[10px] text-orange-800 leading-relaxed font-medium mt-1">
+              De acordo com as passagens desta viagem, <strong>não vamos levar mala despachada de 23kg</strong>! 
+              O checklist foi ajustado apenas para as malas de mão de 10kg e bolsas pessoais/frasqueiras.
+            </p>
+          </div>
+        </div>
+      )}
       <div className="bg-sa-green/10 border border-sa-green/20 rounded-2xl p-4 mb-6 flex gap-3 items-start shadow-sm">
         <PlaneTakeoff className="w-5 h-5 text-sa-green shrink-0 mt-0.5" />
         <div>
@@ -296,8 +433,83 @@ const PackingList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
         ))}
       </div>
 
+      {/* CARD INTELIGENTE DE SUGESTÕES DE IA */}
+      <div className="bg-gradient-to-r from-slate-900 to-indigo-950 text-white rounded-3xl p-5 shadow-xl border border-white/10 relative overflow-hidden mb-6">
+        <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+          <Sparkles className="w-40 h-40" />
+        </div>
+        <div className="relative z-10">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-bold font-display text-sm flex items-center gap-2 uppercase tracking-wide">
+              <Sparkles className="w-5 h-5 text-indigo-400 animate-pulse" />
+              Recomendações IA para {activePerson}
+            </h3>
+            <button 
+              onClick={handleRefreshAi} 
+              disabled={loadingAi}
+              className="text-indigo-200 hover:text-white p-1 rounded-lg bg-white/5 hover:bg-white/10 transition-colors disabled:opacity-50"
+              title="Recarregar Sugestões"
+            >
+              <RefreshCw className={`w-4 h-4 ${loadingAi ? 'animate-spin' : ''}`} />
+            </button>
+          </div>
+
+          {loadingAi ? (
+            <div className="flex flex-col items-center justify-center py-6 gap-2">
+              <Loader2 className="w-8 h-8 text-indigo-400 animate-spin" />
+              <p className="text-xs text-indigo-200 font-medium animate-pulse">Consultando especialista de malas para {selectedTrip?.name || "seu destino"}...</p>
+            </div>
+          ) : aiSuggestions.length > 0 ? (
+            <div className="space-y-3 max-h-72 overflow-y-auto pr-1">
+              {aiSuggestions.map((sug, idx) => {
+                // Verificar se o item já foi adicionado
+                const exists = personData[sug.bagType]?.some(
+                  item => item.text.toLowerCase().trim() === sug.itemText.toLowerCase().trim()
+                );
+
+                const getBagName = (type: BagType) => {
+                  if (type === 'bag23kg') return 'Mala 23kg';
+                  if (type === 'bag10kg') return 'Mala 10kg';
+                  return 'Frasqueira';
+                };
+
+                return (
+                  <div key={idx} className="bg-white/5 backdrop-blur-md rounded-2xl p-3 border border-white/5 hover:border-indigo-500/20 transition-all flex items-start gap-3">
+                    <div className="flex-1">
+                      <div className="flex flex-wrap items-center gap-2 mb-1">
+                        <span className="text-[10px] font-bold text-indigo-300 uppercase tracking-wide bg-indigo-500/10 px-2 py-0.5 rounded-full border border-indigo-500/20">
+                          {sug.category}
+                        </span>
+                        <span className="text-[9px] font-black uppercase text-slate-300 bg-white/10 px-1.5 py-0.5 rounded">
+                          {getBagName(sug.bagType)}
+                        </span>
+                      </div>
+                      <h4 className="font-bold text-sm text-white mb-0.5">{sug.itemText}</h4>
+                      <p className="text-[10px] text-slate-300 leading-relaxed">{sug.reason}</p>
+                    </div>
+                    <button
+                      onClick={() => !exists && handleAdd(activePerson, sug.bagType, sug.itemText)}
+                      disabled={exists}
+                      className={`shrink-0 p-2 rounded-xl transition-all ${exists ? 'bg-green-500/20 text-green-300 border border-green-500/30' : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-md'}`}
+                    >
+                      {exists ? <Check className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="text-center py-4 text-slate-400 text-xs">
+              Nenhuma sugestão encontrada para esta viagem.
+            </div>
+          )}
+        </div>
+      </div>
+
       <div className="space-y-4">
-        <BagSection title="Mala 23kg (Despachada)" icon={<Luggage className="w-5 h-5 text-blue-600" />} items={personData.bag23kg} colorClass="border-blue-50" onToggleIda={(id) => handleToggleIda(activePerson, 'bag23kg', id)} onToggleVolta={(id) => handleToggleVolta(activePerson, 'bag23kg', id)} onDelete={(id) => handleDelete(activePerson, 'bag23kg', id)} onEdit={(id, txt) => handleEdit(activePerson, 'bag23kg', id, txt)} onAdd={(text) => handleAdd(activePerson, 'bag23kg', text)} />
+        {!is23kgExcluded && (
+          <BagSection title="Mala 23kg (Despachada)" icon={<Luggage className="w-5 h-5 text-blue-600" />} items={personData.bag23kg} colorClass="border-blue-50" onToggleIda={(id) => handleToggleIda(activePerson, 'bag23kg', id)} onToggleVolta={(id) => handleToggleVolta(activePerson, 'bag23kg', id)} onDelete={(id) => handleDelete(activePerson, 'bag23kg', id)} onEdit={(id, txt) => handleEdit(activePerson, 'bag23kg', id, txt)} onAdd={(text) => handleAdd(activePerson, 'bag23kg', text)} />
+        )}
         <BagSection title="Mala 10kg (Mão)" icon={<ShoppingBag className="w-5 h-5 text-orange-600" />} items={personData.bag10kg} colorClass="border-orange-50" onToggleIda={(id) => handleToggleIda(activePerson, 'bag10kg', id)} onToggleVolta={(id) => handleToggleVolta(activePerson, 'bag10kg', id)} onDelete={(id) => handleDelete(activePerson, 'bag10kg', id)} onEdit={(id, txt) => handleEdit(activePerson, 'bag10kg', id, txt)} onAdd={(text) => handleAdd(activePerson, 'bag10kg', text)} />
         <BagSection title="Frasqueira 5kg (Mão)" icon={<Briefcase className="w-5 h-5 text-purple-600" />} items={personData.pouch5kg} colorClass="border-purple-50" onToggleIda={(id) => handleToggleIda(activePerson, 'pouch5kg', id)} onToggleVolta={(id) => handleToggleVolta(activePerson, 'pouch5kg', id)} onDelete={(id) => handleDelete(activePerson, 'pouch5kg', id)} onEdit={(id, txt) => handleEdit(activePerson, 'pouch5kg', id, txt)} onAdd={(text) => handleAdd(activePerson, 'pouch5kg', text)} />
       </div>

@@ -118,7 +118,8 @@ service cloud.firestore {
     }
 
     match /financial_data/{userId} {
-      allow read, write: if isValidFinancial(request.resource.data);
+      allow read: if true;
+      allow write: if isValidFinancial(request.resource.data);
     }
 
     match /packing_list_v5/{userId} {
@@ -127,7 +128,8 @@ service cloud.firestore {
     }
 
     match /expenses_log/{userId} {
-      allow read, write: if isValidExpenses(request.resource.data);
+      allow read: if true;
+      allow write: if isValidExpenses(request.resource.data);
     }
 
     match /itineraries/{userId} {

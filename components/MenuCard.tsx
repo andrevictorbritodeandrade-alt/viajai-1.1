@@ -16,7 +16,10 @@ const MenuCard: React.FC<MenuCardProps> = ({
 }) => {
   return (
     <button
-      onClick={onClick}
+      onClick={() => {
+        console.log(`MenuCard clicked: ${title}`);
+        onClick();
+      }}
       type="button"
       className="group relative z-10 w-full h-[150px] sm:h-[165px] rounded-[24px] shadow-lg transition-all duration-300 hover:scale-[1.04] active:scale-[0.97] border border-white/10 overflow-hidden flex flex-col justify-end text-left select-none bg-slate-900 cursor-pointer pointer-events-auto"
     >

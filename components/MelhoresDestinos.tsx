@@ -19,7 +19,7 @@ import {
   ShieldCheck
 } from 'lucide-react';
 
-type City = 'JNB' | 'CPT';
+type City = 'SSA' | 'AJU' | 'MRG';
 
 interface SubTopic {
   id: string;
@@ -29,186 +29,288 @@ interface SubTopic {
   highlights?: string[];
 }
 
-const TOPICS_JNB: SubTopic[] = [
+const TOPICS_SSA: SubTopic[] = [
   {
     id: 'quando-ir',
     title: 'Quando Ir',
     icon: <Calendar className="w-5 h-5" />,
-    content: 'O inverno (maio a setembro) é seco e excelente para safáris no Kruger. O verão (novembro a março) traz tempestades elétricas espetaculares ao entardecer.',
-    highlights: ['Seca (Maio-Set): Melhor p/ Safári', 'Verão (Nov-Mar): Calor e Chuva']
+    content: 'Setembro a fevereiro é a melhor época para sol e praias. O auge é no Carnaval, mas as festas de São João em junho também trazem muito charme e forró tradicional.',
+    highlights: ['Set-Fev: Sol e Calor', 'Junho: Festas Juninas (São João)']
   },
   {
     id: 'como-chegar',
     title: 'Como Chegar',
     icon: <Bus className="w-5 h-5" />,
-    content: 'O aeroporto OR Tambo é o maior da África. Recebe voos diretos da TAAG, South African e Latam (via SP).',
+    content: 'O Aeroporto de Salvador (SSA) recebe voos diários de todas as capitais. Do aeroporto, é possível pegar o metrô moderno ou Uber até os principais pontos turísticos.',
   },
   {
     id: 'onde-ficar',
     title: 'Onde Ficar',
     icon: <Hotel className="w-5 h-5" />,
-    content: 'Sandton é a escolha segura e luxuosa. Rosebank oferece modernidade e arte. Melville é ideal para quem busca vida noturna e estilo boêmio.',
-    highlights: ['Sandton (Segurança)', 'Rosebank (Conveniência)']
+    content: 'Barra e Rio Vermelho oferecem segurança, praias e excelente vida noturna. Para imersão histórica, prefira pousadas no charmoso bairro do Pelourinho ou Santo Antônio Além do Carmo.',
+    highlights: ['Barra & Rio Vermelho: Agito', 'Santo Antônio: Clima Boêmio']
   },
   {
     id: 'o-que-fazer',
     title: 'O Que Fazer',
     icon: <Compass className="w-5 h-5" />,
-    content: 'Mergulhe na história no Museu do Apartheid e na Constitution Hill. Explore o Soweto e a Rua Vilakazi.',
+    content: 'Explore as ladeiras do Pelourinho, pegue o Elevador Lacerda, assista ao ensaio do Olodum, visite a majestosa Igreja do Bonfim e curta um banho de mar no Porto da Barra.',
   },
   {
     id: 'passeios',
     title: 'Passeios',
     icon: <Palmtree className="w-5 h-5" />,
-    content: 'Lion & Safari Park para interação com animais e Gold Reef City para um mergulho na história da corrida do ouro.',
+    content: 'Passeio de barco pela bela Baía de Todos-os-Santos com parada na Ilha dos Frades e de Itaparica. Outra ótima opção é pegar a Linha Verde até a Praia do Forte.',
   },
   {
     id: 'pontos-turisticos',
     title: 'Pontos Turísticos',
     icon: <Camera className="w-5 h-5" />,
-    content: 'Mandela House, Hector Pieterson Memorial e a Nelson Mandela Square com sua estátua gigante.',
+    content: 'Farol da Barra, Pelourinho, Elevador Lacerda, Basílica do Senhor do Bonfim, Mercado Modelo e o MAM (Museu de Arte Moderna).',
   },
   {
     id: 'onde-comer',
     title: 'Onde Comer',
     icon: <Utensils className="w-5 h-5" />,
-    content: 'Desde o requinte do The Butcher Shop em Sandton até a autenticidade do Sakhumzi no Soweto.',
+    content: 'Experimente as famosas moquecas baianas no Restaurante Donana ou Casa de Tereza. Para o acarajé clássico, visite as bancas de Cira ou Regina no Rio Vermelho.',
   },
   {
     id: 'dinheiro',
     title: 'Dinheiro',
     icon: <Coins className="w-5 h-5" />,
-    content: 'Moeda: Rand (ZAR). Cartões Wise/Nomad funcionam perfeitamente. Gorjetas de 10-15% são esperadas.',
+    content: 'A moeda é o Real (BRL). Cartões Wise, Nomad, débito, crédito e PIX são amplamente aceitos em qualquer estabelecimento.',
   },
   {
     id: 'dicas',
     title: 'Dicas',
     icon: <Info className="w-5 h-5" />,
-    content: 'Segurança: Não ande no centro (CBD) à pé. Use Uber Black para jantares e prefira hotéis com segurança 24h.',
+    content: 'Sempre combine valores de fotos ou de fitinhas do Bonfim com artistas de rua antes de aceitar qualquer serviço. Mantenha os celulares guardados ao caminhar pelo Pelourinho.',
   },
   {
     id: 'vida-noturna',
     title: 'Vida Noturna',
     icon: <Moon className="w-5 h-5" />,
-    content: 'Melville (7th Street) e Maboneng são os centros da agitação. Sandton possui bares mais exclusivos.',
+    content: 'O Rio Vermelho é o centro boêmio definitivo de Salvador, repleto de bares com música ao vivo, praças movimentadas e baladas.',
   },
   {
     id: 'atividades',
     title: 'Atividades',
     icon: <Footprints className="w-5 h-5" />,
-    content: 'Visitas guiadas ao Soweto de bicicleta ou caminhadas artísticas em Rosebank.',
+    content: 'Caminhada guiada pelo Centro Histórico, mergulho na praia do Porto da Barra e curtir o pôr do sol clássico no Farol da Barra.',
   },
   {
     id: 'transportes',
     title: 'Transportes',
     icon: <Bus className="w-5 h-5" />,
-    content: 'O Gautrain é eficiente para trajetos Aeroporto-Sandton. Para o resto, Uber é indispensável.',
+    content: 'Uber é seguro, prático e muito recomendado. O metrô é limpo, rápido e conecta com sucesso o aeroporto às regiões centrais.',
   },
   {
     id: 'compras',
     title: 'Compras',
     icon: <ShoppingBag className="w-5 h-5" />,
-    content: 'Sandton City (Luxo), Rosebank Mall (Artesanato) e Maboneng (Design local).',
+    content: 'Artesanato local de couro e renda no Mercado Modelo. Roupas e marcas exclusivas nos shoppings Salvador e Barra.',
   },
   {
     id: 'atracoes-proximas',
     title: 'Atrações Próximas',
     icon: <MapIcon className="w-5 h-5" />,
-    content: 'Pretória (Capital Executiva), Sun City (Resort/Casino) e as cavernas de Sterkfontein.',
-  }
-];
-
-const TOPICS_CPT: SubTopic[] = [
-  {
-    id: 'quando-ir',
-    title: 'Quando Ir',
-    icon: <Calendar className="w-5 h-5" />,
-    content: 'Novembro a Março é a melhor época. Dias longos, sol até às 20h e vento forte (Cape Doctor).',
-    highlights: ['Janeiro: Auge do Verão', 'Junho-Agosto: Chuva e Frio']
-  },
-  {
-    id: 'como-chegar',
-    title: 'Como Chegar',
-    icon: <Bus className="w-5 h-5" />,
-    content: 'O Aeroporto Internacional da Cidade do Cabo fica a 20min do centro. Uber custa cerca de R$ 60.',
-  },
-  {
-    id: 'onde-ficar',
-    title: 'Onde Ficar',
-    icon: <Hotel className="w-5 h-5" />,
-    content: 'Sea Point para vistas do mar, V&A Waterfront para segurança total e Camps Bay para o agito da praia.',
-  },
-  {
-    id: 'o-que-fazer',
-    title: 'O Que Fazer',
-    icon: <Compass className="w-5 h-5" />,
-    content: 'Subir a Table Mountain, visitar a Robben Island e explorar a orla de Sea Point.',
-  },
-  {
-    id: 'passeios',
-    title: 'Passeios',
-    icon: <Palmtree className="w-5 h-5" />,
-    content: 'Península do Cabo (Cabo da Boa Esperança), Boulders Beach (Pinguins) e as Vinícolas de Stellenbosch.',
-  },
-  {
-    id: 'pontos-turisticos',
-    title: 'Pontos Turísticos',
-    icon: <Camera className="w-5 h-5" />,
-    content: 'Table Mountain, Cape Point, Jardim Botânico Kirstenbosch e as casas coloridas de Bo-Kaap.',
-  },
-  {
-    id: 'onde-comer',
-    title: 'Onde Comer',
-    icon: <Utensils className="w-5 h-5" />,
-    content: 'Mercado de Comida do Waterfront, Kloof Street (Bares) e os vinhos de Constantia.',
-  },
-  {
-    id: 'dinheiro',
-    title: 'Dinheiro',
-    icon: <Coins className="w-5 h-5" />,
-    content: 'Rand (ZAR). Cartão é aceito até em barracas de rua. Saques no aeroporto são seguros.',
-  },
-  {
-    id: 'dicas',
-    title: 'Dicas',
-    icon: <Info className="w-5 h-5" />,
-    content: 'Baixe o app VoiceMap para tours guiados e o app da MyCiti para ônibus.',
-  },
-  {
-    id: 'vida-noturna',
-    title: 'Vida Noturna',
-    icon: <Moon className="w-5 h-5" />,
-    content: 'Long Street para mochileiros, Bree Street para cocktails sofisticados e Camps Bay para o pôr do sol.',
-  },
-  {
-    id: 'atividades',
-    title: 'Atividades',
-    icon: <Footprints className="w-5 h-5" />,
-    content: 'Trilha de Lion\'s Head, surfe em Muizenberg e mergulho com tubarões em Gansbaai.',
-  },
-  {
-    id: 'transportes',
-    title: 'Transportes',
-    icon: <Bus className="w-5 h-5" />,
-    content: 'Ônibus MyCiti é excelente. Red Bus turístico cobre os principais pontos. Uber é dominante.',
-  },
-  {
-    id: 'compras',
-    title: 'Compras',
-    icon: <ShoppingBag className="w-5 h-5" />,
-    content: 'V&A Waterfront Shopping (o melhor), The Watershed (Artistas) e Greenmarket Square.',
-  },
-  {
-    id: 'atracoes-proximas',
-    title: 'Atrações Próximas',
-    icon: <MapIcon className="w-5 h-5" />,
-    content: 'Hermanus (Baleias), Franschhoek (Vinhos) e o início da Garden Route.',
+    content: 'Praia do Forte (Projeto Tamar e Ruínas do Castelo Garcia D\'Ávila), Imbassaí, e a tranquila vila de Diogo na Linha Verde.',
   },
   {
     id: 'seguranca',
     title: 'Segurança',
     icon: <ShieldCheck className="w-5 h-5" />,
-    content: 'Mais segura que Joanesburgo, mas evite Long Street de madrugada e trilhas isoladas sozinho.',
+    content: 'Atenção redobrada com celulares, carteiras e câmeras em áreas muito movimentadas do Centro Histórico. Use transporte por aplicativo à noite.',
+  }
+];
+
+const TOPICS_AJU: SubTopic[] = [
+  {
+    id: 'quando-ir',
+    title: 'Quando Ir',
+    icon: <Calendar className="w-5 h-5" />,
+    content: 'De setembro a março para aproveitar o calor, praias cristalinas e sol firme. Junho é imperdível devido às festividades monumentais do Forró Caju.',
+    highlights: ['Set-Mar: Sol Constante', 'Junho: Época do Forró Caju']
+  },
+  {
+    id: 'como-chegar',
+    title: 'Como Chegar',
+    icon: <Bus className="w-5 h-5" />,
+    content: 'O Aeroporto Internacional de Aracaju (AJU) está convenientemente situado na zona sul, a menos de 10 minutos de carro da Orla de Atalaia.',
+  },
+  {
+    id: 'onde-ficar',
+    title: 'Onde Ficar',
+    icon: <Hotel className="w-5 h-5" />,
+    content: 'A Orla de Atalaia é a melhor e mais segura localização. Concentra a melhor rede hoteleira, quadras esportivas, lagos artificiais e a famosa Passarela do Caranguejo.',
+    highlights: ['Orla de Atalaia: Segurança e Lazer', 'Coroa do Meio: Próximo aos Shoppings']
+  },
+  {
+    id: 'o-que-fazer',
+    title: 'O Que Fazer',
+    icon: <Compass className="w-5 h-5" />,
+    content: 'Caminhe pela Orla de Atalaia, experimente caranguejo na Passarela, faça um passeio relaxante de barco na Croa do Goré e aprecie o pôr do sol na Orla do Pôr do Sol.',
+  },
+  {
+    id: 'passeios',
+    title: 'Passeios',
+    icon: <Palmtree className="w-5 h-5" />,
+    content: 'O passeio de catamarã até a fascinante Croa do Goré e Ilha dos Namorados. Visitas históricas à vizinha São Cristóvão (patrimônio da UNESCO) e Laranjeiras.',
+  },
+  {
+    id: 'pontos-turisticos',
+    title: 'Pontos Turísticos',
+    icon: <Camera className="w-5 h-5" />,
+    content: 'Passarela do Caranguejo, Oceanário de Aracaju, Mercados Municipais centrais, Orla do Pôr do Sol e o Mirante do Calçadão formosa.',
+  },
+  {
+    id: 'onde-comer',
+    title: 'Onde Comer',
+    icon: <Utensils className="w-5 h-5" />,
+    content: 'Saboreie o caranguejo tradicional quebrado na hora na Passarela do Caranguejo (no restaurante Cariri). Peça carne de sol com pirão de leite para almoço completo.',
+  },
+  {
+    id: 'dinheiro',
+    title: 'Dinheiro',
+    icon: <Coins className="w-5 h-5" />,
+    content: 'Real (BRL). Todo comércio e vendedores ambulantes na praia aceitam cartões de crédito, débito e pagamentos instantâneos via PIX.',
+  },
+  {
+    id: 'dicas',
+    title: 'Dicas',
+    icon: <Info className="w-5 h-5" />,
+    content: 'Alugar um carro é ideal para explorar praias paradisíacas como a Praia do Saco. Não deixe de provar o clássico sorvete de tapioca ou mangaba da região.',
+  },
+  {
+    id: 'vida-noturna',
+    title: 'Vida Noturna',
+    icon: <Moon className="w-5 h-5" />,
+    content: 'A badalação concentra-se na Passarela do Caranguejo, com bares oferecendo forró pé-de-serra ao vivo, pop rock, MPB e chope gelado.',
+  },
+  {
+    id: 'atividades',
+    title: 'Atividades',
+    icon: <Footprints className="w-5 h-5" />,
+    content: 'Ciclismo na ciclovia da Atalaia, Stand-Up Paddle no rio na Orla do Pôr do Sol ou corrida matinal no Parque da Sementeira.',
+  },
+  {
+    id: 'transportes',
+    title: 'Transportes',
+    icon: <Bus className="w-5 h-5" />,
+    content: 'Uber é extremamente fácil de usar e barato em toda a cidade. Aluguel de carro é vantajoso se for cruzar a Linha Verde baiana.',
+  },
+  {
+    id: 'compras',
+    title: 'Compras',
+    icon: <ShoppingBag className="w-5 h-5" />,
+    content: 'Artesanato rico em palha, cerâmica, bordado e queijo de coalho nos Mercados Centrais e na Feira do Turista da Atalaia.',
+  },
+  {
+    id: 'atracoes-proximas',
+    title: 'Atrações Próximas',
+    icon: <MapIcon className="w-5 h-5" />,
+    content: 'Canyons do Rio São Francisco (Canindé do São Francisco), a espetacular foz do Rio Real em Mangue Seco e a isolada Praia do Saco.',
+  },
+  {
+    id: 'seguranca',
+    title: 'Segurança',
+    icon: <ShieldCheck className="w-5 h-5" />,
+    content: 'Considerada uma das capitais mais tranquilas do Nordeste brasileiro. Mantenha os cuidados padrão de noite no centro comercial.',
+  }
+];
+
+const TOPICS_MRG: SubTopic[] = [
+  {
+    id: 'quando-ir',
+    title: 'Quando Ir',
+    icon: <Calendar className="w-5 h-5" />,
+    content: 'De outubro a janeiro para encontrar águas incrivelmente claras e calmas. Crucial: sempre planeje passeios de acordo com a Tábua de Marés (marés de 0.0 a 0.3 são perfeitas).',
+    highlights: ['Out-Jan: Água ultra-cristalina', 'Atenção total à Tábua de Marés']
+  },
+  {
+    id: 'como-chegar',
+    title: 'Como Chegar',
+    icon: <Bus className="w-5 h-5" />,
+    content: 'Maragogi fica localizada exatamente a 130 km de Recife (REC) e 130 km de Maceió (MCZ). É recomendável alugar um carro ou reservar traslado privativo.',
+  },
+  {
+    id: 'onde-ficar',
+    title: 'Onde Ficar',
+    icon: <Hotel className="w-5 h-5" />,
+    content: 'Fique na Praia de Antunes ou Barra Grande para pousadas de charme pé na areia e isolamento. Se preferir agito, bares e comércio, fique no Centro de Maragogi.',
+    highlights: ['Antunes / Barra Grande: Sossego', 'Centro de Maragogi: Conveniência']
+  },
+  {
+    id: 'o-que-fazer',
+    title: 'O Que Fazer',
+    icon: <Compass className="w-5 h-5" />,
+    content: 'Faça o passeio de jangada até as famosas Galés (piscinas naturais) e caminhe pelo Caminho de Moisés, um banco de areia espetacular na praia de Barra Grande na maré baixa.',
+  },
+  {
+    id: 'passeios',
+    title: 'Passeios',
+    icon: <Palmtree className="w-5 h-5" />,
+    content: 'Passeio completo de buggy que percorre todas as praias do norte, incluindo as paradisíacas Antunes, Ponta de Mangue e Burgalhau.',
+  },
+  {
+    id: 'pontos-turisticos',
+    title: 'Pontos Turísticos',
+    icon: <Camera className="w-5 h-5" />,
+    content: 'Praia de Antunes, Caminho de Moisés, Mirante do Cruzeiro (vista panorâmica da enseada) e as Ruínas do Mosteiro de São Bento.',
+  },
+  {
+    id: 'onde-comer',
+    title: 'Onde Comer',
+    icon: <Utensils className="w-5 h-5" />,
+    content: 'Frutos do mar fresquíssimos nas pousadas locais. Não saia da cidade sem experimentar o autêntico "Bolo de Goma" feito à mão em São Bento.',
+  },
+  {
+    id: 'dinheiro',
+    title: 'Dinheiro',
+    icon: <Coins className="w-5 h-5" />,
+    content: 'Real (BRL). A maioria dos restaurantes e agências aceita cartões, mas leve dinheiro ou tenha PIX pronto para jangadeiros e praias isoladas.',
+  },
+  {
+    id: 'dicas',
+    title: 'Dicas',
+    icon: <Info className="w-5 h-5" />,
+    content: 'Agende seu passeio de barco às piscinas naturais com antecedência. O número de visitantes diários é controlado para proteger os corais.',
+  },
+  {
+    id: 'vida-noturna',
+    title: 'Vida Noturna',
+    icon: <Moon className="w-5 h-5" />,
+    content: 'A vida noturna em Maragogi é muito tranquila, ideal para jantar ao som de MPB ao vivo ou curtir a brisa nas pousadas e quiosques de praia.',
+  },
+  {
+    id: 'atividades',
+    title: 'Atividades',
+    icon: <Footprints className="w-5 h-5" />,
+    content: 'Mergulho autônomo (batismo) nas águas mornas das galés, passeios guiados de caiaque transparente e SUP.',
+  },
+  {
+    id: 'transportes',
+    title: 'Transportes',
+    icon: <Bus className="w-5 h-5" />,
+    content: 'Não há Uber abundante na região. Buggies, carros alugados ou vans intermunicipais de linha são as melhores opções para circular entre as praias.',
+  },
+  {
+    id: 'compras',
+    title: 'Compras',
+    icon: <ShoppingBag className="w-5 h-5" />,
+    content: 'Adquira deliciosos bolos de goma frescos de São Bento, bolsas feitas de fibra de bananeira e suvenires no calçadão central.',
+  },
+  {
+    id: 'atracoes-proximas',
+    title: 'Atrações Próximas',
+    icon: <MapIcon className="w-5 h-5" />,
+    content: 'Conheça a maravilhosa Praia dos Carneiros (Tamandaré), e faça a travessia de balsa para Japaratinga e São Miguel dos Milagres.',
+  },
+  {
+    id: 'seguranca',
+    title: 'Segurança',
+    icon: <ShieldCheck className="w-5 h-5" />,
+    content: 'Cidade praiana muito pacífica e de clima acolhedor. Tome apenas os cuidados habituais em praias movimentadas para não esquecer bolsas desprotegidas.',
   }
 ];
 
@@ -232,13 +334,17 @@ const TOPIC_IMAGES: Record<string, string> = {
 
 import CategoryHeader from './CategoryHeader';
 
-// ... (Rest of the structure will be added)
+const getCityUrl = (city: City) => {
+  if (city === 'SSA') return 'https://guia.melhoresdestinos.com.br/salvador-120-c.html';
+  if (city === 'AJU') return 'https://guia.melhoresdestinos.com.br/aracaju-121-c.html';
+  return 'https://guia.melhoresdestinos.com.br/maragogi-174-c.html';
+};
 
 const MelhoresDestinos: React.FC<{ onBack: () => void }> = ({ onBack }) => {
-  const [activeCity, setActiveCity] = useState<City>('CPT');
+  const [activeCity, setActiveCity] = useState<City>('SSA');
   const [selectedTopic, setSelectedTopic] = useState<SubTopic | null>(null);
 
-  const topics = activeCity === 'CPT' ? TOPICS_CPT : TOPICS_JNB;
+  const topics = activeCity === 'SSA' ? TOPICS_SSA : activeCity === 'AJU' ? TOPICS_AJU : TOPICS_MRG;
 
   if (selectedTopic) {
     return (
@@ -280,7 +386,7 @@ const MelhoresDestinos: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                   <span className="text-[10px] font-black uppercase tracking-wider">Fonte: Melhores Destinos</span>
                 </div>
                 <a 
-                  href={activeCity === 'CPT' ? 'https://guia.melhoresdestinos.com.br/cidade-do-cabo-africa-sul.html' : 'https://guia.melhoresdestinos.com.br/joanesburgo-africa-do-sul-141-c.html'} 
+                  href={getCityUrl(activeCity)} 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-sa-blue hover:scale-110 transition-transform p-2"
@@ -298,18 +404,24 @@ const MelhoresDestinos: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     <div className="pb-48">
       <CategoryHeader title="Guia Melhores Destinos" onBack={onBack} />
       <div className="p-4 space-y-6">
-      <div className="flex bg-slate-900 p-1.5 rounded-[24px] shadow-xl">
+      <div className="flex bg-slate-900 p-1.5 rounded-[24px] shadow-xl gap-1">
         <button 
-          onClick={() => setActiveCity('CPT')}
-          className={`flex-1 py-4 rounded-xl text-[10px] font-black font-display uppercase tracking-[0.2em] transition-all ${activeCity === 'CPT' ? 'bg-white text-slate-900 shadow-lg' : 'text-slate-500'}`}
+          onClick={() => setActiveCity('SSA')}
+          className={`flex-1 py-4 rounded-xl text-[10px] font-black font-display uppercase tracking-[0.15em] transition-all ${activeCity === 'SSA' ? 'bg-white text-slate-900 shadow-lg' : 'text-slate-500'}`}
         >
-          Cidade do Cabo
+          Salvador
         </button>
         <button 
-          onClick={() => setActiveCity('JNB')}
-          className={`flex-1 py-4 rounded-xl text-[10px] font-black font-display uppercase tracking-[0.2em] transition-all ${activeCity === 'JNB' ? 'bg-white text-slate-900 shadow-lg' : 'text-slate-500'}`}
+          onClick={() => setActiveCity('AJU')}
+          className={`flex-1 py-4 rounded-xl text-[10px] font-black font-display uppercase tracking-[0.15em] transition-all ${activeCity === 'AJU' ? 'bg-white text-slate-900 shadow-lg' : 'text-slate-500'}`}
         >
-          Joanesburgo
+          Aracaju
+        </button>
+        <button 
+          onClick={() => setActiveCity('MRG')}
+          className={`flex-1 py-4 rounded-xl text-[10px] font-black font-display uppercase tracking-[0.15em] transition-all ${activeCity === 'MRG' ? 'bg-white text-slate-900 shadow-lg' : 'text-slate-500'}`}
+        >
+          Maragogi
         </button>
       </div>
 
@@ -357,7 +469,7 @@ const MelhoresDestinos: React.FC<{ onBack: () => void }> = ({ onBack }) => {
         })}
 
         <a 
-          href={activeCity === 'CPT' ? 'https://guia.melhoresdestinos.com.br/cidade-do-cabo-africa-sul.html' : 'https://guia.melhoresdestinos.com.br/joanesburgo-africa-do-sul-141-c.html'}
+          href={getCityUrl(activeCity)}
           target="_blank"
           rel="noopener noreferrer"
           className="bg-sa-blue/10 p-6 rounded-[32px] border-2 border-sa-blue/20 flex flex-col items-center justify-center text-center group active:scale-95 transition-all col-span-2 mt-4"

@@ -8,6 +8,21 @@ const UpdatePrompt: React.FC = () => {
 
   useEffect(() => {
     if ('serviceWorker' in navigator) {
+      // Disable Service Worker in development to prevent caching of live code changes
+      const isDev = window.location.hostname === 'localhost' || 
+                    window.location.hostname === '127.0.0.1' || 
+                    window.location.hostname.includes('dev');
+      if (isDev) {
+        console.log("[PWA] Service Worker registration bypassed in development.");
+        navigator.serviceWorker.getRegistrations().then((registrations) => {
+          for (let registration of registrations) {
+            registration.unregister();
+            console.log("[PWA] Unregistered stale development service worker.");
+          }
+        });
+        return;
+      }
+
       // Registrar SW
       navigator.serviceWorker.register('./sw.js').then((registration) => {
         

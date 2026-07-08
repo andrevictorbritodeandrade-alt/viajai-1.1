@@ -43,6 +43,12 @@ export const TripCaricature: React.FC<TripCaricatureProps> = ({ name, id, size =
     customImageUrl = "/sp_ssa_aju_premium.png";
   }
 
+  // 2.5 SALVADOR (Férias de Julho)
+  else if (normName.includes("salvador") && !normName.includes("aracaju")) {
+    bgGradient = "from-slate-950 via-slate-900 to-slate-950";
+    customImageUrl = "/salvador_premium.jpg";
+  }
+
   // 3. SALVADOR + ARACAJÚ (Pelourinho colonial houses, Barra Lighthouse, Big Crab on beach)
   else if (normName.includes("salvador") && normName.includes("aracaju")) {
     bgGradient = "from-slate-950 via-slate-900 to-slate-950";
@@ -81,7 +87,7 @@ export const TripCaricature: React.FC<TripCaricatureProps> = ({ name, id, size =
     (normName.includes("buenos") || normName.includes("aires") || normName.includes("ba"))
   ) {
     bgGradient = "from-slate-950 via-slate-900 to-slate-950";
-    customImageUrl = "/foz_ba_premium.png";
+    customImageUrl = "/foz_ba_premium.jpg";
   }
 
   // 8. FOZ DO IGUAÇU (Lush jungle canopy + Cascade waterfalls)
@@ -91,9 +97,9 @@ export const TripCaricature: React.FC<TripCaricatureProps> = ({ name, id, size =
   }
 
   // 9. COLÔMBIA (Colonial Cartagena yellow wall, pink floral balcony, coffee beans)
-  else if (normName.includes("colombia")) {
+  else if (normName.includes("colombia") || normName.includes("san andres")) {
     bgGradient = "from-slate-950 via-slate-900 to-slate-950";
-    customImageUrl = "/colombia_premium.png";
+    customImageUrl = "/colombia_premium.jpg";
   }
 
   // 10. PERU (Machu Picchu green ridges + Terraces + Super Cute Llama with collar)

@@ -1,911 +1,1143 @@
+import React, { useEffect, useRef, useState } from 'react';
+import { ArrowLeft, Sparkles, AlertCircle, ShieldCheck, HelpCircle, Calendar, List, Table } from 'lucide-react';
+import { getSessionUser } from '../services/session';
 
-import React, { useState, useEffect } from 'react';
-import { 
-  Map as MapIcon, 
-  Calendar, 
-  Utensils, 
-  Camera, 
-  Info,
-  ChevronDown,
-  ChevronUp,
-  MapPin,
-  Clock,
-  Bus,
-  RefreshCw,
-  ShieldCheck,
-  Zap,
-  DollarSign,
-  Shirt,
-  CloudRain,
-  Wind,
-  Droplets,
-  Plane,
-  AlertTriangle,
-  Navigation,
-  Plus,
-  Sparkles,
-  Waves,
-  ThermometerSun,
-  ExternalLink,
-  ClipboardList,
-  Phone,
-  Globe,
-  WifiOff,
-  Headphones,
-  CreditCard,
-  Search,
-  Lock,
-  Ticket,
-  Lightbulb,
-  Siren,
-  Train,
-  ShoppingBag
-} from 'lucide-react';
-import { Map, Marker } from 'pigeon-maps';
-import CategoryHeader from './CategoryHeader';
-import { loadDataFromCloud } from '../services/firebase';
+export const GUIDE_STORAGE_KEY = 'viajai_guide_v1';
 
-export const GUIDE_STORAGE_KEY = 'viajai_guides_v8_woodmead_logistics';
-
-// --- INTERFACES ---
-
-interface PlanDetails {
-  buyAt?: string;
-  price?: string;
-  tips?: string;
-  criticalTime?: string;
-  locationTip?: string;
-  transportMethod?: string;
+interface ScheduleCell {
+  time: string;
+  activity: string;
+  details: string;
+  costType: 'gratuito' | 'pago' | 'misto';
+  costLabel: string;
+  links?: { title: string; url: string }[];
 }
 
-interface ActivityPlan {
-  type: 'plan_a' | 'plan_b' | 'food' | 'security' | 'info' | 'flight' | 'ticket' | 'transport' | 'shopping';
-  text: string;
-  label?: string;
-  time?: string;
-  details?: PlanDetails;
+interface DayOption {
+  data: string;
+  label: string;
 }
 
-interface DayWeather {
-  icon: string;
-  temp: string;
-  min: string;
-  feels: string;
-  rain: string;
-  wind: string;
-  sea?: string;
-}
-
-interface Possibility {
+interface TripItineraryConfig {
   id: string;
   title: string;
-  description: string;
-  estimatedPrice: string;
-  contact: string;
-  location: [number, number];
-  tags: string[];
-}
-
-interface DailyPlan {
-  day: number;
-  weekday: string;
   date: string;
-  title: string;
-  weather: DayWeather;
-  plans: ActivityPlan[];
-  map: {
-    center: [number, number];
-    zoom: number;
-    markers: [number, number][];
-  };
-  estimate: string;
-  estimateLabel: string;
-  look: string;
-  isDeparture?: boolean;
-  isArrival?: boolean;
-  isDone?: boolean;
+  base: string;
+  mode: string;
+  flagType: 'bahia' | 'bahia_serg' | 'bahia_serg_alagoas' | 'colombia' | 'argentina' | 'argentina_brazil' | 'brazil' | 'south_africa';
+  dias: DayOption[];
+  manha: ScheduleCell[];
+  tarde: ScheduleCell[];
+  noite: ScheduleCell[];
+  culturalTitle: string;
+  culturalTips: string[];
+  logisticsTitle: string;
+  logisticsTips: string[];
 }
 
-interface GuideData {
-  CPT: DailyPlan[];
-  JNB: DailyPlan[];
-  possibilities: {
-    CPT: Possibility[];
-    JNB: Possibility[];
-  };
-}
+const ITINERARY_DATABASE: Record<string, TripItineraryConfig> = {
+  // 1. Salvador - Plano E (Férias em Salvador)
+  'am_salvador_julho': {
+    id: 'am_salvador_julho',
+    title: 'Roteiro Integrado - Salvador + Maragogi + Aracaju de Carro',
+    date: '16 de Julho a 23 de Julho de 2026',
+    base: 'Bases: Salvador, Maragogi & Orla de Atalaia',
+    mode: 'Modo Road Trip • Carro Alugado',
+    flagType: 'bahia_serg_alagoas',
+    dias: [
+      { data: '16/07 (Qui)', label: 'Quinta' },
+      { data: '17/07 (Sex)', label: 'Sexta' },
+      { data: '18/07 (Sáb)', label: 'Sábado' },
+      { data: '19/07 (Dom)', label: 'Domingo' },
+      { data: '20/07 (Seg)', label: 'Segunda' },
+      { data: '21/07 (Ter)', label: 'Terça' },
+      { data: '22/07 (Qua)', label: 'Quarta' },
+      { data: '23/07 (Qui)', label: 'Quinta' }
+    ],
+    manha: [
+      { time: "06:00", activity: "Adiantar voo (App da GOL)", details: "Entrar no app da GOL precisamente às 06:00 para tentar adiantar o voo gratuitamente. Malas prontas!\n• Plano A (Conseguiu): Ir correndo para o Galeão (GIG) pegar voo matutino.\n• Plano B (Não conseguiu): Manter plano padrão e trabalhar/descansar durante o dia.", costType: "gratuito", costLabel: "Sem Gastos" },
+      { time: "06:30", activity: "Saída para Maragogi", details: "Check-out no Airbnb em Salvador e saída às 06h30. Viagem de carro com distância de aproximadamente 550 a 600km até o Airbnb em Maragogi (JV APRTS 05, Rua Fernando Paes). Viajando a 70 - 80km/h, a estimativa de viagem é de 8 a 9 horas de estrada.", costType: "pago", costLabel: "💳 Gasto: Aluguel Carro + Combustível" },
+      { time: "07:30", activity: "Piscinas Naturais da Costa dos Corais", details: "Passeio imperdível aos corais! Opções: Galés (tradicional), Taocas (tranquila) ou Barra Grande (Caminho de Moisés). Barcos: Catamarã (R$110-140/px), Lancha Compartilhada (R$115-160/px) ou Privativa. O passeio só ocorre na maré baixa (<0.5).", costType: "pago", costLabel: "💳 Gasto: Passeios de Barco" },
+      { time: "08:30", activity: "Praia de Antunes & Mirante", details: "Aproveite a manhã na belíssima Praia de Antunes, famosa pelos coqueiros inclinados e águas mornas. Antes de partir, suba ao Mirante de Maragogi para tirar a última foto no letreiro. Em seguida, check-out e estrada para Aracaju.", costType: "pago", costLabel: "💳 Gasto: Combustível / Pedágios" },
+      { time: "08:30", activity: "Crooa do Goré / Namorados", details: "Passeio relaxante de barco ou catamarã até a belíssima Crooa do Goré e Ilha dos Namorados. Aproveitar as redes flutuantes na água morna.", costType: "pago", costLabel: "💳 Gasto: Passeio Catamarã R$ 90/px" },
+      { time: "09:00", activity: "Checkout & Retorno Salvador", details: "Realizar checkout no Airbnb de Aracaju. Pegar a estrada de volta para a Bahia pela deslumbrante Rodovia Linha Verde (BA-099).", costType: "pago", costLabel: "💳 Gasto: Combustível" },
+      { time: "09:30", activity: "Centro Histórico Salvador", details: "Caminhar pelo Pelourinho, descer o Elevador Lacerda, comprar fitinhas e fazer pedidos na Igreja do Bonfim.", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "05:50", activity: "Voo de volta para o GIG", details: "Acordar cedo. Checkout no Airbnb de Caminho das Árvores, Salvador. Devolução do carro alugado na LocarX e embarque no voo de volta G3 1865.", costType: "pago", costLabel: "💳 Gasto: Combustível Devolução" }
+    ],
+    tarde: [
+      { time: "Tarde", activity: "Plano A: SSA / Plano B: Trabalho", details: "• Plano A: Chegada cedo em Salvador. Fazer check-in no Airbnb Caminho das Árvores e curtir tarde de sol na Praia do Porto da Barra.\n• Plano B: Dia de trabalho ou descanso em casa no Rio, malas fechadas aguardando a noite.", costType: "gratuito", costLabel: "Sem Gastos" },
+      { time: "15:30", activity: "Chegada em Maragogi & Praias", details: "Estimativa de chegada à tarde em Maragogi (AL). Após check-in no Airbnb (JV APRTS 05), visite a Praia de Maragogi (praia central), a calma Praia do Camacho, ou a famosa Praia de Burgalhau para estender a canga.", costType: "gratuito", costLabel: "Sem Custos" },
+      { time: "13:30", activity: "Caminho de Moisés / Antunes", details: "Visitar a Praia de Barra Grande e caminhar pelo Caminho de Moisés na maré baixa. À tarde, relaxar nas águas calmas da Praia de Antunes.", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "13:30", activity: "Chegada em AJU & Almoço", details: "Chegada em Aracaju. Check-in no Airbnb Premium Orla de Atalaia. Almoço com tempero regional sergipano próximo à orla.", costType: "pago", costLabel: "💳 Gasto: Almoço típico" },
+      { time: "14:00", activity: "Lagoa dos Tambaquis", details: "Visitar a lagoa e entrar na água doce super agradável para alimentar na mão os tambaquis gigantes. Experiência incrível.", costType: "pago", costLabel: "💳 Gasto: Entrada R$ 20/px" },
+      { time: "14:00", activity: "Check-in em Salvador", details: "Chegada em Salvador. Check-in no Airbnb Caminho das Árvores. Tarde livre para caminhar pela bela orla da Barra e tomar sorvete.", costType: "gratuito", costLabel: "Sem Custos" },
+      { time: "14:00", activity: "MUNCAB (Pelourinho)", details: "Visita imperdível à exposição 'Padê Onã' no MUNCAB. Quarta-feira a entrada é totalmente gratuita! Explore o Pelourinho e Mercado Modelo.", costType: "gratuito", costLabel: "💸 Gratuito às Quartas", links: [{ title: 'Exposição Padê Onã', url: 'https://www.salvadordabahia.com/eventos/exposicao-pade-ona-encontrar-caminhos/' }] },
+      { time: "-", activity: "Retorno ao Rio", details: "Chegada previsto no Aeroporto Galeão (GIG) às 07:55. Retorno para casa finalizando as férias.", costType: "gratuito", costLabel: "-" }
+    ],
+    noite: [
+      { time: "Noite", activity: "Plano A: Jantar / Plano B: Voo", details: "• Plano A: Jantar romântico e curtir a noite boêmia de Salvador no Rio Vermelho. Dormir no Airbnb Caminho das Árvores.\n• Plano B: Embarque no GIG às 23:20 (voo G3 1898) rumo a SSA. Chegada na madrugada de sexta-feira (01:30), retirar carro na LocarX e ir direto dormir no Airbnb.", costType: "misto", costLabel: "Passagem já paga" },
+      { time: "19:00", activity: "Jantar & Atividades Noturnas", details: "Jantar na orla com vista para o mar! Boas opções: Russo Gastrobar, Croa Lounge (bistrô), Casa da Praia Lounge (pizza) ou Caravelas Gastrobar. Após a refeição, passeie pela Feira de Artesanato local.", costType: "pago", costLabel: "💳 Gasto: Jantar" },
+      { time: "19:00", activity: "Bolinhos de Goma em São Bento", details: "Conhecer a produção tradicional dos famosos bolinhos de gama artesanais de São Bento. Jantar calmo em Maragogi.", costType: "pago", costLabel: "💳 Gasto: Compras locais" },
+      { time: "19:00", activity: "Passarela do Caranguejo, AJU", details: "Caminhar pela passarela, ver as quadras, feirinha de artesanato e jantar na tradicional Passarela do Caranguejo (restaurante Cariri).", costType: "pago", costLabel: "💳 Gasto: Jantar de Caranguejo" },
+      { time: "19:00", activity: "Noite na Atalaia", details: "Passear pela bela Feira do Turista da Atalaia, comprar artesanatos sergipanos e curtir música ao vivo em bar local.", costType: "pago", costLabel: "💳 Gasto: Alimentação" },
+      { time: "19:00", activity: "Noite no Largo da Mariquita", details: "Curtir a fantástica boemia de Salvador no Rio Vermelho. Saborear o acarajé de Cira ou Dinha e aproveitar o clima baiano.", costType: "pago", costLabel: "💳 Gasto: Consumos" },
+      { time: "19:00", activity: "Jantar Especial de Despedida", details: "Jantar inesquecível no charmoso Santo Antônio Além do Carmo com vista deslumbrante para a Baía de Todos-os-Santos.", costType: "pago", costLabel: "💳 Gasto: Jantar de Despedida" },
+      { time: "-", activity: "Descanso", details: "Descanso bem merecido em casa no Rio de Janeiro.", costType: "gratuito", costLabel: "-" }
+    ],
+    culturalTitle: "🏺 Cultura, Mar e Tradições Nordestinas",
+    culturalTips: [
+      "Voucher LocarX: Guarde o voucher (código QHKJDZC) no celular. Ao desembarcar, suba até a praça de alimentação no 1º andar e vá em frente à lanchonete Tabuleiro para pegar o transfer gratuito da locadora.",
+      "App GOL às 6h: Abra o app da GOL logo cedo no dia 16/07 para tentar o adiantamento gratuito do voo. Se conseguir adiantar, você ganha um dia inteiro em Salvador (Plano A)!",
+      "Tábua de Marés em Maragogi: Programe as visitas às Galés e Caminho de Moisés exatamente na hora da maré baixa diária."
+    ],
+    logisticsTitle: "🚗 Logística e Lógica de Estrada (Linha Verde)",
+    logisticsTips: [
+      "Rodovia BA-099 / AL-101 / BR-101: O percurso entre os três estados é lindo e bem pavimentado. Mantenha atenção aos limites de velocidade ao passar pelas vilas.",
+      "Devolução às 02:00 AM / Madrugada: Lembre de abastecer antes de devolver o Mobi na LocarX para cumprir a política 'mesmo nível'. O transfer grátis funciona 24h sob demanda."
+    ]
+  },
 
-// --- DADOS PADRÃO (LOGÍSTICA MILITAR) ---
+  // 2. Salvador + Aracaju - Plano B/C anterior (Conjugado)
+  'am_ssa_aju': {
+    id: 'am_ssa_aju',
+    title: 'Roteiro - Salvador + Aracaju',
+    date: '11 de Julho a 19 de Julho de 2026',
+    base: 'Base: Salvador (Mercure) & Atalaia',
+    mode: 'Modo Conjugado Nordeste',
+    flagType: 'bahia_serg',
+    dias: [
+      { data: '11/07 (Sáb)', label: 'Sábado' },
+      { data: '12/07 (Dom)', label: 'Domingo' },
+      { data: '13/07 (Seg)', label: 'Segunda' },
+      { data: '14/07 (Ter)', label: 'Terça' },
+      { data: '15/07 (Qua)', label: 'Quarta' },
+      { data: '16/07 (Qui)', label: 'Quinta' },
+      { data: '17/07 (Sex)', label: 'Sexta' },
+      { data: '18/07 (Sáb)', label: 'Sábado' },
+      { data: '19/07 (Dom)', label: 'Domingo' }
+    ],
+    manha: [
+      { time: "Manhã", activity: "Embarque no Rio", details: "Voo LATAM GIG -> SSA.", costType: "pago", costLabel: "💳 Gasto: Voo de Ida" },
+      { time: "09:00", activity: "Farol da Barra", details: "Banho de sol e de mar nas piscinas naturais da Barra.", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "09:00", activity: "Praia de Itapuã", details: "Caminhar pelas areias de Itapuã e ver a Lagoa do Abaeté.", costType: "misto", costLabel: "⚖️ Misto: Gasto de Uber" },
+      { time: "05:30", activity: "Transfer p/ Aracaju", details: "Uber para Rodoviária de SSA.\nÔnibus Semi-Leito para AJU.", costType: "pago", costLabel: "💳 Gasto: Passagem R$ 109" },
+      { time: "08:30", activity: "Crooa do Goré", details: "Tour de Catamarã partindo do atracadouro rumo à Crooa.", costType: "pago", costLabel: "💳 Gasto: Catamarã" },
+      { time: "07:00", activity: "Cânions de Xingó", details: "Sair muito cedo. Navegação épica pelo Velho Chico.", costType: "pago", costLabel: "💳 Gasto: Tour Completo" },
+      { time: "09:00", activity: "Lagoa dos Tambaquis", details: "Alimentar os peixes gigantes de dentro da lagoa de água doce.", costType: "pago", costLabel: "💳 Gasto: Entrada Lagoa" },
+      { time: "09:00", activity: "Mercados Municipais", details: "Artesanato, castanhas e queijo coalho tradicionais de AJU.", costType: "misto", costLabel: "⚖️ Misto: Compras" },
+      { time: "10:00", activity: "Último mergulho na Orla", details: "Aproveitar a praia de Atalaia antes de arrumar as malas.", costType: "gratuito", costLabel: "💸 Gratuito" }
+    ],
+    tarde: [
+      { time: "14:00", activity: "Chegada em SSA", details: "Check-in no Quality Hotel Salvador e descansar.", costType: "gratuito", costLabel: "Sem Gastos" },
+      { time: "14:00", activity: "Centro Histórico & Ziraldo", details: "Pelourinho e Exposição Mundo Zira no Museu de Arte da Bahia.", costType: "misto", costLabel: "⚖️ Misto: Grátis (MAB)", links: [{ title: "Exposição Ziraldo", url: "https://www.salvadordabahia.com/eventos/exposicao-mundo-zira-ziraldo-interativo/" }] },
+      { time: "15:00", activity: "Ponta de Humaitá", details: "Ver o belíssimo pôr do sol na Baía de Todos os Santos.", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "12:05", activity: "Chegada em AJU", details: "Check-in no Airbnb na Orla de Atalaia. Almoçar perto.", costType: "pago", costLabel: "💳 Gasto: Almoço" },
+      { time: "14:00", activity: "Ilha dos Namorados", details: "Relaxar em redes dentro d'água sob o céu sergipano.", costType: "gratuito", costLabel: "💸 Gratuito: Passeio" },
+      { time: "14:00", activity: "Almoço do Cânion", details: "Almoço com buffet típico flutuante incluso no passeio.", costType: "gratuito", costLabel: "Incluso no Tour" },
+      { time: "14:30", activity: "Praia do Saco", details: "Passeio de buggy pelas dunas de areia finíssima de AJU.", costType: "pago", costLabel: "💳 Gasto: Buggy opcional" },
+      { time: "14:00", activity: "Museu da Gente Sergipana", details: "Museu totalmente interativo, imperdível e tecnológico.", costType: "gratuito", costLabel: "💸 Entrada Grátis" },
+      { time: "13:30", activity: "Viagem de Volta", details: "Embarque na rodoviária de volta para Salvador.", costType: "pago", costLabel: "💳 Gasto: Ônibus Volta" }
+    ],
+    noite: [
+      { time: "19:00", activity: "Jantar prático", details: "Alimentação no hotel ou shopping próximo.", costType: "pago", costLabel: "💳 Gasto: Alimentação" },
+      { time: "19:00", activity: "Rio Vermelho", details: "Acarajé da Cira e curtir os bares charmosos da praça.", costType: "pago", costLabel: "💳 Gasto: Consumo" },
+      { time: "19:30", activity: "Jantar no hotel", details: "Descansar as pernas para a viagem do dia seguinte.", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "19:00", activity: "Passarela do Caranguejo", details: "Comer caranguejo quebrado na hora com cerveja gelada na Orla.", costType: "pago", costLabel: "💳 Gasto: Jantar" },
+      { time: "19:00", activity: "Jantar na Atalaia", details: "Passeio pela feirinha de artesanato local da Orla.", costType: "misto", costLabel: "⚖️ Misto: Lanches" },
+      { time: "19:00", activity: "Retorno a Aracaju", details: "Chegada exaustos, cozinhar em casa e dormir.", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "19:30", activity: "Jantar econômico", details: "Cozinhar um belo jantar no Airbnb da Atalaia.", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "20:00", activity: "OSBA de Volta ao TCA", details: "Concerto da Folia! LEMBRETE: Comprar ingresso com antecedência, assentos limitados (TCA).", costType: "pago", costLabel: "💳 Gasto: Ingresso", links: [{ title: "Programação OSBA", url: "https://www.salvadordabahia.com/eventos/osba-de-volta-ao-tca-confira-programacao/" }, { title: "Comprar Ingresso", url: "https://bileto.sympla.com.br/event/123150/d/396363/s/2611439" }] },
+      { time: "18:55", activity: "Fim das Atividades", details: "Chegada em Salvador e preparação de voo para o Rio.", costType: "misto", costLabel: "⚖️ Misto" }
+    ],
+    culturalTitle: "🌴 Belezas e Gastronomia Sergipana",
+    culturalTips: [
+      "Museu da Gente Sergipana: Um dos melhores museus do Brasil, com entrada gratuita. Vale muito a visita na tarde de sábado.",
+      "Passarela do Caranguejo: Ponto clássico de Aracaju para degustar frutos do mar frescos ao som de forró ao vivo."
+    ],
+    logisticsTitle: "🚌 Conexão Terrestre e Passeios",
+    logisticsTips: [
+      "Bate-volta Xingó: A viagem de Aracaju até os cânions leva cerca de 3 horas de micro-ônibus. Vá preparado com roupas leves e protetor solar.",
+      "Aduana e Divisa: A rodovia Linha Verde possui ótimo asfalto e lindas paisagens entre as capitais da BA e SE."
+    ]
+  },
+  'am_sp_ssa_aju': {
+    id: 'am_sp_ssa_aju',
+    title: 'Roteiro - São Paulo + Salvador + Aracaju',
+    date: '11 de Julho a 19 de Julho de 2026',
+    base: 'Base: Salvador (Mercure) & Atalaia',
+    mode: 'Modo Conjugado Nordeste',
+    flagType: 'bahia_serg',
+    dias: [
+      { data: '11/07 (Sáb)', label: 'Sábado' },
+      { data: '12/07 (Dom)', label: 'Domingo' },
+      { data: '13/07 (Seg)', label: 'Segunda' },
+      { data: '14/07 (Ter)', label: 'Terça' },
+      { data: '15/07 (Qua)', label: 'Quarta' },
+      { data: '16/07 (Qui)', label: 'Quinta' },
+      { data: '17/07 (Sex)', label: 'Sexta' },
+      { data: '18/07 (Sáb)', label: 'Sábado' },
+      { data: '19/07 (Dom)', label: 'Domingo' }
+    ],
+    manha: [
+      { time: "Manhã", activity: "Embarque no Rio", details: "Voo LATAM GIG -> SSA.", costType: "pago", costLabel: "💳 Gasto: Voo de Ida" },
+      { time: "09:00", activity: "Farol da Barra", details: "Banho de sol e de mar nas piscinas naturais da Barra.", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "09:00", activity: "Praia de Itapuã", details: "Caminhar pelas areias de Itapuã e ver a Lagoa do Abaeté.", costType: "misto", costLabel: "⚖️ Misto: Gasto de Uber" },
+      { time: "05:30", activity: "Transfer p/ Aracaju", details: "Uber para Rodoviária de SSA.\nÔnibus Semi-Leito para AJU.", costType: "pago", costLabel: "💳 Gasto: Passagem R$ 109" },
+      { time: "08:30", activity: "Crooa do Goré", details: "Tour de Catamarã partindo do atracadouro rumo à Crooa.", costType: "pago", costLabel: "💳 Gasto: Catamarã" },
+      { time: "07:00", activity: "Cânions de Xingó", details: "Sair muito cedo. Navegação épica pelo Velho Chico.", costType: "pago", costLabel: "💳 Gasto: Tour Completo" },
+      { time: "09:00", activity: "Lagoa dos Tambaquis", details: "Alimentar os peixes gigantes de dentro da lagoa de água doce.", costType: "pago", costLabel: "💳 Gasto: Entrada Lagoa" },
+      { time: "09:00", activity: "Mercados Municipais", details: "Artesanato, castanhas e queijo coalho tradicionais de AJU.", costType: "misto", costLabel: "⚖️ Misto: Compras" },
+      { time: "10:00", activity: "Último mergulho na Orla", details: "Aproveitar a praia de Atalaia antes de arrumar as malas.", costType: "gratuito", costLabel: "💸 Gratuito" }
+    ],
+    tarde: [
+      { time: "14:00", activity: "Chegada em SSA", details: "Check-in no Quality Hotel Salvador e descansar.", costType: "gratuito", costLabel: "Sem Gastos" },
+      { time: "14:00", activity: "Centro Histórico", details: "Elevador Lacerda e caminhada histórica pelo Pelourinho.", costType: "misto", costLabel: "⚖️ Misto: Passeio Público" },
+      { time: "15:00", activity: "Ponta de Humaitá", details: "Ver o belíssimo pôr do sol na Baía de Todos os Santos.", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "12:05", activity: "Chegada em AJU", details: "Check-in no Airbnb na Orla de Atalaia. Almoçar perto.", costType: "pago", costLabel: "💳 Gasto: Almoço" },
+      { time: "14:00", activity: "Ilha dos Namorados", details: "Relaxar em redes dentro d'água sob o céu sergipano.", costType: "gratuito", costLabel: "💸 Gratuito: Passeio" },
+      { time: "14:00", activity: "Almoço do Cânion", details: "Almoço com buffet típico flutuante incluso no passeio.", costType: "gratuito", costLabel: "Incluso no Tour" },
+      { time: "14:30", activity: "Praia do Saco", details: "Passeio de buggy pelas dunas de areia finíssima de AJU.", costType: "pago", costLabel: "💳 Gasto: Buggy opcional" },
+      { time: "14:00", activity: "Museu da Gente Sergipana", details: "Museu totalmente interativo, imperdível e tecnológico.", costType: "gratuito", costLabel: "💸 Entrada Grátis" },
+      { time: "13:30", activity: "Viagem de Volta", details: "Embarque na rodoviária de volta para Salvador.", costType: "pago", costLabel: "💳 Gasto: Ônibus Volta" }
+    ],
+    noite: [
+      { time: "19:00", activity: "Jantar prático", details: "Alimentação no hotel ou shopping próximo.", costType: "pago", costLabel: "💳 Gasto: Alimentação" },
+      { time: "19:00", activity: "Rio Vermelho", details: "Acarajé da Cira e curtir os bares charmosos da praça.", costType: "pago", costLabel: "💳 Gasto: Consumo" },
+      { time: "19:30", activity: "Jantar hotel", details: "Descansar as pernas para a viagem do dia seguinte.", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "19:00", activity: "Passarela do Caranguejo", details: "Comer caranguejo quebrado na hora com cerveja gelada na Orla.", costType: "pago", costLabel: "💳 Gasto: Jantar" },
+      { time: "19:00", activity: "Jantar na Atalaia", details: "Passeio pela feirinha de artesanato local da Orla.", costType: "misto", costLabel: "⚖️ Misto: Lanches" },
+      { time: "19:00", activity: "Retorno a Aracaju", details: "Chegada exaustos, cozinhar em casa e dormir.", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "19:30", activity: "Jantar econômico", details: "Cozinhar um belo jantar no Airbnb da Atalaia.", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "19:00", activity: "Noite de Pizza", details: "Reunir lembranças e descansar.", costType: "pago", costLabel: "💳 Gasto: Alimentação" },
+      { time: "18:55", activity: "Fim das Atividades", details: "Chegada em Salvador e preparação de voo para o Rio.", costType: "misto", costLabel: "⚖️ Misto" }
+    ],
+    culturalTitle: "🏺 Cultura e Monumentos do Recôncavo",
+    culturalTips: [
+      "Salvador Cultural: Conecte os edifícios históricos do Pelourinho com as manifestações locais e as feiras tradicionais.",
+      "Segurança: Ao passear no centro de Salvador, dê preferência a guias credenciados e evite ostentar objetos de valor."
+    ],
+    logisticsTitle: "🚗 Logística de Integração",
+    logisticsTips: [
+      "Conexão SP-SSA: No caso de conexões com voos de São Paulo, fique atento aos portões de embarque nos terminais integrados de Congonhas ou Guarulhos.",
+      "Transporte Local: O uso de aplicativos de transporte em Salvador e Aracaju é amplo, sendo seguro para o trajeto aeroporto-hotel."
+    ]
+  },
 
-const DEFAULT_GUIDE: GuideData = {
-  CPT: [
-    {
-      day: 30,
-      weekday: 'SEXTA',
-      date: 'JAN',
-      isDone: true,
-      title: 'Península do Cabo (Realizado)',
-      weather: { icon: '☀️', temp: 'Done', min: '-', feels: '-', rain: '-', wind: '-', sea: '-' },
-      plans: [
-        { type: 'info', text: '✅ Cabo da Boa Esperança, Cape Point, Boulders Beach, Chapman\'s Peak.' },
-        { type: 'info', text: '✅ Clifton Bay e Centro.' }
-      ],
-      map: { center: [-34.3572, 18.4975], zoom: 10, markers: [] },
-      estimate: 'Ok',
-      estimateLabel: 'Pago',
-      look: 'Concluído'
-    },
-    {
-      day: 31,
-      weekday: 'SÁBADO',
-      date: 'JAN',
-      isDone: true,
-      title: 'Waterfront & Table Mountain (Base)',
-      weather: { icon: '☁️', temp: 'Done', min: '-', feels: '-', rain: '-', wind: '-', sea: '-' },
-      plans: [
-        { type: 'info', text: '✅ V&A Waterfront, Estádio, Base da Table Mountain (Sem subida).' },
-        { type: 'info', text: '✅ Access Park (Compras).' }
-      ],
-      map: { center: [-33.9036, 18.4205], zoom: 12, markers: [] },
-      estimate: 'Ok',
-      estimateLabel: 'Pago',
-      look: 'Concluído'
-    }
-  ],
-  JNB: [
-    {
-      day: 2,
-      weekday: 'SEGUNDA',
-      date: '02/FEV',
-      title: 'Woodmead & Relax (Realizado)',
-      isDone: true,
-      weather: { icon: '🛍️', temp: '26°', min: '16°', feels: '27°', rain: '0%', wind: '10km/h' },
-      plans: [
-        { type: 'info', text: '✅ Manhã: Woodmead Retail Park (Outlets).' },
-        { type: 'info', text: 'Tarde: Descanso na acomodação.' },
-        { type: 'food', text: 'Noite: Jantar delivery (segurança/economia).' }
-      ],
-      map: { center: [-26.0563, 28.0964], zoom: 13, markers: [[-26.0563, 28.0964]] },
-      estimate: 'R$ 100',
-      estimateLabel: 'Uber + Comida',
-      look: 'Casual.'
-    },
-    {
-      day: 3,
-      weekday: 'TERÇA',
-      date: '03/FEV',
-      title: 'Gautrain, Woodmead & Logística',
-      weather: { icon: '💳', temp: '28°', min: '17°', feels: '30°', rain: '10%', wind: '12km/h' },
-      plans: [
-        { 
-          type: 'transport', 
-          time: '09:00', 
-          label: 'IDA', 
-          text: 'Bus na Mesquita -> Trem Marlboro -> Rosebank.',
-          details: {
-            transportMethod: 'Gautrain Bus + Trem.',
-            criticalTime: 'Bus passa a cada 30min (09:00, 09:30).',
-            tips: 'Use o MESMO cartão no ônibus e no trem para pagar a tarifa integrada barata.',
-            locationTip: 'Ponto na 1st Road (Mesquita).'
-          }
-        },
-        { 
-          type: 'plan_a', 
-          time: '10:00', 
-          label: 'ROSEBANK', 
-          text: 'Art & Craft Market (Artesanato seguro e coberto).',
-          details: {
-            tips: 'Melhor lugar para souvenirs. Almoço barato na praça de alimentação do mall.'
-          }
-        },
-        { 
-          type: 'transport', 
-          time: '14:30', 
-          label: 'TRANSFER', 
-          text: 'Uber de Rosebank direto para Woodmead.',
-          details: {
-            price: '~R 100-120 (Uber)',
-            tips: 'Não compensa voltar de trem para Marlboro agora. Vá direto de Uber para ganhar tempo.'
-          }
-        },
-        { 
-          type: 'shopping', 
-          time: '15:00', 
-          label: 'WOODMEAD', 
-          text: 'Woodmead Retail Park (Outlets & Ingressos).',
-          details: {
-            locationTip: 'Vá ao CHECKERS HYPER.',
-            buyAt: 'Balcão Computicket no Checkers.',
-            tips: 'Compre aqui os ingressos físicos pro jogo do Sundowns! Aproveite para comprar snacks pro Safari.'
-          }
-        },
-        { 
-          type: 'transport', 
-          time: '17:30', 
-          label: 'VOLTA TÁTICA', 
-          text: 'Logística: Woodmead -> Mesquita -> Uber Final.',
-          details: {
-            transportMethod: '1. Uber Woodmead -> Estação Marlboro (~R40). 2. Gautrain Bus -> Mesquita (R4). 3. Uber -> Casa.',
-            criticalTime: 'Chegue em Marlboro antes das 18:30 para pegar o último ônibus.',
-            tips: 'Ao descer na Mesquita, peça um Uber para a porta de casa (3 Meadow Lane) por segurança, mesmo sendo perto.'
-          }
-        }
-      ],
-      map: { center: [-26.0563, 28.0964], zoom: 12, markers: [[-26.1466, 28.0418], [-26.0563, 28.0964]] },
-      estimate: 'R$ 150',
-      estimateLabel: 'Uber + Trem + Compras',
-      look: 'Confortável.'
-    },
-    {
-      day: 4,
-      weekday: 'QUARTA',
-      date: '04/FEV',
-      title: 'Safari & Operação Jogo',
-      weather: { icon: '⚽', temp: '31°', min: '19°', feels: '33°', rain: '10%', wind: '10km/h' },
-      plans: [
-        { 
-          type: 'plan_a', 
-          time: '06:00', 
-          label: 'PILANESBERG', 
-          text: 'Safari dia todo. Sair de lá 15:00 sem falta!',
-          details: {
-            criticalTime: 'Chegar em casa 15:30 para banho rápido.',
-            tips: 'Levem água e snacks.'
-          }
-        },
-        { 
-          type: 'transport', 
-          time: '16:30', 
-          label: 'IDA (CRONOMETRADA)', 
-          text: 'Bus Mesquita -> Trem Marlboro -> Hatfield.',
-          details: {
-            criticalTime: 'Pegue o Bus das 16:30 (Rota S3). Trem das 17:11 em Marlboro.',
-            transportMethod: 'Bus + Trem (Chega em Hatfield 17:43).',
-            tips: 'De Hatfield, pegue Uber curto (2km) pro estádio Loftus (~R60).'
-          }
-        },
-        { 
-          type: 'ticket', 
-          time: '19:00', 
-          label: 'MAMELODI', 
-          text: 'Jogo: Sundowns vs Richards Bay.',
-          details: {
-            locationTip: 'Loftus Versfeld Stadium, Pretória.',
-            tips: 'Se não comprou ontem no Woodmead, tente a bilheteria, mas chegue cedo.'
-          }
-        },
-        { 
-          type: 'security', 
-          time: '21:15', 
-          label: 'VOLTA (UBER)', 
-          text: 'ALERTA: Trem fecha 20:30. Volta só de Uber.',
-          details: {
-            criticalTime: 'NÃO CONTE COM TREM NA VOLTA.',
-            tips: 'Uber direto do estádio para casa (3 Meadow Lane). Custo estimado: R500-R700. Segurança da Marcelly em 1º lugar.',
-            price: '~R 258 (Ida Casal) + R 600 (Volta Uber).'
-          }
-        }
-      ],
-      map: { center: [-25.7518, 28.2230], zoom: 9, markers: [[-25.2494, 27.0943], [-25.7518, 28.2230]] },
-      estimate: 'R$ 900+',
-      estimateLabel: 'Safari + Logística Jogo',
-      look: 'Safari (Dia) / Amarelo (Noite).'
-    },
-    {
-      day: 5,
-      weekday: 'QUINTA',
-      date: '05/FEV',
-      isDeparture: true,
-      title: 'Rota Histórica & Aeroporto',
-      weather: { icon: '🇿🇦', temp: '25°', min: '16°', feels: '26°', rain: '40%', wind: '15km/h' },
-      plans: [
-        { 
-          type: 'plan_a', 
-          time: '09:00', 
-          label: 'FNB STADIUM', 
-          text: 'Tour do Estádio da Copa. (Entrance 4).',
-          details: {
-            buyAt: 'Recepção (Portão 4).',
-            criticalTime: 'Chegue 08:45.'
-          }
-        },
-        { 
-          type: 'plan_b', 
-          time: '10:30', 
-          label: 'SOWETO', 
-          text: 'Mandela House na Vilakazi Street.',
-          details: {
-            tips: 'Almoço rápido na rua Vilakazi (Sakhumzi ou similar). É turístico e seguro.'
-          }
-        },
-        { 
-          type: 'plan_a', 
-          time: '13:15', 
-          label: 'MINA DE OURO', 
-          text: 'Gold Reef City (Heritage Tour).',
-          details: {
-            criticalTime: 'Última descida na mina costuma ser 13:30/14:00. Não atrase.'
-          }
-        },
-        { 
-          type: 'security', 
-          time: '15:00', 
-          label: 'MUSEU', 
-          text: 'Museu do Apartheid (Ao lado do Gold Reef).',
-          details: {
-            tips: 'Emocionante e essencial. Fechamento às 17h.'
-          }
-        },
-        { 
-          type: 'flight', 
-          time: '21:00', 
-          text: 'Uber para OR Tambo. Voo sai 00:45.',
-          details: {
-            tips: 'Esteja em casa às 17h para banho e malas.'
-          }
-        }
-      ],
-      map: { center: [-26.2366, 28.0069], zoom: 12, markers: [[-26.2366, 28.0069], [-26.2384, 27.9123]] },
-      estimate: 'R$ 450',
-      estimateLabel: 'Tours + Uber + Ingressos',
-      look: 'Confortável.'
-    }
-  ],
-  possibilities: {
-    CPT: [],
-    JNB: [
-      {
-        id: 'montecasino',
-        title: 'Montecasino (Plano Z)',
-        description: 'Se a Marcelly estiver insegura, vão para cá. É uma bolha de primeiro mundo. Tem parque de aves (Bird Gardens) lindo.',
-        estimatedPrice: 'Entrada Grátis',
-        contact: 'montecasino.co.za',
-        location: [-26.0246, 28.0123],
-        tags: ['Segurança Total', 'Almoço']
-      }
+  // 3. Foz + Buenos Aires - Plano D
+  'am_rio_foz_ba': {
+    id: 'am_rio_foz_ba',
+    title: 'Roteiro - Foz + Buenos Aires',
+    date: '01 de Janeiro a 08 de Janeiro de 2027',
+    base: 'Base: Foz do Iguaçu & Buenos Aires',
+    mode: 'Modo Premium Internacional',
+    flagType: 'argentina_brazil',
+    dias: [
+      { data: '01/01 (Sex)', label: 'Sexta' },
+      { data: '02/01 (Sáb)', label: 'Sábado' },
+      { data: '03/01 (Dom)', label: 'Domingo' },
+      { data: '04/01 (Seg)', label: 'Segunda' },
+      { data: '05/01 (Ter)', label: 'Terça' },
+      { data: '06/01 (Qua)', label: 'Quarta' },
+      { data: '07/01 (Qui)', label: 'Quinta' },
+      { data: '08/01 (Sex)', label: 'Sexta' }
+    ],
+    manha: [
+      { time: "03:55", activity: "Voo para Buenos Aires", details: "Decolagem do voo Flybondi de GIG para AEP. Check-in e migração.", costType: "pago", costLabel: "💳 Gasto: Passagem" },
+      { time: "09:00", activity: "Cataratas do Iguaçu", details: "Visita ao lado brasileiro. Garganta do Diabo majestosa.", costType: "pago", costLabel: "💳 Gasto: Ingresso" },
+      { time: "10:00", activity: "Caminito & La Boca", details: "Caminhada pelas cores vibrantes das casas de La Boca.", costType: "gratuito", costLabel: "Sem Gastos" },
+      { time: "09:30", activity: "Recoleta & Cemitério", details: "Visita histórica. Ver o túmulo de Evita Perón.", costType: "misto", costLabel: "⚖️ Misto: Entrada + Uber" },
+      { time: "10:00", activity: "Parque de Palermo", details: "Caminhada matinal agradável pelos lagos e roseiral.", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "09:00", activity: "Teatro Colón Tour", details: "Visita guiada pelo luxuoso teatro lírico.", costType: "pago", costLabel: "💳 Gasto: Bilhete" },
+      { time: "08:00", activity: "Viagem p/ Assunção", details: "Embarque em ônibus rodoviário semi-leito saindo de Foz.", costType: "pago", costLabel: "💳 Gasto: Passagem Ônibus" },
+      { time: "05:50", activity: "Voo de volta para GIG", details: "Uber para o aeroporto internacional de Foz (IGU).", costType: "pago", costLabel: "💳 Gasto: Uber" }
+    ],
+    tarde: [
+      { time: "14:00", activity: "Feira de San Telmo", details: "Explorar antiguidades, pinturas e shows de tango na rua.", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "14:30", activity: "Macuco Safari", details: "Passeio de barco inflável sob as quedas das cataratas.", costType: "pago", costLabel: "💳 Gasto: Safari Pago" },
+      { time: "14:00", activity: "Puerto Madero Walk", details: "Caminhada pela ponte, fragatas históricas e almoço.", costType: "misto", costLabel: "⚖️ Misto: Almoço" },
+      { time: "15:00", activity: "Livraria El Ateneo", details: "Conhecer a famosa livraria instalada em antigo teatro.", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "14:30", activity: "Calle Florida Compras", details: "Pesquisar roupas de couro e saborear alfajores Havanna.", costType: "pago", costLabel: "💳 Gasto: Compras" },
+      { time: "14:00", activity: "Galerías Pacífico", details: "Admirar as belíssimas pinturas e murais no teto.", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "15:00", activity: "Chegada em Assunção", details: "Check-in no hotel e breve descanso após o percurso rodoviário.", costType: "gratuito", costLabel: "Sem Gastos" },
+      { time: "-", activity: "Chegada ao Rio", details: "Retorno seguro à residência no RJ.", costType: "gratuito", costLabel: "-" }
+    ],
+    noite: [
+      { time: "20:00", activity: "Don Julio Parrilla", details: "Jantar os espetaculares cortes argentinos (bife de lomo).", costType: "pago", costLabel: "💳 Gasto: Jantar Premium" },
+      { time: "19:00", activity: "Três Fronteiras", details: "Show de luzes e danças tradicionais dos 3 países.", costType: "pago", costLabel: "💳 Gasto: Ingresso" },
+      { time: "20:30", activity: "Show de Tango clássico", details: "Apresentação de gala com jantar e vinhos excelentes.", costType: "pago", costLabel: "💳 Gasto: Show Pago" },
+      { time: "19:30", activity: "Pizzeria Guerrín", details: "A mais tradicional pizza de Buenos Aires na Av. Corrientes.", costType: "pago", costLabel: "💳 Gasto: Pizza Econômica" },
+      { time: "21:00", activity: "Palermo Soho Bares", details: "Drinks sofisticados e boa música na área boêmia.", costType: "pago", costLabel: "💳 Gasto: Consumos" },
+      { time: "19:30", activity: "Jantar Puerto Madero", details: "Saborear um bife de tira em um dos restaurantes à beira d'água.", costType: "pago", costLabel: "💳 Gasto: Jantar" },
+      { time: "20:00", activity: "Palácio de los López", details: "Apreciar o palácio presidencial paraguaio iluminado.", costType: "pago", costLabel: "💳 Gasto: Jantar" },
+      { time: "-", activity: "Descanso GIG", details: "Fim das férias internacionais e retorno à rotina.", costType: "gratuito", costLabel: "-" }
+    ],
+    culturalTitle: "🍷 Gastronomia e Shows de Tango",
+    culturalTips: [
+      "Parrilla Don Julio: Reserve com pelo menos 2 a 3 meses de antecedência ou chegue às 11h15 para pegar lista de espera no almoço.",
+      "Câmbio MEP/Blue: Usar cartão Wise ou Western Union garante quase o dobro do poder de compra comparado ao câmbio oficial."
+    ],
+    logisticsTitle: "💧 Cataratas, Fronteiras & Clima",
+    logisticsTips: [
+      "Macuco Safari: Leve capa de chuva e uma troca de roupa completa com toalha, pois o barco entra embaixo das quedas!",
+      "Aduana: Tenha em mãos RG com menos de 10 anos de emissão ou Passaporte válido para cruzar as fronteiras terrestres."
+    ]
+  },
+  'am_foz_ass_ba': {
+    id: 'am_foz_ass_ba',
+    title: 'Roteiro - Buenos Aires + Assunção + Foz do Iguaçu',
+    date: '01 de Janeiro a 15 de Janeiro de 2027',
+    base: 'Base: Foz do Iguaçu, Assunção & Buenos Aires',
+    mode: 'Modo Multi-Destinos',
+    flagType: 'argentina_brazil',
+    dias: [
+      { data: '01/01 (Sex)', label: 'Sexta' },
+      { data: '02/01 (Sáb)', label: 'Sábado' },
+      { data: '03/01 (Dom)', label: 'Domingo' },
+      { data: '04/01 (Seg)', label: 'Segunda' },
+      { data: '05/01 (Ter)', label: 'Terça' },
+      { data: '06/01 (Qua)', label: 'Quarta' },
+      { data: '07/01 (Qui)', label: 'Quinta' },
+      { data: '08/01 (Sex)', label: 'Sexta' }
+    ],
+    manha: [
+      { time: "03:55", activity: "Voo para Buenos Aires", details: "Decolagem do voo Flybondi de GIG para AEP. Check-in e migração.", costType: "pago", costLabel: "💳 Gasto: Passagem" },
+      { time: "09:00", activity: "Cataratas do Iguaçu", details: "Visita ao lado brasileiro. Garganta do Diabo majestosa.", costType: "pago", costLabel: "💳 Gasto: Ingresso" },
+      { time: "10:00", activity: "Caminito & La Boca", details: "Caminhada pelas cores vibrantes das casas de La Boca.", costType: "gratuito", costLabel: "Sem Gastos" },
+      { time: "09:30", activity: "Recoleta & Cemitério", details: "Visita histórica. Ver o túmulo de Evita Perón.", costType: "misto", costLabel: "⚖️ Misto: Entrada + Uber" },
+      { time: "10:00", activity: "Parque de Palermo", details: "Caminhada matinal agradável pelos lagos e roseiral.", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "09:00", activity: "Teatro Colón Tour", details: "Visita guiada pelo luxuoso teatro lírico.", costType: "pago", costLabel: "💳 Gasto: Bilhete" },
+      { time: "08:00", activity: "Viagem p/ Assunção", details: "Embarque em ônibus rodoviário semi-leito saindo de Foz.", costType: "pago", costLabel: "💳 Gasto: Passagem Ônibus" },
+      { time: "05:50", activity: "Voo de volta para GIG", details: "Uber para o aeroporto internacional de Foz (IGU).", costType: "pago", costLabel: "💳 Gasto: Uber" }
+    ],
+    tarde: [
+      { time: "14:00", activity: "Feira de San Telmo", details: "Explorar antiguidades, pinturas e shows de tango na rua.", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "14:30", activity: "Macuco Safari", details: "Passeio de barco inflável sob as quedas das cataratas.", costType: "pago", costLabel: "💳 Gasto: Safari Pago" },
+      { time: "14:00", activity: "Puerto Madero Walk", details: "Caminhada pela ponte, fragatas históricas e almoço.", costType: "misto", costLabel: "⚖️ Misto: Almoço" },
+      { time: "15:00", activity: "Livraria El Ateneo", details: "Conhecer a famosa livraria instalada em antigo teatro.", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "14:30", activity: "Calle Florida Compras", details: "Pesquisar roupas de couro e saborear alfajores Havanna.", costType: "pago", costLabel: "💳 Gasto: Compras" },
+      { time: "14:00", activity: "Galerías Pacífico", details: "Admirar as belíssimas pinturas e murais no teto.", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "15:00", activity: "Chegada em Assunção", details: "Check-in no hotel e breve descanso após o percurso rodoviário.", costType: "gratuito", costLabel: "Sem Gastos" },
+      { time: "-", activity: "Chegada ao Rio", details: "Retorno seguro à residência no RJ.", costType: "gratuito", costLabel: "-" }
+    ],
+    noite: [
+      { time: "20:00", activity: "Don Julio Parrilla", details: "Jantar os espetaculares cortes argentinos (bife de lomo).", costType: "pago", costLabel: "💳 Gasto: Jantar Premium" },
+      { time: "19:00", activity: "Três Fronteiras", details: "Show de luzes e danças tradicionais dos 3 países.", costType: "pago", costLabel: "💳 Gasto: Ingresso" },
+      { time: "20:30", activity: "Show de Tango clássico", details: "Apresentação de gala com jantar e vinhos excelentes.", costType: "pago", costLabel: "💳 Gasto: Show Pago" },
+      { time: "19:30", activity: "Pizzeria Guerrín", details: "A mais tradicional pizza de Buenos Aires na Av. Corrientes.", costType: "pago", costLabel: "💳 Gasto: Pizza Econômica" },
+      { time: "21:00", activity: "Palermo Soho Bares", details: "Drinks sofisticados e boa música na área boêmia.", costType: "pago", costLabel: "💳 Gasto: Consumos" },
+      { time: "19:30", activity: "Jantar Puerto Madero", details: "Saborear um bife de tira em um dos restaurantes à beira d'água.", costType: "pago", costLabel: "💳 Gasto: Jantar" },
+      { time: "20:00", activity: "Palácio de los López", details: "Apreciar o palácio presidencial paraguaio iluminado.", costType: "pago", costLabel: "💳 Gasto: Jantar" },
+      { time: "-", activity: "Descanso GIG", details: "Fim das férias internacionais e retorno à rotina.", costType: "gratuito", costLabel: "-" }
+    ],
+    culturalTitle: "🎭 Atrações e Fronteiras",
+    culturalTips: [
+      "Assunção: Visite o Centro Histórico, Casa de la Independencia e o Panteão dos Heróis para vivenciar a história e arquitetura do Paraguai.",
+      "Fronteiras: Garanta a cotação correta utilizando cartões multi-moedas para evitar taxas abusivas locais."
+    ],
+    logisticsTitle: "✈️ Conexões e Transporte de Malas",
+    logisticsTips: [
+      "Bagagens: Mantenha as etiquetas de identificação de malas sempre atualizadas e use cadeados TSA para voos internacionais.",
+      "Documentos: Além do documento físico de identificação, tenha sempre fotos digitais salvas offline no celular."
+    ]
+  },
+
+  // 4. Caribe Colombiano - Plano B (Medellín + San Andrés)
+  'am_bh_med_san': {
+    id: 'am_bh_med_san',
+    title: 'Roteiro - Caribe Colombiano',
+    date: '14 de Janeiro a 27 de Janeiro de 2027',
+    base: 'Base: El Poblado & San Andrés',
+    mode: 'Modo Descoberta e Praia',
+    flagType: 'colombia',
+    dias: [
+      { data: '14/01 (Qui)', label: 'Quinta' },
+      { data: '15/01 (Sex)', label: 'Sexta' },
+      { data: '16/01 (Sáb)', label: 'Sábado' },
+      { data: '17/01 (Dom)', label: 'Domingo' },
+      { data: '18/01 (Seg)', label: 'Segunda' },
+      { data: '19/01 (Ter)', label: 'Terça' },
+      { data: '20/01 (Qua)', label: 'Quarta' },
+      { data: '21/01 (Qui)', label: 'Quinta' }
+    ],
+    manha: [
+      { time: "19:10", activity: "Voo para Colômbia", details: "Embarque no GIG rumo a Medellín com conexão.", costType: "pago", costLabel: "💳 Gasto: Passagem já paga" },
+      { time: "09:00", activity: "Chegada em Medellín", details: "Uber para o hotel em El Poblado, câmbio de pesos.", costType: "pago", costLabel: "💳 Gasto: Uber + Pesos" },
+      { time: "08:30", activity: "Piedra del Peñol", details: "Bate-volta a Guatapé. Subir os 740 degraus com vista épica.", costType: "pago", costLabel: "💳 Gasto: Ingresso + Ônibus" },
+      { time: "09:30", activity: "Voo para San Andrés", details: "Embarque no aeroporto de Rionegro (MDE) rumo ao Caribe.", costType: "pago", costLabel: "💳 Passagem interna" },
+      { time: "09:00", activity: "Aluguel de Carrinho", details: "Alugar carrinho de golfe para contornar a ilha inteira.", costType: "pago", costLabel: "💳 Gasto: Aluguel de Carrinho" },
+      { time: "09:00", activity: "Praia Peatonal", details: "Relaxar sob o sol na praia central de águas azuis.", costType: "gratuito", costLabel: "Sem Gastos" },
+      { time: "08:30", activity: "Lancha Johnny Cay", details: "Tour de lancha rápida para a paradisíaca Johnny Cay.", costType: "pago", costLabel: "💳 Gasto: Passeio de Lancha" },
+      { time: "06:00", activity: "Retorno ao Brasil", details: "Uber para o aeroporto e embarque de volta para o Rio.", costType: "pago", costLabel: "💳 Gasto: Uber" }
+    ],
+    tarde: [
+      { time: "Tarde", activity: "Descanso no RJ", details: "Organizar as últimas malas para os voos da noite.", costType: "gratuito", costLabel: "Sem Gastos" },
+      { time: "14:00", activity: "Comuna 13 Tour", details: "Visita histórica com guia local, grafites e escadas rolantes.", costType: "misto", costLabel: "⚖️ Misto: Gorjeta do Guia" },
+      { time: "14:00", activity: "Guatapé Colorida", details: "Caminhar e tirar fotos nas ruas cheias de zócalos coloridos.", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "14:30", activity: "Mergulho West View", details: "Nadar de snorkel com centenas de peixinhos coloridos.", costType: "pago", costLabel: "💳 Gasto: Entrada" },
+      { time: "14:00", activity: "Praia de San Luis", details: "Almoçar peixe frito com patacones e arroz de coco.", costType: "pago", costLabel: "💳 Gasto: Almoço" },
+      { time: "14:30", activity: "Duty Free Compras", details: "Compras isentas de impostos no centro de San Andrés.", costType: "pago", costLabel: "💳 Gasto: Compras" },
+      { time: "13:00", activity: "Aquário Natural", details: "Caminhar com água na cintura vendo arraias e corais.", costType: "pago", costLabel: "💳 Gasto: Entrada" },
+      { time: "-", activity: "Chegada no Rio", details: "Fim das férias incríveis no Caribe Colombiano.", costType: "gratuito", costLabel: "-" }
+    ],
+    noite: [
+      { time: "21:00", activity: "Em voo internacional", details: "Desfrutar do serviço de bordo em voo noturno.", costType: "gratuito", costLabel: "Sem Gastos" },
+      { time: "19:30", activity: "Jantar em El Poblado", details: "Deliciar-se nos melhores restaurantes da região moderna.", costType: "pago", costLabel: "💳 Gasto: Jantar" },
+      { time: "19:00", activity: "Cozinhar em casa", details: "Retorno de Guatapé, descanso total.", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "19:30", activity: "Pôr do Sol clássico", details: "Ver o sol cair na água em La Piscinita.", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "19:30", activity: "Jantar no Centro", details: "Restaurantes típicos de peixe na orla caribenha.", costType: "pago", costLabel: "💳 Gasto: Alimentação" },
+      { time: "19:00", activity: "Drinks na areia", details: "Aproveitar coquetéis tropicais com música local.", costType: "pago", costLabel: "💳 Gasto: Bebida" },
+      { time: "18:00", activity: "Organizar Malas", details: "Guardar souvenirs colombianos e organizar voo de volta.", costType: "gratuito", costLabel: "Sem Gastos" },
+      { time: "-", activity: "Descanso no RJ", details: "Dormir na própria cama com excelentes memórias.", costType: "gratuito", costLabel: "-" }
+    ],
+    culturalTitle: "🌴 Mar de Sete Cores & Ancestralidade",
+    culturalTips: [
+      "Cartão de Turismo Caribenho: San Andrés exige o pagamento de uma taxa obrigatória de turismo (aprox. R$ 170) na conexão aérea colombiana.",
+      "Guatapé e Escadarias: Leve calçado esportivo antiderrapante e beba bastante água para subir o mirante do Peñol."
+    ],
+    logisticsTitle: "🚗 Locomoção Local & Segurança",
+    logisticsTips: [
+      "Carrinhos de Golfe: São a melhor maneira de explorar as praias isoladas. Teste os freios antes de sair da locadora.",
+      "Segurança: El Poblado é uma zona nobre e segura de Medellín, porém evite mexer no celular exposto em ruas escuras."
+    ]
+  },
+  'am_rio_san': {
+    id: 'am_rio_san',
+    title: 'Roteiro - San Andrés (Mais Barato)',
+    date: '14 de Janeiro a 27 de Janeiro de 2027',
+    base: 'Base: El Poblado & San Andrés',
+    mode: 'Modo Descoberta e Praia',
+    flagType: 'colombia',
+    dias: [
+      { data: '14/01 (Qui)', label: 'Quinta' },
+      { data: '15/01 (Sex)', label: 'Sexta' },
+      { data: '16/01 (Sáb)', label: 'Sábado' },
+      { data: '17/01 (Dom)', label: 'Domingo' },
+      { data: '18/01 (Seg)', label: 'Segunda' },
+      { data: '19/01 (Ter)', label: 'Terça' },
+      { data: '20/01 (Qua)', label: 'Quarta' },
+      { data: '21/01 (Qui)', label: 'Quinta' }
+    ],
+    manha: [
+      { time: "19:10", activity: "Voo para Colômbia", details: "Embarque no GIG rumo a Medellín com conexão.", costType: "pago", costLabel: "💳 Gasto: Passagem já paga" },
+      { time: "09:00", activity: "Chegada em Medellín", details: "Uber para o hotel em El Poblado, câmbio de pesos.", costType: "pago", costLabel: "💳 Gasto: Uber + Pesos" },
+      { time: "08:30", activity: "Piedra del Peñol", details: "Bate-volta a Guatapé. Subir os 740 degraus com vista épica.", costType: "pago", costLabel: "💳 Gasto: Ingresso + Ônibus" },
+      { time: "09:30", activity: "Voo para San Andrés", details: "Embarque no aeroporto de Rionegro (MDE) rumo ao Caribe.", costType: "pago", costLabel: "💳 Passagem interna" },
+      { time: "09:00", activity: "Aluguel de Carrinho", details: "Alugar carrinho de golfe para contornar a ilha inteira.", costType: "pago", costLabel: "💳 Gasto: Aluguel de Carrinho" },
+      { time: "09:00", activity: "Praia Peatonal", details: "Relaxar sob o sol na praia central de águas azuis.", costType: "gratuito", costLabel: "Sem Gastos" },
+      { time: "08:30", activity: "Lancha Johnny Cay", details: "Tour de lancha rápida para a paradisíaca Johnny Cay.", costType: "pago", costLabel: "💳 Gasto: Passeio de Lancha" },
+      { time: "06:00", activity: "Retorno ao Brasil", details: "Uber para o aeroporto e embarque de volta para o Rio.", costType: "pago", costLabel: "💳 Gasto: Uber" }
+    ],
+    tarde: [
+      { time: "Tarde", activity: "Descanso no RJ", details: "Organizar as últimas malas para os voos da noite.", costType: "gratuito", costLabel: "Sem Gastos" },
+      { time: "14:00", activity: "Comuna 13 Tour", details: "Visita histórica com guia local, grafites e escadas rolantes.", costType: "misto", costLabel: "⚖️ Misto: Gorjeta do Guia" },
+      { time: "14:00", activity: "Guatapé Colorida", details: "Caminhar e tirar fotos nas ruas cheias de zócalos coloridos.", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "14:30", activity: "Mergulho West View", details: "Nadar de snorkel com centenas de peixinhos coloridos.", costType: "pago", costLabel: "💳 Gasto: Entrada" },
+      { time: "14:00", activity: "Praia de San Luis", details: "Almoçar peixe frito com patacones e arroz de coco.", costType: "pago", costLabel: "💳 Gasto: Almoço" },
+      { time: "14:30", activity: "Duty Free Compras", details: "Compras isentas de impostos no centro de San Andrés.", costType: "pago", costLabel: "💳 Gasto: Compras" },
+      { time: "13:00", activity: "Aquário Natural", details: "Caminhar com água na cintura vendo arraias e corais.", costType: "pago", costLabel: "💳 Gasto: Entrada" },
+      { time: "-", activity: "Chegada no Rio", details: "Fim das férias incríveis no Caribe Colombiano.", costType: "gratuito", costLabel: "-" }
+    ],
+    noite: [
+      { time: "21:00", activity: "Em voo internacional", details: "Desfrutar do serviço de bordo em voo noturno.", costType: "gratuito", costLabel: "Sem Gastos" },
+      { time: "19:30", activity: "Jantar em El Poblado", details: "Deliciar-se nos melhores restaurantes da região moderna.", costType: "pago", costLabel: "💳 Gasto: Jantar" },
+      { time: "19:00", activity: "Cozinhar em casa", details: "Retorno de Guatapé, descanso total.", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "19:30", activity: "Pôr do Sol clássico", details: "Ver o sol cair na água em La Piscinita.", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "19:30", activity: "Jantar no Centro", details: "Restaurantes típicos de peixe na orla caribenha.", costType: "pago", costLabel: "💳 Gasto: Alimentação" },
+      { time: "19:00", activity: "Drinks na areia", details: "Aproveitar coquetéis tropicais com música local.", costType: "pago", costLabel: "💳 Gasto: Bebida" },
+      { time: "18:00", activity: "Organizar Malas", details: "Guardar souvenirs colombianos e organizar voo de volta.", costType: "gratuito", costLabel: "Sem Gastos" },
+      { time: "-", activity: "Descanso no RJ", details: "Dormir na própria cama com excelentes memórias.", costType: "gratuito", costLabel: "-" }
+    ],
+    culturalTitle: "🌴 Mar de Sete Cores & Ancestralidade",
+    culturalTips: [
+      "Cartão de Turismo Caribenho: San Andrés exige o pagamento de uma taxa obrigatória de turismo (aprox. R$ 170) na conexão aérea colombiana.",
+      "Guatapé e Escadarias: Leve calçado esportivo antiderrapante e beba bastante água para subir o mirante do Peñol."
+    ],
+    logisticsTitle: "🚗 Locomoção Local & Segurança",
+    logisticsTips: [
+      "Carrinhos de Golfe: São a melhor maneira de explorar as praias isoladas. Teste os freios antes de sair da locadora.",
+      "Segurança: El Poblado é uma zona nobre e segura de Medellín, porém evite mexer no celular exposto em ruas escuras."
     ]
   }
 };
 
-const PlanItem: React.FC<{ plan: ActivityPlan }> = ({ plan }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const hasDetails = !!plan.details;
-
-  const getStyle = () => {
-    switch(plan.type) {
-      case 'plan_a': return 'bg-purple-50 text-purple-900 border-purple-200';
-      case 'plan_b': return 'bg-teal-50 text-teal-900 border-teal-200';
-      case 'security': return 'bg-red-50 text-red-900 border-red-200 font-bold';
-      case 'food': return 'bg-orange-50 text-orange-900 border-orange-200';
-      case 'ticket': return 'bg-yellow-50 text-yellow-900 border-yellow-200';
-      case 'shopping': return 'bg-pink-50 text-pink-900 border-pink-200';
-      case 'transport': return 'bg-blue-50 text-blue-900 border-blue-200';
-      case 'flight': return 'bg-slate-800 text-white border-slate-900';
-      default: return 'bg-slate-50 text-slate-700 border-slate-200';
-    }
-  };
-
-  const getIcon = () => {
-    switch(plan.type) {
-      case 'plan_a': return <Zap className="w-4 h-4 shrink-0 text-purple-600" />;
-      case 'plan_b': return <RefreshCw className="w-4 h-4 shrink-0 text-teal-600" />;
-      case 'security': return <Lock className="w-4 h-4 shrink-0 text-red-600" />;
-      case 'food': return <Utensils className="w-4 h-4 shrink-0 text-orange-600" />;
-      case 'ticket': return <Ticket className="w-4 h-4 shrink-0 text-yellow-600" />;
-      case 'shopping': return <ShoppingBag className="w-4 h-4 shrink-0 text-pink-600" />;
-      case 'transport': return <Train className="w-4 h-4 shrink-0 text-blue-600" />;
-      case 'flight': return <Plane className="w-4 h-4 shrink-0 text-white" />;
-      default: return <div className="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0 mt-1.5 ml-1"></div>;
-    }
-  };
-
-  return (
-    <div 
-      className={`rounded-xl border flex flex-col shadow-sm mb-2 transition-all ${getStyle()} ${hasDetails ? 'cursor-pointer hover:shadow-md active:scale-[0.99]' : ''}`}
-      onClick={() => hasDetails && setIsOpen(!isOpen)}
-    >
-      <div className="p-3.5 flex gap-3 items-start">
-        <div className="flex flex-col items-center gap-1 shrink-0 mt-0.5">
-           {getIcon()}
-           {plan.time && <span className={`text-[9px] font-black px-1 rounded ${plan.type === 'flight' ? 'bg-slate-700 text-white' : 'bg-white/50'}`}>{plan.time}</span>}
-        </div>
-        <div className="text-xs leading-relaxed flex-1">
-          {plan.label && <span className="uppercase tracking-bold font-black mr-1.5 opacity-80">{plan.label}:</span>}
-          {plan.text}
-        </div>
-        {hasDetails && (
-          <div className="shrink-0 mt-0.5 opacity-50">
-            {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-          </div>
-        )}
-      </div>
-
-      {/* DETALHES EXPANSÍVEIS */}
-      {isOpen && plan.details && (
-        <div className="px-4 pb-4 pt-0 animate-in slide-in-from-top-2">
-          <div className="h-px w-full bg-black/5 mb-3"></div>
-          <div className="space-y-2.5">
-            {plan.details.transportMethod && (
-              <div className="flex gap-2 items-start text-[11px]">
-                <Bus className="w-3.5 h-3.5 text-blue-600 shrink-0 mt-0.5" />
-                <span className="text-slate-700"><strong>Rota:</strong> {plan.details.transportMethod}</span>
-              </div>
-            )}
-            {plan.details.buyAt && (
-              <div className="flex gap-2 items-start text-[11px]">
-                <Ticket className="w-3.5 h-3.5 text-yellow-600 shrink-0 mt-0.5" />
-                <span className="text-slate-700"><strong>Comprar:</strong> {plan.details.buyAt}</span>
-              </div>
-            )}
-            {plan.details.locationTip && (
-              <div className="flex gap-2 items-start text-[11px]">
-                <MapPin className="w-3.5 h-3.5 text-blue-600 shrink-0 mt-0.5" />
-                <span className="text-slate-700"><strong>Local:</strong> {plan.details.locationTip}</span>
-              </div>
-            )}
-            {plan.details.criticalTime && (
-              <div className="flex gap-2 items-start text-[11px] bg-red-100/50 p-2 rounded-lg border border-red-100">
-                <Siren className="w-3.5 h-3.5 text-red-600 shrink-0 mt-0.5" />
-                <span className="text-red-800 font-bold"><strong>Horário Crítico:</strong> {plan.details.criticalTime}</span>
-              </div>
-            )}
-            {plan.details.price && (
-              <div className="flex gap-2 items-start text-[11px]">
-                <DollarSign className="w-3.5 h-3.5 text-green-600 shrink-0 mt-0.5" />
-                <span className="text-slate-700"><strong>Custo Estimado:</strong> {plan.details.price}</span>
-              </div>
-            )}
-            {plan.details.tips && (
-              <div className="flex gap-2 items-start text-[11px]">
-                <Lightbulb className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
-                <span className="text-slate-600 italic">{plan.details.tips}</span>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
-const PossibilityCard: React.FC<{ item: Possibility }> = ({ item }) => {
-  const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${item.location[0]},${item.location[1]}`;
-
-  return (
-    <div className="bg-white rounded-2xl border-2 border-dashed border-slate-300 p-4 mb-3 relative overflow-hidden group hover:border-sa-green transition-colors">
-      <div className="flex justify-between items-start mb-2">
-        <h4 className="text-sm font-black text-slate-800 uppercase leading-tight">{item.title}</h4>
-        <a 
-          href={googleMapsUrl}
-          target="_blank" 
-          rel="noopener noreferrer"
-          className="bg-slate-100 text-slate-500 p-1.5 rounded-lg hover:bg-sa-green hover:text-white transition-colors"
-        >
-          <MapIcon className="w-4 h-4" />
-        </a>
-      </div>
-      
-      <p className="text-xs text-slate-600 leading-relaxed mb-3">{item.description}</p>
-      
-      <div className="bg-slate-50 rounded-xl p-3 border border-slate-200 flex justify-between items-center gap-2">
-        <span className="text-[10px] font-bold text-slate-500">{item.estimatedPrice}</span>
-      </div>
-    </div>
-  );
-};
-
-const DayCard: React.FC<{ plan: DailyPlan; city: string }> = ({ plan, city }) => {
-  return (
-    <div className={`flex gap-4 mb-8 ${plan.isDone ? 'opacity-60 grayscale-[0.8]' : ''}`}>
-      {/* Coluna Lateral */}
-      <div className="flex flex-col items-center shrink-0 w-16">
-        <div className={`w-14 py-2 rounded-2xl flex flex-col items-center shadow-md mb-2 ${plan.isDeparture ? 'bg-sa-gold text-white' : plan.isArrival ? 'bg-sa-blue text-white' : 'bg-white text-slate-800 border border-slate-200'}`}>
-          <span className="text-xl font-black leading-none">{plan.day}</span>
-          <span className="text-[10px] font-bold uppercase tracking-widest">{plan.date.split('/')[0]}</span>
-        </div>
-        
-        <div className="bg-white border border-slate-100 rounded-2xl p-2 w-14 flex flex-col items-center gap-1 shadow-sm text-slate-400">
-           <span className="text-lg leading-none mb-1">{plan.weather.icon}</span>
-           <span className="text-xs font-black text-slate-800">{plan.weather.temp}</span>
-        </div>
-      </div>
-
-      {/* Card de Roteiro */}
-      <div className={`flex-1 rounded-[28px] border-2 bg-white shadow-lg overflow-hidden flex flex-col ${plan.isDeparture || plan.isArrival ? 'border-sa-gold/50' : 'border-slate-100'}`}>
-        <div className="p-4">
-          <div className="flex items-center justify-between mb-3">
-             <div className="flex items-center gap-2">
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{plan.weekday}</span>
-                {plan.isDone && <span className="bg-slate-200 text-slate-500 text-[8px] px-1.5 py-0.5 rounded font-black uppercase">REALIZADO</span>}
-             </div>
-          </div>
-          <h4 className="text-lg font-display font-black text-slate-800 leading-tight mb-4 uppercase">{plan.title}</h4>
-          
-          <div className="space-y-1">
-             {(plan.plans as ActivityPlan[]).map((p, idx) => <PlanItem key={idx} plan={p} />)}
-          </div>
-
-          <div className="mt-4 pt-4 border-t border-slate-50 flex justify-between items-end">
-             <div>
-                <div className="flex items-center gap-1 text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5">
-                   <DollarSign className="w-3 h-3" /> Estimativa
-                </div>
-                <p className="text-[9px] text-sa-green font-bold">{plan.estimateLabel}</p>
-             </div>
-             <div className="text-right">
-                <span className="text-xl font-display font-black text-sa-green leading-none">{plan.estimate}</span>
-             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const SALVADOR_ARACAJU_GUIDE: any = {
-  SSA: [
-    {
-      day: 11,
-      weekday: 'SÁBADO',
-      date: '11/JUL',
-      title: 'Embarque Rio de Janeiro ⇆ Salvador',
-      weather: { icon: '✈️', temp: '25°', min: '21°', feels: '26°', rain: '5%', wind: '12km/h' },
-      plans: [
-        { type: 'flight', text: '21:45 - Voo LATAM decolando de GIG para Salvador.', label: 'Voo Direto' },
-        { type: 'info', text: '23:45 - Pouso no Aeroporto de Salvador (SSA).', label: 'Chegada' },
-        { type: 'transport', text: 'Madrugada - Transfer do Aeroporto diretamente para o Quality Hotel Salvador.', label: 'Acomodação 1' }
-      ],
-      map: { center: [-12.9086, -38.3225], zoom: 11, markers: [[-12.9086, -38.3225]] },
-      estimate: 'R$ 618',
-      estimateLabel: 'Voo Pago em kiss&fly',
-      look: 'Confortável para viagem'
-    },
-    {
-      day: 12,
-      weekday: 'DOMINGO',
-      date: '12/JUL',
-      title: 'Centro Histórico & Farol da Barra',
-      weather: { icon: '☀️', temp: '26°', min: '22°', feels: '27°', rain: '10%', wind: '15km/h' },
-      plans: [
-        { type: 'plan_a', text: 'Manhã: Visita ao Farol da Barra e banho de praia na Barra.', label: 'Farol da Barra' },
-        { type: 'plan_b', text: 'Tarde: Subida de elevador ao Pelourinho, Elevador Lacerda e Centro Histórico.', label: 'Pelourinho' },
-        { type: 'food', text: 'Noite: Jantar com autêntico acarajé baiano no Rio Vermelho.', label: 'Rio Vermelho' }
-      ],
-      map: { center: [-12.9714, -38.5014], zoom: 13, markers: [[-12.9714, -38.5014]] },
-      estimate: 'R$ 80',
-      estimateLabel: 'Alimentação & Uber',
-      look: 'Leve, sol e óculos escuros'
-    },
-    {
-      day: 13,
-      weekday: 'SEGUNDA',
-      date: '13/JUL',
-      title: 'Itapuã, Abaeté e Pôr do Sol no Humaitá',
-      weather: { icon: '⛅', temp: '27°', min: '22°', feels: '28°', rain: '15%', wind: '14km/h' },
-      plans: [
-        { type: 'plan_a', text: 'Manhã: Conhecer a famosa Praia de Itapuã e a Lagoa do Abaeté.', label: 'Itapuã' },
-        { type: 'plan_b', text: 'Tarde: Passeio pela Ponta de Humaitá para ver o pôr do sol mais famoso da Baía de Todos os Santos.', label: 'Ponta de Humaitá' }
-      ],
-      map: { center: [-12.9496, -38.5194], zoom: 12, markers: [[-12.9496, -38.5194]] },
-      estimate: 'R$ 75',
-      estimateLabel: 'Uber + Lanches',
-      look: 'Fresco e esportivo'
-    },
-    {
-      day: 14,
-      weekday: 'TERÇA',
-      date: '14/JUL',
-      title: 'Transfer Rodoviário Salvador ⇆ Aracaju',
-      isDeparture: true,
-      weather: { icon: '🚌', temp: '26°', min: '21°', feels: '26°', rain: '10%', wind: '12km/h' },
-      plans: [
-        { type: 'transport', text: '05:30 - Uber do Hotel até a Rodoviária de Salvador.', label: 'Partida' },
-        { type: 'ticket', text: '06:40 - Embarque do Ônibus Semi-Leito (Rota Transportes, poltrona 17).', label: 'R$ 109,19' },
-        { type: 'info', text: '12:05 - Chegada no Terminal Rodoviário de Aracaju. Transfer para Orla de Atalaia.', label: 'Chegada' }
-      ],
-      map: { center: [-10.9472, -37.0731], zoom: 11, markers: [[-10.9472, -37.0731]] },
-      estimate: 'R$ 109,19',
-      estimateLabel: 'Passagem Paga Rota Transportes',
-      look: 'Prático para ônibus'
-    },
-    {
-      day: 19,
-      weekday: 'DOMINGO',
-      date: '19/JUL',
-      title: 'Retorno de Aracaju para Salvador',
-      isArrival: true,
-      weather: { icon: '🚌', temp: '27°', min: '22°', feels: '28°', rain: '5%', wind: '10km/h' },
-      plans: [
-        { type: 'transport', text: '12:30 - Deslocamento para Rodoviária de Aracaju.', label: 'Partida' },
-        { type: 'ticket', text: '13:30 - Viagem de retorno de ônibus para Salvador pelo mesmo preço.', label: 'R$ 109,19' },
-        { type: 'info', text: '18:55 - Chegada em Salvador. Check-in no Mercure Rio Vermelho.', label: 'Salvador Novamente' }
-      ],
-      map: { center: [-12.9714, -38.5014], zoom: 11, markers: [[-12.9714, -38.5014]] },
-      estimate: 'R$ 109,19',
-      estimateLabel: 'Passagem Volta',
-      look: 'Confortável para estrada'
-    },
-    {
-      day: 20,
-      weekday: 'SEGUNDA',
-      date: '20/JUL',
-      title: 'Linha Verde & Praia do Forte',
-      weather: { icon: '☀️', temp: '28°', min: '22°', feels: '30°', rain: '5%', wind: '14km/h' },
-      plans: [
-        { type: 'plan_a', text: 'Dia Inteiro: Bate-volta para Praia do Forte (Linha Verde). Visita à vila charmosa e Projeto Tamar.', label: 'Projeto Tamar' },
-        { type: 'food', text: 'Almoço: Frutos do mar frescos na Vila de Pescadores.', label: 'Frutos do Mar' }
-      ],
-      map: { center: [-12.5714, -38.0014], zoom: 11, markers: [[-12.5714, -38.0014]] },
-      estimate: 'R$ 120',
-      estimateLabel: 'Transporte & Passeios',
-      look: 'Beachwear chic'
-    },
-    {
-      day: 24,
-      weekday: 'SEXTA',
-      date: '24/JUL',
-      title: 'Embarque Salvador ⇆ Rio de Janeiro (GIG)',
-      isDeparture: true,
-      weather: { icon: '✈️', temp: '24°', min: '20°', feels: '24°', rain: '10%', wind: '15km/h' },
-      plans: [
-        { type: 'transport', text: '03:00 - Checkout do Hotel Mercure, Uber para aeroporto.', label: 'SSA Aeroporto' },
-        { type: 'flight', text: '05:00 - Decolagem do voo LATAM Salvador ⇆ Rio de Janeiro.', label: 'Voo de Volta' },
-        { type: 'info', text: '07:10 - Pouso programado no Rio Galeão (GIG). Fim do maravilhoso roteiro de Julho!', label: 'Chegada GIG' }
-      ],
-      map: { center: [-22.8134, -43.2494], zoom: 12, markers: [[-22.8134, -43.2494]] },
-      estimate: 'R$ 30',
-      estimateLabel: 'Apenas Uber de Madrugada',
-      look: 'Confortável e quentinho'
-    }
+const DEFAULT_ITINERARY: TripItineraryConfig = {
+  id: 'default',
+  title: 'Roteiro de Viagem Geral',
+  date: 'Planejamento de Viagem',
+  base: 'Base: Airbnb Local',
+  mode: 'Modo Explorador',
+  flagType: 'brazil',
+  dias: [
+    { data: 'Dia 1', label: 'Início' },
+    { data: 'Dia 2', label: 'Atividades' },
+    { data: 'Dia 3', label: 'Retorno' }
   ],
-  AJU: [
-    {
-      day: 14,
-      weekday: 'TERÇA',
-      date: '14/JUL',
-      title: 'Chegada em Aracaju & Orla de Atalaia',
-      weather: { icon: '🌊', temp: '27°', min: '21°', feels: '28°', rain: '5%', wind: '18km/h' },
-      plans: [
-        { type: 'info', text: '12:05 - Desembarque na Rodoviária. Uber para o Airbnb Orla de Atalaia.', label: 'Check-in' },
-        { type: 'plan_a', text: 'Tarde: Almoço na Passarela do Caranguejo e caminhada pelos lagos da Orla.', label: 'Orla de Atalaia' },
-        { type: 'food', text: 'Noite: Caranguejo quebrado na hora com cerveja gelada na Passarela.', label: 'Culinária Local' }
-      ],
-      map: { center: [-10.9932, -37.0435], zoom: 14, markers: [[-10.9932, -37.0435]] },
-      estimate: 'R$ 90',
-      estimateLabel: 'Almoço & Uber Inicial',
-      look: 'Prefeito para beira-mar'
-    },
-    {
-      day: 15,
-      weekday: 'QUARTA',
-      date: '15/JUL',
-      title: 'Crooa do Goré & Ilha dos Namorados',
-      weather: { icon: '⛵', temp: '28°', min: '22°', feels: '30°', rain: '10%', wind: '15km/h' },
-      plans: [
-        { type: 'plan_a', text: 'Manhã: Tour de Catamarã partindo do Mosqueteiro para a Crooa do Goré (banco de areia flutuante).', label: 'Crooa do Goré' },
-        { type: 'plan_b', text: 'Tarde: Parada na Ilha dos Namorados para relaxar em redes dentro d\'água.', label: 'Ilha dos Namorados' }
-      ],
-      map: { center: [-11.0856, -37.1511], zoom: 12, markers: [[-11.0856, -37.1511]] },
-      estimate: 'R$ 150',
-      estimateLabel: 'Passeio Catamarã + Almoço',
-      look: 'Roupa de banho e repelente'
-    },
-    {
-      day: 16,
-      weekday: 'QUINTA',
-      date: '16/JUL',
-      title: 'Xingó: Cânion do Rio São Francisco',
-      weather: { icon: '⛰️', temp: '32°', min: '23°', feels: '35°', rain: '0%', wind: '8km/h' },
-      plans: [
-        { type: 'plan_a', text: 'Dia Inteiro: Bate-volta saindo cedo para Canindé de São Francisco. Navegação épica entre paredões de rochosas no Cânion do Xingó.', label: 'Cânions de Xingó' },
-        { type: 'food', text: 'Almoço: Buffet flutuante típico nordestino.', label: 'Típico' }
-      ],
-      map: { center: [-9.6417, -37.7917], zoom: 12, markers: [[-9.6417, -37.7917]] },
-      estimate: 'R$ 280',
-      estimateLabel: 'Transfer + Tour + Almoço inclusos',
-      look: 'Fresco e antiderrapante'
-    },
-    {
-      day: 17,
-      weekday: 'SEXTA',
-      date: '17/JUL',
-      title: 'Lagoa dos Tambaquis & Praia do Saco',
-      weather: { icon: '🐟', temp: '28°', min: '22°', feels: '29°', rain: '10%', wind: '14km/h' },
-      plans: [
-        { type: 'plan_a', text: 'Manhã: Visita à Lagoa dos Tambaquis. Experiência de alimentar os enormes tambaquis de dentro d\'água!', label: 'Lagoa dos Tambaquis' },
-        { type: 'plan_b', text: 'Tarde: Relaxar nas dunas e águas calmas da Praia do Saco (beira da divisa com BA).', label: 'Praia do Saco' }
-      ],
-      map: { center: [-11.4111, -37.3194], zoom: 12, markers: [[-11.4111, -37.3194]] },
-      estimate: 'R$ 110',
-      estimateLabel: 'Passeio Lagoa & Almoço',
-      look: 'Lazer e chinelo'
-    },
-    {
-      day: 18,
-      weekday: 'SÁBADO',
-      date: '18/JUL',
-      title: 'Mercados Municipais & Museu da Gente Sergipana',
-      weather: { icon: '🏛️', temp: '27°', min: '21°', feels: '28°', rain: '15%', wind: '12km/h' },
-      plans: [
-        { type: 'plan_a', text: 'Manhã: Visita aos Mercados Municipais (Antônio Franco e Virginia Franco) para artesanatos e castanhas.', label: 'Artesanato' },
-        { type: 'plan_b', text: 'Tarde: Museu da Gente Sergipana (Totalmente interativo, conta a cultura do povo de Sergipe). Imperdível!', label: 'Museu Interativo' }
-      ],
-      map: { center: [-10.9086, -37.0494], zoom: 14, markers: [[-10.9086, -37.0494]] },
-      estimate: 'R$ 50',
-      estimateLabel: 'Entradas/Uber/Castanhas',
-      look: 'Casual urbano'
-    },
-    {
-      day: 19,
-      weekday: 'DOMINGO',
-      date: '19/JUL',
-      title: 'Despedida de Aracaju',
-      weather: { icon: '👋', temp: '26°', min: '21°', feels: '27°', rain: '5%', wind: '14km/h' },
-      plans: [
-        { type: 'plan_a', text: 'Manhã: Última caminhada na Orla dos lagos, fotos aéreas de lembrança.', label: 'Checkout' },
-        { type: 'transport', text: '13:30 - Embarque na Rodoviária retorno para Salvador.', label: 'Bus Volta' }
-      ],
-      map: { center: [-10.9500, -37.0500], zoom: 13, markers: [[-10.9500, -37.0500]] },
-      estimate: 'R$ 20',
-      estimateLabel: 'Lanche na Rodoviária',
-      look: 'Prático para viajar'
-    }
+  manha: [
+    { time: "09:00", activity: "Passeio Matinal", details: "Conhecer pontos centrais da cidade.", costType: "gratuito", costLabel: "Sem Gastos" },
+    { time: "10:00", activity: "Visita de Museus", details: "Apreciar arte e cultura regional.", costType: "pago", costLabel: "💳 Gasto: Entrada" },
+    { time: "09:00", activity: "Arrumar Malas", details: "Organização final de bagagem.", costType: "gratuito", costLabel: "Sem Gastos" }
   ],
-  possibilities: {
-    SSA: [],
-    AJU: []
-  }
+  tarde: [
+    { time: "14:00", activity: "Almoço Local", details: "Experimentar culinária tradicional da região.", costType: "pago", costLabel: "💳 Gasto: Restaurante" },
+    { time: "14:30", activity: "Parques e Natureza", details: "Descanso ao ar livre em parques urbanos.", costType: "gratuito", costLabel: "💸 Gratuito" },
+    { time: "-", activity: "Retorno de Voo", details: "Transfer para aeroporto e embarque.", costType: "pago", costLabel: "💳 Gasto: Transporte" }
+  ],
+  noite: [
+    { time: "19:00", activity: "Jantar na Orla", details: "Caminhar pela orla e saborear pratos regionais.", costType: "pago", costLabel: "💳 Gasto: Jantar" },
+    { time: "19:30", activity: "Cozinhar em Casa", details: "Jantar prático no Airbnb e descanso.", costType: "gratuito", costLabel: "💸 Gratuito: Mercado" },
+    { time: "-", activity: "Chegada em Casa", details: "Fim das atividades e descanso doméstico.", costType: "gratuito", costLabel: "-" }
+  ],
+  culturalTitle: "🎨 Cultura e Experiência Local",
+  culturalTips: [
+    "Artesanato: Dê preferência aos mercados municipais e feiras locais para compras de lembrancinhas econômicas.",
+    "Doações e Guias: Algumas visitas são gratuitas mas sugerem contribuição voluntária para conservação."
+  ],
+  logisticsTitle: "🚗 Transporte e Segurança",
+  logisticsTips: [
+    "Deslocamento econômico: Empregar metrô e ônibus articulado integrado reduz significativamente os custos.",
+    "Segurança básica: Evite manusear celulares de forma ostensiva em esquinas ou pontos sem iluminação pública abundante."
+  ]
 };
 
-const CITY_CENTERS = {
-  CPT: [-33.9249, 18.4241] as [number, number],
-  JNB: [-26.2041, 28.0473] as [number, number],
-  SSA: [-12.9714, -38.5014] as [number, number],
-  AJU: [-10.9472, -37.0731] as [number, number],
+// Functions to draw vector flags on canvas
+const drawBahiaFlag = (ctx: CanvasRenderingContext2D, w: number, h: number) => {
+  const stripeHeight = h / 4;
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(0, 0, w, stripeHeight);
+  ctx.fillStyle = '#e8112d'; // Vermelho
+  ctx.fillRect(0, stripeHeight, w, stripeHeight);
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(0, stripeHeight * 2, w, stripeHeight);
+  ctx.fillStyle = '#e8112d'; // Vermelho
+  ctx.fillRect(0, stripeHeight * 3, w, stripeHeight);
+
+  // Quadrado azul
+  const blueSquareSize = h / 2;
+  ctx.fillStyle = '#0038a8'; // Azul
+  ctx.fillRect(0, 0, blueSquareSize, blueSquareSize);
+
+  // Triângulo branco
+  ctx.fillStyle = '#FFFFFF';
+  ctx.beginPath();
+  const centerX = blueSquareSize / 2;
+  const centerY = blueSquareSize / 2;
+  const size = blueSquareSize * 0.6;
+  ctx.moveTo(centerX, centerY - size/2);
+  ctx.lineTo(centerX + size/2, centerY + size/2);
+  ctx.lineTo(centerX - size/2, centerY + size/2);
+  ctx.closePath();
+  ctx.fill();
+};
+
+const drawSergipeFlag = (ctx: CanvasRenderingContext2D, w: number, h: number) => {
+  const stripeHeight = h / 4;
+  ctx.fillStyle = '#007A48'; // Verde
+  ctx.fillRect(0, 0, w, stripeHeight);
+  ctx.fillStyle = '#FFD200'; // Amarelo
+  ctx.fillRect(0, stripeHeight, w, stripeHeight);
+  ctx.fillStyle = '#007A48'; // Verde
+  ctx.fillRect(0, stripeHeight * 2, w, stripeHeight);
+  ctx.fillStyle = '#FFD200'; // Amarelo
+  ctx.fillRect(0, stripeHeight * 3, w, stripeHeight);
+
+  const blueSquareSize = h / 2;
+  ctx.fillStyle = '#0038A8'; // Azul
+  ctx.fillRect(0, 0, blueSquareSize, blueSquareSize);
+
+  // Draw 5 stars inside the blue square
+  ctx.fillStyle = '#FFFFFF';
+  const drawStar = (cx: number, cy: number, r: number) => {
+    ctx.beginPath();
+    for (let i = 0; i < 5; i++) {
+      ctx.lineTo(Math.cos((18 + i * 72) * Math.PI / 180) * r + cx, -Math.sin((18 + i * 72) * Math.PI / 180) * r + cy);
+      ctx.lineTo(Math.cos((54 + i * 72) * Math.PI / 180) * (r * 0.4) + cx, -Math.sin((54 + i * 72) * Math.PI / 180) * (r * 0.4) + cy);
+    }
+    ctx.closePath();
+    ctx.fill();
+  };
+  const c = blueSquareSize / 2;
+  drawStar(c, c, blueSquareSize * 0.15); // Centro
+  drawStar(c, c - blueSquareSize * 0.23, blueSquareSize * 0.08); // Cima
+  drawStar(c, c + blueSquareSize * 0.23, blueSquareSize * 0.08); // Baixo
+  drawStar(c - blueSquareSize * 0.23, c, blueSquareSize * 0.08); // Esquerda
+  drawStar(c + blueSquareSize * 0.23, c, blueSquareSize * 0.08); // Direita
+};
+
+const drawAlagoasFlag = (ctx: CanvasRenderingContext2D, w: number, h: number) => {
+  const stripeWidth = w / 3;
+  ctx.fillStyle = '#FF0000'; // Vermelho
+  ctx.fillRect(0, 0, stripeWidth, h);
+  ctx.fillStyle = '#FFFFFF'; // Branco
+  ctx.fillRect(stripeWidth, 0, stripeWidth, h);
+  ctx.fillStyle = '#0000FF'; // Azul
+  ctx.fillRect(stripeWidth * 2, 0, stripeWidth, h);
+};
+
+const drawColombiaFlag = (ctx: CanvasRenderingContext2D, w: number, h: number) => {
+  ctx.fillStyle = '#FCD116'; // Amarelo
+  ctx.fillRect(0, 0, w, h / 2);
+  ctx.fillStyle = '#003893'; // Azul
+  ctx.fillRect(0, h / 2, w, h / 4);
+  ctx.fillStyle = '#CE1126'; // Vermelho
+  ctx.fillRect(0, (h / 4) * 3, w, h / 4);
+};
+
+const drawArgentinaFlag = (ctx: CanvasRenderingContext2D, w: number, h: number) => {
+  const fh = h / 3;
+  ctx.fillStyle = '#74ACDF'; // Sky Blue
+  ctx.fillRect(0, 0, w, fh);
+  ctx.fillStyle = '#FFFFFF'; // Branco
+  ctx.fillRect(0, fh, w, fh);
+  ctx.fillStyle = '#74ACDF'; // Sky Blue
+  ctx.fillRect(0, fh * 2, w, fh);
+
+  // Sol de Maio simplificado
+  ctx.fillStyle = '#F6B426';
+  ctx.beginPath();
+  ctx.arc(w / 2, h / 2, fh * 0.28, 0, 2 * Math.PI);
+  ctx.fill();
+};
+
+const drawBrazilFlag = (ctx: CanvasRenderingContext2D, w: number, h: number) => {
+  ctx.fillStyle = '#009739'; // Verde
+  ctx.fillRect(0, 0, w, h);
+
+  // Losango Amarelo
+  ctx.fillStyle = '#FEDD00';
+  ctx.beginPath();
+  ctx.moveTo(w / 2, h * 0.12);
+  ctx.lineTo(w * 0.88, h / 2);
+  ctx.lineTo(w / 2, h * 0.88);
+  ctx.lineTo(w * 0.12, h / 2);
+  ctx.closePath();
+  ctx.fill();
+
+  // Círculo azul
+  ctx.fillStyle = '#002776';
+  ctx.beginPath();
+  ctx.arc(w / 2, h / 2, h * 0.26, 0, 2 * Math.PI);
+  ctx.fill();
+
+  // Faixa branca
+  ctx.strokeStyle = '#FFFFFF';
+  ctx.lineWidth = h * 0.035;
+  ctx.beginPath();
+  ctx.arc(w / 2, h * 1.05, h * 0.82, -Math.PI * 0.65, -Math.PI * 0.35);
+  ctx.stroke();
 };
 
 const GuideList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const [selectedTrip, setSelectedTrip] = useState<any>(null);
+  const [viewMode, setViewMode] = useState<'days' | 'full' | 'table'>('days');
+  const [activeDayIndex, setActiveDayIndex] = useState(0);
 
+  // Load selected trip from localStorage
   useEffect(() => {
     const saved = localStorage.getItem('selected_trip');
     if (saved) {
       try {
         setSelectedTrip(JSON.parse(saved));
-      } catch (e) {}
+      } catch (e) {
+        console.error("Error loading selected trip in GuideList", e);
+      }
     }
   }, []);
 
-  const isSalvadorAracaju = selectedTrip?.id === 'am_ssa_aju' || selectedTrip?.id === 'am_sp_ssa_aju';
+  // Determine active itinerary configuration based on active trip id
+  const activeConfig = selectedTrip ? (ITINERARY_DATABASE[selectedTrip.id] || DEFAULT_ITINERARY) : DEFAULT_ITINERARY;
 
-  // OFFLINE FIRST: Estado inicial vem do Storage, com fallback para o Default
-  const [data, setData] = useState<GuideData>(() => {
-    try {
-      const saved = localStorage.getItem(GUIDE_STORAGE_KEY);
-      return saved ? JSON.parse(saved) : DEFAULT_GUIDE;
-    } catch {
-      return DEFAULT_GUIDE;
-    }
-  });
-  
-  const [activeCity, setActiveCity] = useState<'CPT' | 'JNB' | 'SSA' | 'AJU'>('JNB');
-
+  // Redraw canvas whenever selected trip changes or configuration loads
   useEffect(() => {
-    if (isSalvadorAracaju) {
-      setActiveCity('SSA');
-    } else {
-      setActiveCity('JNB');
+    const canvas = canvasRef.current;
+    if (canvas && canvas.getContext) {
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        const w = canvas.width;
+        const h = canvas.height;
+        ctx.clearRect(0, 0, w, h);
+
+        const flagType = activeConfig.flagType;
+        if (flagType === 'bahia') {
+          drawBahiaFlag(ctx, w, h);
+        } else if (flagType === 'bahia_serg') {
+          // Blended side-by-side flags
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(0, 0, w / 2, h);
+          ctx.clip();
+          drawBahiaFlag(ctx, w, h);
+          ctx.restore();
+
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(w / 2, 0, w / 2, h);
+          ctx.clip();
+          ctx.translate(w / 2, 0);
+          drawSergipeFlag(ctx, w / 2, h);
+          ctx.restore();
+
+          // White separation line
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fillRect(w / 2 - 1.5, 0, 3, h);
+        } else if (flagType === 'bahia_serg_alagoas') {
+          // Blended 3 flags
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(0, 0, w / 3, h);
+          ctx.clip();
+          drawBahiaFlag(ctx, w, h);
+          ctx.restore();
+
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(w / 3, 0, w / 3, h);
+          ctx.clip();
+          ctx.translate(w / 3, 0);
+          drawSergipeFlag(ctx, w / 3, h);
+          ctx.restore();
+
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(w * 2 / 3, 0, w / 3, h);
+          ctx.clip();
+          ctx.translate(w * 2 / 3, 0);
+          drawAlagoasFlag(ctx, w / 3, h);
+          ctx.restore();
+
+          // White separation lines
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fillRect(w / 3 - 1, 0, 2, h);
+          ctx.fillRect(w * 2 / 3 - 1, 0, 2, h);
+        } else if (flagType === 'colombia') {
+          drawColombiaFlag(ctx, w, h);
+        } else if (flagType === 'argentina' || flagType === 'argentina_brazil') {
+          // Blended sky-blue/white & green/yellow flags for Foz/BA
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(0, 0, w / 2, h);
+          ctx.clip();
+          drawArgentinaFlag(ctx, w, h);
+          ctx.restore();
+
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(w / 2, 0, w / 2, h);
+          ctx.clip();
+          ctx.translate(w / 2, 0);
+          drawBrazilFlag(ctx, w / 2, h);
+          ctx.restore();
+
+          // White separation line
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fillRect(w / 2 - 1.5, 0, 3, h);
+        } else {
+          drawBrazilFlag(ctx, w, h);
+        }
+      }
     }
-  }, [isSalvadorAracaju]);
+  }, [activeConfig]);
 
-  const currentGuideData = isSalvadorAracaju ? SALVADOR_ARACAJU_GUIDE : data;
-
-  // Background Sync
-  useEffect(() => {
-    if (navigator.onLine && !isSalvadorAracaju) {
-        loadDataFromCloud('guides_v8_woodmead_logistics').then(cloudData => {
-            if (cloudData) {
-                setData(cloudData as GuideData);
-                localStorage.setItem(GUIDE_STORAGE_KEY, JSON.stringify(cloudData));
-            }
-        });
+  const renderCardContent = (item: ScheduleCell | undefined) => {
+    if (!item || (!item.activity && !item.details)) {
+      return (
+        <div className="flex items-center justify-center h-28 bg-slate-50/50 rounded-xl border border-dashed border-slate-200 text-slate-400 text-xs italic p-4 text-center w-full">
+          Nenhuma atividade programada para este período
+        </div>
+      );
     }
-  }, [isSalvadorAracaju]);
 
-  return (
-    <div className="pb-48">
-      <CategoryHeader title="Roteiros e Guias" onBack={onBack} />
-      <div className="p-4 space-y-6">
-      <div className="flex bg-slate-100 p-1 rounded-2xl mb-8">
-        {isSalvadorAracaju ? (
-          <>
-            <button
-                onClick={() => setActiveCity('SSA')}
-                className={`flex-1 flex flex-col items-center py-3 rounded-xl transition-all ${activeCity === 'SSA' ? 'bg-white shadow-md text-emerald-600' : 'text-slate-400'}`}
-            >
-                <MapPin className="w-4 h-4 mb-1" />
-                <span className="text-[10px] font-black uppercase tracking-widest">Salvador</span>
-            </button>
-            <button
-                onClick={() => setActiveCity('AJU')}
-                className={`flex-1 flex flex-col items-center py-3 rounded-xl transition-all ${activeCity === 'AJU' ? 'bg-white shadow-md text-emerald-600' : 'text-slate-400'}`}
-            >
-                <MapPin className="w-4 h-4 mb-1" />
-                <span className="text-[10px] font-black uppercase tracking-widest">Aracaju</span>
-            </button>
-          </>
-        ) : (
-          <>
-            <button
-                onClick={() => setActiveCity('CPT')}
-                className={`flex-1 flex flex-col items-center py-3 rounded-xl transition-all ${activeCity === 'CPT' ? 'bg-white shadow-md text-sa-blue' : 'text-slate-400'}`}
-            >
-                <MapPin className="w-4 h-4 mb-1" />
-                <span className="text-[10px] font-black uppercase tracking-widest">Cidade do Cabo</span>
-            </button>
-            <button
-                onClick={() => setActiveCity('JNB')}
-                className={`flex-1 flex flex-col items-center py-3 rounded-xl transition-all ${activeCity === 'JNB' ? 'bg-white shadow-md text-sa-gold' : 'text-slate-400'}`}
-            >
-                <MapPin className="w-4 h-4 mb-1" />
-                <span className="text-[10px] font-black uppercase tracking-widest">Joanesburgo</span>
-            </button>
-          </>
+    return (
+      <div className="flex flex-col flex-1 justify-between gap-4 w-full">
+        <div>
+          {item.time && item.time !== "-" && (
+            <span className="font-black text-[11px] text-slate-800 bg-yellow-300 px-2 py-0.5 rounded shadow-sm inline-flex items-center gap-1 mb-2 select-none">
+              ⏱️ {item.time}
+            </span>
+          )}
+          
+          <h4 className="font-extrabold text-slate-900 text-sm md:text-base leading-snug mb-2">
+            {item.activity}
+          </h4>
+          
+          {item.details && item.details.split('\n').map((line, i) => (
+            <p key={i} className="text-slate-600 text-xs md:text-sm leading-relaxed mb-1.5">
+              {line}
+            </p>
+          ))}
+
+          {item.links && item.links.length > 0 && (
+            <div className="flex flex-col gap-1.5 mt-3">
+              {item.links.map((link, i) => (
+                <a 
+                  key={i} 
+                  href={link.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0038a8] hover:text-blue-700 bg-blue-50/50 hover:bg-blue-50 px-2 py-1.5 rounded-md border border-blue-100 transition-colors"
+                >
+                  <span className="shrink-0">🔗</span>
+                  <span className="underline decoration-blue-200 underline-offset-2">{link.title}</span>
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
+        
+        {item.costLabel && item.costLabel !== "-" && (
+          <div className={`inline-block px-2.5 py-1 text-xs font-black rounded-lg border shadow-sm text-center self-start shrink-0 ${
+            item.costType === 'gratuito' ? 'bg-emerald-50 border-emerald-300 text-emerald-800' :
+            item.costType === 'pago' ? 'bg-rose-50 border-rose-300 text-rose-800' :
+            'bg-amber-50 border-amber-300 text-amber-800'
+          }`}>
+            {item.costLabel}
+          </div>
         )}
       </div>
+    );
+  };
 
-      <div className="h-56 w-full rounded-[32px] overflow-hidden mb-8 border-2 border-white shadow-xl bg-slate-100 relative group">
-        <Map 
-            height={224} 
-            center={currentGuideData[activeCity]?.[0]?.map.center || CITY_CENTERS[activeCity]} 
-            defaultZoom={activeCity === 'CPT' ? 11 : 12}
-        >
-            <Marker 
-                width={40} 
-                anchor={CITY_CENTERS[activeCity]} 
-                color={isSalvadorAracaju ? '#059669' : activeCity === 'CPT' ? '#007baf' : '#FFB81C'} 
-            />
-            {(currentGuideData[activeCity] as DailyPlan[] || []).map((plan, idx) => (
-               <Marker 
-                  key={idx}
-                  width={30}
-                  anchor={plan.map.center}
-                  color={isSalvadorAracaju ? '#059669aa' : activeCity === 'CPT' ? '#007bafaa' : '#FFB81Caa'}
-               />
-            ))}
-        </Map>
-        <div className="absolute bottom-4 left-4 right-4 flex justify-center pointer-events-none">
-           <div className="bg-white/80 backdrop-blur-md px-4 py-1.5 rounded-full shadow-lg border border-white/50 flex items-center gap-2 pointer-events-auto">
-              <Navigation className="w-3.5 h-3.5 text-sa-green animate-pulse" />
-              <span className="text-[10px] font-black uppercase tracking-widest text-slate-800">Mapa Operacional Ativo</span>
-           </div>
-        </div>
-      </div>
+  const renderCell = (item: ScheduleCell, idx: number) => {
+    if (!item) {
+      return (
+        <td key={idx} className="p-4 border-b border-r border-gray-200 bg-gray-50/50 text-gray-400 text-center text-xs italic">
+          -
+        </td>
+      );
+    }
 
-      <div className="bg-red-50 border border-red-200 rounded-3xl p-5 mb-8">
-         <div className="flex items-center gap-2 mb-2 text-red-700 font-black uppercase text-xs tracking-widest">
-            <ShieldCheck className="w-5 h-5" /> Manual de Operações
-         </div>
-         <p className="text-xs text-red-800 leading-relaxed font-medium">
-            <strong>Toque nos itens</strong> para ver detalhes vitais: como usar o cartão no ônibus, onde é o ponto de embarque e estratégias de segurança.
-         </p>
-      </div>
-
-      <div className="space-y-2 animate-in fade-in">
-        {(currentGuideData[activeCity] as DailyPlan[] || []).map((plan, i) => (
-           <DayCard key={i} plan={plan} city={activeCity as string} />
+    return (
+      <td 
+        key={idx} 
+        className="p-4 border-b border-r border-gray-200 hover:bg-blue-50/70 transition-colors align-top text-sm group-hover:border-blue-200 min-w-[240px] max-w-[280px]"
+      >
+        {item.time && item.time !== "-" && (
+          <span className="font-black text-xs text-black bg-yellow-300 px-2 py-0.5 rounded-sm mr-2 shadow-sm inline-block mb-2 select-none">
+            ⏱️ {item.time}
+          </span>
+        )}
+        
+        <span className="font-bold text-gray-900 block mb-1 text-sm md:text-base leading-tight">
+          {item.activity}
+        </span>
+        
+        {item.details && item.details.split('\n').map((line, i) => (
+          <span key={i} className="block mb-2 text-gray-700 text-xs md:text-sm leading-relaxed">
+            {line}
+          </span>
         ))}
-      </div>
-      
-      {currentGuideData.possibilities?.[activeCity]?.length > 0 && (
-        <div className="mt-8">
-            <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3 px-2">Planos de Emergência</h3>
-            {currentGuideData.possibilities[activeCity].map((p: any) => <PossibilityCard key={p.id} item={p} />)}
+        
+        {item.costLabel && item.costLabel !== "-" && (
+          <div className={`mt-3 inline-block px-2 py-1 text-xs font-black rounded-md border shadow-sm w-full text-center ${
+            item.costType === 'gratuito' ? 'bg-emerald-50 border-emerald-300 text-emerald-800' :
+            item.costType === 'pago' ? 'bg-rose-50 border-rose-300 text-rose-800' :
+            'bg-amber-50 border-amber-300 text-amber-800'
+          }`}>
+            {item.costLabel}
+          </div>
+        )}
+      </td>
+    );
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-50 py-4 md:py-6 font-sans">
+      <div className="max-w-7xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border-2 border-slate-200/80">
+        
+        {/* Top Floating Back Button */}
+        <div className="px-6 pt-6 flex items-center justify-between">
+          <button 
+            onClick={onBack}
+            className="flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs uppercase tracking-wider rounded-xl border border-slate-200 shadow-sm transition-all active:scale-95"
+          >
+            <ArrowLeft className="w-4 h-4" /> Voltar ao Painel
+          </button>
+          
+          <div className="flex items-center gap-1.5 px-3 py-1 bg-blue-50 text-[#0038a8] border border-blue-200 rounded-full text-[10px] font-black uppercase tracking-wider">
+            <Sparkles className="w-3.5 h-3.5 text-[#0038a8]" /> Modo Interativo
+          </div>
         </div>
-      )}
+
+        {/* Header Section */}
+        <div className="p-6 md:p-10 border-b-2 border-slate-100 flex flex-col md:flex-row items-center justify-between gap-6 bg-white">
+          <div className="flex flex-col md:flex-row items-center gap-6 w-full text-center md:text-left">
+            <div className="shadow-md border-2 border-slate-200/60 p-2 bg-white rounded-xl select-none shrink-0">
+              <canvas ref={canvasRef} width="160" height="106" className="rounded-lg shadow-inner block"></canvas>
+            </div>
+            <div>
+              <h1 className="text-2xl md:text-3xl font-extrabold text-[#0038a8] mb-1.5 tracking-tight uppercase">
+                {activeConfig.title}
+              </h1>
+              <p className="text-slate-600 text-base md:text-lg font-bold">
+                {activeConfig.date}
+              </p>
+              <div className="mt-3.5 flex flex-wrap gap-2 justify-center md:justify-start">
+                <span className="px-3 py-1 bg-blue-50 border border-blue-200 text-[#0038a8] rounded-full text-xs font-black shadow-sm uppercase tracking-wide">
+                  {activeConfig.base}
+                </span>
+                <span className="px-3 py-1 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-full text-xs font-black shadow-sm uppercase tracking-wide">
+                  {activeConfig.mode}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Toggle de Visualização do Roteiro */}
+        <div className="bg-slate-50 border-b border-slate-100 p-4 md:px-8 md:py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="text-center sm:text-left">
+            <h3 className="text-sm font-black text-[#0038a8] uppercase tracking-wider mb-1">
+              Visualização do Roteiro
+            </h3>
+            <p className="text-xs text-slate-500 font-bold">
+              Escolha a melhor forma de visualizar os dias e atividades.
+            </p>
+          </div>
+
+          <div className="flex bg-slate-200/60 p-1 rounded-xl border border-slate-200">
+            <button
+              onClick={() => setViewMode('days')}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
+                viewMode === 'days'
+                  ? 'bg-[#0038a8] text-white shadow-sm'
+                  : 'text-slate-600 hover:text-[#0038a8]'
+              }`}
+            >
+              <Calendar className="w-3.5 h-3.5" />
+              Por Dia
+            </button>
+            <button
+              onClick={() => setViewMode('full')}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
+                viewMode === 'full'
+                  ? 'bg-[#0038a8] text-white shadow-sm'
+                  : 'text-slate-600 hover:text-[#0038a8]'
+              }`}
+            >
+              <List className="w-3.5 h-3.5" />
+              Lista
+            </button>
+            <button
+              onClick={() => setViewMode('table')}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
+                viewMode === 'table'
+                  ? 'bg-[#0038a8] text-white shadow-sm'
+                  : 'text-slate-600 hover:text-[#0038a8]'
+              }`}
+            >
+              <Table className="w-3.5 h-3.5" />
+              Tabela
+            </button>
+          </div>
+        </div>
+
+        {/* Content Area Based on View Mode */}
+        <div className="p-4 md:p-8 bg-slate-50/50 border-b border-slate-100">
+          {viewMode === 'days' && (
+            <div className="space-y-6">
+              {/* Day Selector Buttons Grid */}
+              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-8 gap-2">
+                {activeConfig.dias.map((dia, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setActiveDayIndex(idx)}
+                    className={`p-3 rounded-xl border-2 text-center transition-all cursor-pointer ${
+                      activeDayIndex === idx
+                        ? 'bg-[#0038a8] border-[#0038a8] text-white shadow-md scale-[1.02]'
+                        : 'bg-white border-slate-200 text-slate-700 hover:border-blue-300 hover:bg-slate-50'
+                    }`}
+                  >
+                    <div className="font-extrabold text-xs">{dia.label}</div>
+                    <div className={`text-[9px] font-bold mt-0.5 ${activeDayIndex === idx ? 'text-white/85' : 'text-slate-400'}`}>
+                      {dia.data}
+                    </div>
+                  </button>
+                ))}
+              </div>
+
+              {/* Day's Activities Card Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Morning */}
+                <div className="bg-white rounded-2xl border-2 border-slate-200/60 p-5 shadow-sm hover:border-amber-200 transition-colors flex flex-col justify-between min-h-[220px]">
+                  <div className="flex items-center gap-2 pb-3 mb-4 border-b border-slate-100 w-full shrink-0">
+                    <span className="text-2xl" role="img" aria-label="Manhã">☀️</span>
+                    <div>
+                      <h4 className="font-black text-slate-800 text-sm uppercase tracking-wider">Manhã</h4>
+                      <p className="text-[9px] text-slate-400 font-bold uppercase">Começo do Dia</p>
+                    </div>
+                  </div>
+                  {renderCardContent(activeConfig.manha[activeDayIndex])}
+                </div>
+
+                {/* Afternoon */}
+                <div className="bg-white rounded-2xl border-2 border-slate-200/60 p-5 shadow-sm hover:border-orange-200 transition-colors flex flex-col justify-between min-h-[220px]">
+                  <div className="flex items-center gap-2 pb-3 mb-4 border-b border-slate-100 w-full shrink-0">
+                    <span className="text-2xl" role="img" aria-label="Tarde">🌤️</span>
+                    <div>
+                      <h4 className="font-black text-slate-800 text-sm uppercase tracking-wider">Tarde</h4>
+                      <p className="text-[9px] text-slate-400 font-bold uppercase">Meio do Dia</p>
+                    </div>
+                  </div>
+                  {renderCardContent(activeConfig.tarde[activeDayIndex])}
+                </div>
+
+                {/* Night */}
+                <div className="bg-white rounded-2xl border-2 border-slate-200/60 p-5 shadow-sm hover:border-indigo-200 transition-colors flex flex-col justify-between min-h-[220px]">
+                  <div className="flex items-center gap-2 pb-3 mb-4 border-b border-slate-100 w-full shrink-0">
+                    <span className="text-2xl" role="img" aria-label="Noite">🌙</span>
+                    <div>
+                      <h4 className="font-black text-slate-800 text-sm uppercase tracking-wider">Noite</h4>
+                      <p className="text-[9px] text-slate-400 font-bold uppercase">Encerramento</p>
+                    </div>
+                  </div>
+                  {renderCardContent(activeConfig.noite[activeDayIndex])}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {viewMode === 'full' && (
+            <div className="space-y-6">
+              {activeConfig.dias.map((dia, idx) => (
+                <div key={idx} className="bg-white rounded-2xl border-2 border-slate-200/60 overflow-hidden shadow-sm hover:border-blue-300 transition-colors">
+                  <div className="bg-slate-50 px-5 py-4 border-b border-slate-200 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-[#0038a8] text-white flex items-center justify-center font-black text-sm shadow-sm select-none">
+                        {idx + 1}
+                      </div>
+                      <div>
+                        <h3 className="font-black text-[#0038a8] text-sm md:text-base uppercase tracking-tight">{dia.label}</h3>
+                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wide">{dia.data}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-5 grid grid-cols-1 md:grid-cols-3 gap-5">
+                    {/* Manhã */}
+                    <div className="p-4 bg-slate-50/50 rounded-xl border border-slate-200/60 flex flex-col justify-between">
+                      <div className="flex items-center gap-1.5 mb-3 text-xs font-black text-slate-500 uppercase tracking-wider">
+                        <span>☀️</span> Manhã
+                      </div>
+                      {renderCardContent(activeConfig.manha[idx])}
+                    </div>
+
+                    {/* Tarde */}
+                    <div className="p-4 bg-slate-50/50 rounded-xl border border-slate-200/60 flex flex-col justify-between">
+                      <div className="flex items-center gap-1.5 mb-3 text-xs font-black text-slate-500 uppercase tracking-wider">
+                        <span>🌤️</span> Tarde
+                      </div>
+                      {renderCardContent(activeConfig.tarde[idx])}
+                    </div>
+
+                    {/* Noite */}
+                    <div className="p-4 bg-slate-50/50 rounded-xl border border-slate-200/60 flex flex-col justify-between">
+                      <div className="flex items-center gap-1.5 mb-3 text-xs font-black text-slate-500 uppercase tracking-wider">
+                        <span>🌙</span> Noite
+                      </div>
+                      {renderCardContent(activeConfig.noite[idx])}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {viewMode === 'table' && (
+            <div className="overflow-x-auto">
+              <div className="text-right text-[10px] text-slate-400 font-bold uppercase tracking-wide mb-2 flex items-center justify-end gap-1 select-none">
+                <span>👉 Arraste lateralmente para ver todos os dias</span>
+              </div>
+              <table className="w-full text-left border-collapse min-w-[1200px] bg-white rounded-2xl shadow-md overflow-hidden border border-slate-200">
+                <thead>
+                  <tr className="border-b border-slate-200">
+                    <th className="p-4 bg-slate-100 border-r border-slate-200 text-[#0038a8] font-black w-36 text-center sticky left-0 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] align-middle uppercase text-xs tracking-wider">
+                      Período
+                    </th>
+                    {activeConfig.dias.map((dia, idx) => (
+                      <th key={idx} className="p-4 bg-[#0038a8] text-white border-r border-blue-800 text-center min-w-[240px]">
+                        <div className="font-extrabold text-sm md:text-base">{dia.label}</div>
+                        <div className="text-[11px] md:text-xs font-bold opacity-90 mt-0.5 tracking-wide">{dia.data}</div>
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="group">
+                    <td className="p-4 bg-slate-100 border-b border-r border-slate-200 font-bold text-slate-800 align-middle text-center sticky left-0 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
+                      <div className="flex flex-col items-center justify-center py-2 select-none">
+                        <span className="text-2xl mb-1.5" role="img" aria-label="Manhã">☀️</span>
+                        <span className="uppercase tracking-widest text-[11px] font-black text-slate-500">Manhã</span>
+                      </div>
+                    </td>
+                    {activeConfig.dias.map((_, idx) => renderCell(activeConfig.manha[idx], idx))}
+                  </tr>
+                  
+                  <tr className="group">
+                    <td className="p-4 bg-slate-100 border-b border-r border-slate-200 font-bold text-slate-800 align-middle text-center sticky left-0 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
+                      <div className="flex flex-col items-center justify-center py-2 select-none">
+                        <span className="text-2xl mb-1.5" role="img" aria-label="Tarde">🌤️</span>
+                        <span className="uppercase tracking-widest text-[11px] font-black text-slate-500">Tarde</span>
+                      </div>
+                    </td>
+                    {activeConfig.dias.map((_, idx) => renderCell(activeConfig.tarde[idx], idx))}
+                  </tr>
+
+                  <tr className="group">
+                    <td className="p-4 bg-slate-100 border-r border-slate-200 font-bold text-slate-800 align-middle text-center sticky left-0 z-10 rounded-bl-2xl shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
+                      <div className="flex flex-col items-center justify-center py-2 select-none">
+                        <span className="text-2xl mb-1.5" role="img" aria-label="Noite">🌙</span>
+                        <span className="uppercase tracking-widest text-[11px] font-black text-slate-500">Noite</span>
+                      </div>
+                    </td>
+                    {activeConfig.dias.map((_, idx) => renderCell(activeConfig.noite[idx], idx))}
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+
+        {/* Detailed Information Panels (Cultura & Custos) */}
+        <div className="p-6 md:p-10 bg-white">
+          <h2 className="text-xl md:text-2xl font-extrabold text-[#0038a8] mb-6 flex items-center gap-3">
+            <span className="w-2.5 h-8 bg-[#e8112d] inline-block rounded-full"></span>
+            Informações Detalhadas de Viagem
+          </h2>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 text-slate-800">
+            <div className="bg-blue-50/55 p-6 rounded-2xl border-2 border-blue-200 shadow-sm">
+              <h3 className="font-extrabold text-base md:text-lg mb-3.5 text-[#0038a8] flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-[#0038a8]" /> {activeConfig.culturalTitle}
+              </h3>
+              <ul className="space-y-3.5 text-xs md:text-sm text-slate-700">
+                {activeConfig.culturalTips.map((tip, i) => (
+                  <li key={i} className="flex gap-2">
+                    <span className="text-blue-600 select-none font-bold">▪</span>
+                    <span>{tip}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            
+            <div className="bg-rose-50/55 p-6 rounded-2xl border-2 border-rose-200 shadow-sm">
+              <h3 className="font-extrabold text-base md:text-lg mb-3.5 text-[#e8112d] flex items-center gap-2">
+                <ShieldCheck className="w-5 h-5 text-[#e8112d]" /> {activeConfig.logisticsTitle}
+              </h3>
+              <ul className="space-y-3.5 text-xs md:text-sm text-slate-700">
+                {activeConfig.logisticsTips.map((tip, i) => (
+                  <li key={i} className="flex gap-2">
+                    <span className="text-rose-600 select-none font-bold">▪</span>
+                    <span>{tip}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
-  </div>
-);
+  );
 };
 
 export default GuideList;

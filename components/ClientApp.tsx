@@ -15,9 +15,11 @@ import ExpenseTracker from './ExpenseTracker';
 import Translator from './Translator';
 import AiAssistant from './AiAssistant';
 import AccommodationList from './AccommodationList'; 
+import { CarRentalReservation } from './CarRentalReservation';
+import { FuelCalculator } from './FuelCalculator';
 import BusList from './BusList';
 import VaccineCertificate from './VaccineCertificate';
-import UberBoltList, { RIDES } from './UberBoltList';
+import UberBoltList from './UberBoltList';
 import WeatherLocation from './WeatherLocation';
 import WeatherCardHome from './WeatherCardHome';
 import Supplies from './Supplies';
@@ -104,59 +106,6 @@ const ClientApp: React.FC = () => {
     };
   }, []);
 
-  // Monitor de Viagens de Uber (Notificações)
-  useEffect(() => {
-    const checkRides = () => {
-      const now = new Date();
-      
-      RIDES.forEach(ride => {
-        // Parsing data e hora (Ex: '24/Jan' e '05:00')
-        const [day, monthStr] = ride.date.split('/');
-        const [hours, minutes] = ride.time.split(':');
-        
-        const months: Record<string, number> = { 
-          'Jan': 0, 'Fev': 1, 'Mar': 2, 'Abr': 3, 'Mai': 4, 'Jun': 5,
-          'Jul': 6, 'Ago': 7, 'Set': 8, 'Out': 9, 'Nov': 10, 'Dez': 11
-        };
-
-        const rideDate = new Date(2026, months[monthStr], parseInt(day), parseInt(hours), parseInt(minutes));
-        const diffMs = rideDate.getTime() - now.getTime();
-        const diffMins = Math.floor(diffMs / (1000 * 60));
-
-        // Janelas de alerta: 120min (2h), 60min (1h), 30min
-        const thresholds = [120, 60, 30];
-        
-        thresholds.forEach(t => {
-          const key = `${ride.id}-${t}`;
-          // Se estiver na janela de tempo e ainda não notificamos esse limite específico
-          if (diffMins === t && !notifiedIds.current.has(key)) {
-            triggerNotification(ride, t);
-            notifiedIds.current.add(key);
-          }
-        });
-      });
-    };
-
-    const triggerNotification = (ride: any, minutesLeft: number) => {
-      const title = `⚠️ ALERTA DE VIAGEM (${minutesLeft}min)`;
-      const body = `Faltam ${minutesLeft} minutos para sua viagem de ${ride.app} para: ${ride.destination}. Prepare-se!`;
-      
-      // 1. Notificação de Navegador (Acende a tela / Barra de status)
-      if ("Notification" in window && Notification.permission === "granted") {
-        new Notification(title, { body, icon: '/favicon.svg' });
-      }
-
-      // 2. Evento Interno para o "Sininho" (TopBar)
-      const event = new CustomEvent('app-notification', { detail: body });
-      window.dispatchEvent(event);
-    };
-
-    // Verifica a cada 60 segundos
-    const interval = setInterval(checkRides, 60000);
-    checkRides(); // Check imediato
-
-    return () => clearInterval(interval);
-  }, []);
 
   useEffect(() => {
     const handlePopState = (event: PopStateEvent) => {
@@ -214,15 +163,19 @@ const ClientApp: React.FC = () => {
       case 'voos':
         return <FlightList onBack={goBack} />;
       case 'checklist':
-        return <PackingList onBack={goBack} />;
+        return <PackingList selectedTrip={selectedTrip} onBack={goBack} />;
       case 'guias':
         return <GuideList onBack={goBack} />;
       case 'financeiro':
-          return <FinancialControl onBack={goBack} />;
+          return <FinancialControl selectedTrip={selectedTrip} onBack={goBack} />;
       case 'gastos':
-          return <ExpenseTracker onBack={goBack} />;
+          return <ExpenseTracker selectedTrip={selectedTrip} onBack={goBack} />;
       case 'hospedagem': 
           return <AccommodationList onBack={goBack} />;
+      case 'reservas':
+          return <CarRentalReservation onBack={goBack} />;
+      case 'abastecimento':
+          return <FuelCalculator selectedTrip={selectedTrip} onBack={goBack} />;
       case 'onibus':
           return <BusList onBack={goBack} />;
       case 'uber_bolt':
@@ -258,6 +211,17 @@ const ClientApp: React.FC = () => {
       );
     }
 
+    // Hide bus card for Salvador, Aracaju, and Maragogi (car-based trips)
+    const isCarBasedTrip = selectedTrip?.id === 'am_salvador_julho' || 
+                           selectedTrip?.id === 'am_sp_ssa_aju' || 
+                           selectedTrip?.id === 'am_alagoas_maragogi' || 
+                           selectedTrip?.name?.toLowerCase().includes('maragogi') || 
+                           selectedTrip?.name?.toLowerCase().includes('salvador') || 
+                           selectedTrip?.name?.toLowerCase().includes('aracaju');
+    if (isCarBasedTrip) {
+      visibleMenuItems = visibleMenuItems.filter(item => item.id !== 'onibus');
+    }
+
     // Determinate location name hint based on trip for the weather widget
     let locationNameHint = "";
     const tName = selectedTrip?.name?.toLowerCase() || '';
@@ -276,7 +240,7 @@ const ClientApp: React.FC = () => {
         {visibleMenuItems.some(item => ['checklist', 'financeiro', 'gastos', 'cambio', 'mercado'].includes(item.id)) && (
           <div className="space-y-4">
             <h3 className="text-[#0369a1] font-display font-black uppercase text-xs tracking-widest pl-2">Planejamento & Dinheiro</h3>
-            <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
+            <div className="grid grid-cols-3 md:grid-cols-5 gap-3 relative z-[100]">
               {visibleMenuItems.filter(item => ['checklist', 'financeiro', 'gastos', 'cambio', 'mercado'].includes(item.id)).map(item => (
                 <MenuCard key={item.id} {...item} bgColor="#0ea5e9" onClick={() => navigateTo(item.id)} />
               ))}
@@ -285,11 +249,11 @@ const ClientApp: React.FC = () => {
         )}
 
         {/* Categoria: Logística & Hospedagem */}
-        {visibleMenuItems.some(item => ['voos', 'hospedagem', 'uber_bolt', 'onibus'].includes(item.id)) && (
+        {visibleMenuItems.some(item => ['voos', 'hospedagem', 'reservas', 'uber_bolt', 'onibus', 'abastecimento'].includes(item.id)) && (
           <div className="space-y-4 pt-2">
             <h3 className="text-[#6d28d9] font-display font-black uppercase text-xs tracking-widest pl-2">Transporte & Local</h3>
-            <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
-              {visibleMenuItems.filter(item => ['voos', 'hospedagem', 'uber_bolt', 'onibus'].includes(item.id)).map(item => (
+            <div className="grid grid-cols-3 md:grid-cols-5 gap-3 relative z-[100]">
+              {visibleMenuItems.filter(item => ['voos', 'hospedagem', 'reservas', 'uber_bolt', 'onibus', 'abastecimento'].includes(item.id)).map(item => (
                 <MenuCard key={item.id} {...item} bgColor="#8b5cf6" onClick={() => navigateTo(item.id)} />
               ))}
             </div>
@@ -300,7 +264,7 @@ const ClientApp: React.FC = () => {
         {visibleMenuItems.some(item => ['guias', 'melhores_destinos', 'tradutor', 'vacinas', 'ia_assistant'].includes(item.id)) && (
           <div className="space-y-4 pt-2">
             <h3 className="text-[#047857] font-display font-black uppercase text-xs tracking-widest pl-2">Roteiro & Ferramentas</h3>
-            <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
+            <div className="grid grid-cols-3 md:grid-cols-5 gap-3 relative z-[100]">
               {visibleMenuItems.filter(item => ['guias', 'melhores_destinos', 'tradutor', 'vacinas', 'ia_assistant'].includes(item.id)).map(item => (
                 <MenuCard key={item.id} {...item} bgColor="#10b981" onClick={() => navigateTo(item.id)} />
               ))}
@@ -341,7 +305,7 @@ const ClientApp: React.FC = () => {
       {activeSectionId ? (
         <div className={`min-h-screen font-sans animate-in slide-in-from-right duration-300 ease-out bg-slate-50`}>
           <TopBar variant="minimal" />
-          <main className="max-w-5xl mx-auto px-4 py-6 pb-24">
+          <main className="max-w-7xl mx-auto px-4 py-6 pb-24">
             {renderContent(activeSectionId)}
           </main>
         </div>
@@ -353,7 +317,7 @@ const ClientApp: React.FC = () => {
           <div className="relative z-10 flex flex-col min-h-screen">
             <Header tripName={selectedTrip.name} lat={selectedTrip.lat} lon={selectedTrip.lon} tripId={selectedTrip.id} onBack={handleResetTrip} />
             
-            <main className="max-w-5xl mx-auto py-4 pb-12 w-full px-4 relative z-20 pointer-events-auto">
+            <main className="max-w-7xl mx-auto py-4 pb-12 w-full px-4 relative z-20 pointer-events-auto">
               <ItineraryVisualOverview tripId={selectedTrip.id} />
               {!isConfigLoaded ? (
                 <div className="flex flex-col items-center justify-center py-20 opacity-50">
