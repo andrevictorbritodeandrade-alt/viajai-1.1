@@ -118,10 +118,15 @@ const FinancialControl: React.FC<{
           if (selectedTrip?.id === 'am_salvador_julho' && parsed.hotelCost === 0) {
             return 1281.51;
           }
+          if (selectedTrip?.id === 'am_aracaju_planob' && parsed.hotelCost === 0) {
+            return 480.00;
+          }
           return parsed.hotelCost;
         }
     } catch {}
-    return (selectedTrip?.id === 'am_salvador_julho') ? 1281.51 : 0;
+    if (selectedTrip?.id === 'am_salvador_julho') return 1281.51;
+    if (selectedTrip?.id === 'am_aracaju_planob') return 480.00;
+    return 0;
   });
 
   const [carRentalCost, setCarRentalCost] = useState<number>(() => {
@@ -132,10 +137,15 @@ const FinancialControl: React.FC<{
           if (selectedTrip?.id === 'am_salvador_julho' && parsed.carRentalCost === 0) {
             return 455.53;
           }
+          if (selectedTrip?.id === 'am_aracaju_planob' && parsed.carRentalCost === 0) {
+            return 0;
+          }
           return parsed.carRentalCost;
         }
     } catch {}
-    return (selectedTrip?.id === 'am_salvador_julho') ? 455.53 : 0;
+    if (selectedTrip?.id === 'am_salvador_julho') return 455.53;
+    if (selectedTrip?.id === 'am_aracaju_planob') return 0;
+    return 0;
   });
 
   const [busCost, setBusCost] = useState<number>(() => {
@@ -153,10 +163,15 @@ const FinancialControl: React.FC<{
           if (selectedTrip?.id === 'am_salvador_julho' && parsed.airfareCost === 0) {
             return 1394.00;
           }
+          if (selectedTrip?.id === 'am_aracaju_planob' && parsed.airfareCost === 0) {
+            return 550.00;
+          }
           return parsed.airfareCost;
         }
     } catch { return 0; }
-    return (selectedTrip?.id === 'am_salvador_julho') ? 1394.00 : 0;
+    if (selectedTrip?.id === 'am_salvador_julho') return 1394.00;
+    if (selectedTrip?.id === 'am_aracaju_planob') return 550.00;
+    return 0;
   });
 
   // Sync defaults on trip.id change
@@ -169,6 +184,10 @@ const FinancialControl: React.FC<{
           setHotelCost(typeof parsed.hotelCost === 'number' && parsed.hotelCost !== 0 ? parsed.hotelCost : 1281.51);
           setCarRentalCost(typeof parsed.carRentalCost === 'number' && parsed.carRentalCost !== 0 ? parsed.carRentalCost : 455.53);
           setAirfareCost(typeof parsed.airfareCost === 'number' && parsed.airfareCost !== 0 ? parsed.airfareCost : 1394.00);
+        } else if (trip.id === 'am_aracaju_planob') {
+          setHotelCost(typeof parsed.hotelCost === 'number' && parsed.hotelCost !== 0 ? parsed.hotelCost : 480.00);
+          setCarRentalCost(0);
+          setAirfareCost(typeof parsed.airfareCost === 'number' && parsed.airfareCost !== 0 ? parsed.airfareCost : 550.00);
         } else {
           setHotelCost(parsed.hotelCost || 0);
           setCarRentalCost(parsed.carRentalCost || 0);
@@ -180,6 +199,10 @@ const FinancialControl: React.FC<{
           setHotelCost(1281.51);
           setCarRentalCost(455.53);
           setAirfareCost(1394.00);
+        } else if (trip.id === 'am_aracaju_planob') {
+          setHotelCost(480.00);
+          setCarRentalCost(0);
+          setAirfareCost(550.00);
         } else {
           setHotelCost(0);
           setCarRentalCost(0);
@@ -192,6 +215,10 @@ const FinancialControl: React.FC<{
         setHotelCost(1281.51);
         setCarRentalCost(455.53);
         setAirfareCost(1394.00);
+      } else if (trip.id === 'am_aracaju_planob') {
+        setHotelCost(480.00);
+        setCarRentalCost(0);
+        setAirfareCost(550.00);
       } else {
         setHotelCost(0);
         setCarRentalCost(0);
@@ -222,6 +249,10 @@ const FinancialControl: React.FC<{
                   setHotelCost(typeof cloudData.hotelCost === 'number' && cloudData.hotelCost !== 0 ? cloudData.hotelCost : 1281.51);
                   setCarRentalCost(typeof cloudData.carRentalCost === 'number' && cloudData.carRentalCost !== 0 ? cloudData.carRentalCost : 455.53);
                   setAirfareCost(typeof cloudData.airfareCost === 'number' && cloudData.airfareCost !== 0 ? cloudData.airfareCost : 1394.00);
+                } else if (trip.id === 'am_aracaju_planob') {
+                  setHotelCost(typeof cloudData.hotelCost === 'number' && cloudData.hotelCost !== 0 ? cloudData.hotelCost : 480.00);
+                  setCarRentalCost(0);
+                  setAirfareCost(typeof cloudData.airfareCost === 'number' && cloudData.airfareCost !== 0 ? cloudData.airfareCost : 550.00);
                 } else {
                   if (typeof cloudData.hotelCost === 'number') setHotelCost(cloudData.hotelCost);
                   if (typeof cloudData.carRentalCost === 'number') setCarRentalCost(cloudData.carRentalCost);
@@ -231,9 +262,9 @@ const FinancialControl: React.FC<{
                 
                 const updatedLocal = {
                   wallets: cloudData.wallets || { wise: 0, nomad: 0, inter: 0, cash: 0 },
-                  hotelCost: trip.id === 'am_salvador_julho' ? (typeof cloudData.hotelCost === 'number' && cloudData.hotelCost !== 0 ? cloudData.hotelCost : 1281.51) : (cloudData.hotelCost || 0),
-                  carRentalCost: trip.id === 'am_salvador_julho' ? (typeof cloudData.carRentalCost === 'number' && cloudData.carRentalCost !== 0 ? cloudData.carRentalCost : 455.53) : (cloudData.carRentalCost || 0),
-                  airfareCost: trip.id === 'am_salvador_julho' ? (typeof cloudData.airfareCost === 'number' && cloudData.airfareCost !== 0 ? cloudData.airfareCost : 1394.00) : (cloudData.airfareCost || 0),
+                  hotelCost: trip.id === 'am_salvador_julho' ? (typeof cloudData.hotelCost === 'number' && cloudData.hotelCost !== 0 ? cloudData.hotelCost : 1281.51) : (trip.id === 'am_aracaju_planob' ? (typeof cloudData.hotelCost === 'number' && cloudData.hotelCost !== 0 ? cloudData.hotelCost : 480.00) : (cloudData.hotelCost || 0)),
+                  carRentalCost: trip.id === 'am_salvador_julho' ? (typeof cloudData.carRentalCost === 'number' && cloudData.carRentalCost !== 0 ? cloudData.carRentalCost : 455.53) : (trip.id === 'am_aracaju_planob' ? 0 : (cloudData.carRentalCost || 0)),
+                  airfareCost: trip.id === 'am_salvador_julho' ? (typeof cloudData.airfareCost === 'number' && cloudData.airfareCost !== 0 ? cloudData.airfareCost : 1394.00) : (trip.id === 'am_aracaju_planob' ? (typeof cloudData.airfareCost === 'number' && cloudData.airfareCost !== 0 ? cloudData.airfareCost : 550.00) : (cloudData.airfareCost || 0)),
                   busCost: cloudData.busCost || 0
                 };
                 localStorage.setItem('viajai_finance_v1', JSON.stringify(updatedLocal));

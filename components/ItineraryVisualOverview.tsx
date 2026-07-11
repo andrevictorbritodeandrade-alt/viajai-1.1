@@ -350,6 +350,56 @@ const TEMPLATE_ITINERARIES: Record<string, ItineraryData> = {
       { type: 'checked', label: 'Mala Despachada', limit: 'Cobrada à parte nas low-costs', included: false, color: 'text-rose-400 bg-rose-500/10' }
     ]
   },
+  'am_aracaju_planob': {
+    id: 'am_aracaju_planob',
+    tripName: 'Plano A (Novo): Aracaju Cultural, Forró & Econômico (Foco na Capital)',
+    stops: [
+      { airport: 'GIG', city: 'Rio de Janeiro', coords: '22.8123° S, 43.2505° W' },
+      { airport: 'AJU', city: 'Aracaju', coords: '10.9841° S, 37.0701° W' }
+    ],
+    outboundDate: '16 de Julho de 2026',
+    outboundTime: '11:00',
+    returnDate: '23 de Julho de 2026',
+    returnTime: '13:00',
+    price: 'Econômico',
+    lastResearched: 'Hoje',
+    outboundLegs: [
+      {
+        flightNumber: 'G3 1894',
+        airline: 'GOL / LATAM ou Ônibus',
+        from: 'GIG',
+        fromCity: 'Rio de Janeiro',
+        to: 'AJU',
+        toCity: 'Aracaju',
+        depTime: '11:00',
+        arrTime: '13:15',
+        duration: '2h15m',
+        dateInfo: 'Quinta-feira, 16 de Jul de 2026',
+        priceInfo: 'Opção aérea promocional ou viagem rodoviária confortável.'
+      }
+    ],
+    internalLegs: [],
+    inboundLegs: [
+      {
+        flightNumber: 'G3 1895',
+        airline: 'GOL / LATAM ou Ônibus',
+        from: 'AJU',
+        fromCity: 'Aracaju',
+        to: 'GIG',
+        toCity: 'Rio de Janeiro',
+        depTime: '13:00',
+        arrTime: '15:15',
+        duration: '2h15m',
+        dateInfo: 'Quinta-feira, 23 de Jul de 2026',
+        priceInfo: 'Incluso / Opção promocional'
+      }
+    ],
+    baggage: [
+      { type: 'personal', label: 'Mochila / Item Pessoal', limit: 'Incluso', included: true, color: 'text-emerald-600 bg-emerald-500/10' },
+      { type: 'cabin', label: 'Mala de Cabine 10kg', limit: 'Incluso na tarifa padrão', included: true, color: 'text-emerald-600 bg-emerald-500/10' },
+      { type: 'checked', label: 'Mala Despachada', limit: 'Não incluso (viagem leve e econômica)', included: false, color: 'text-slate-500 bg-slate-500/10' }
+    ]
+  },
   'am_salvador_julho': {
     id: 'am_salvador_julho',
     tripName: 'Salvador + Maceió + Aracaju (Carro Alugado)',

@@ -130,7 +130,7 @@ const ANDRE_MARCELLY_TRIPS: Trip[] = [
   },
   {
     id: 'am_salvador_julho',
-    name: 'Plano E: Salvador + Maceió + Aracaju (Carro)',
+    name: 'Plano B: Salvador + Maceió + Aracaju (Carro)',
     date: '16 a 23 de Julho',
     image: '/salvador_aracaju_maceio.jpg',
     lat: -12.9714,
@@ -140,6 +140,19 @@ const ANDRE_MARCELLY_TRIPS: Trip[] = [
     category: 'julho',
     price: 'Carro + Aéreo: R$ 1.152,53',
     subtitle: 'Salvador, Maceió & Aracaju • 16 a 23 de Julho'
+  },
+  {
+    id: 'am_aracaju_planob',
+    name: 'Plano A (Novo): Aracaju Cultural, Forró & Econômico (Foco na Capital)',
+    date: '16 a 23 de Julho de 2026',
+    image: '/aracaju_capital_premium.png',
+    lat: -10.9472,
+    lon: -37.0731,
+    userId: 'shared_andre_marcelly',
+    isDomestic: true,
+    category: 'julho',
+    price: 'Passagem Econômica • Atrações Gratuitas',
+    subtitle: 'Roteiro Cultural em Aracaju • 16 a 23 de Julho'
   }
 ];
 

@@ -24,7 +24,7 @@ interface TripItineraryConfig {
   date: string;
   base: string;
   mode: string;
-  flagType: 'bahia' | 'bahia_serg' | 'bahia_serg_alagoas' | 'colombia' | 'argentina' | 'argentina_brazil' | 'brazil' | 'south_africa';
+  flagType: 'bahia' | 'bahia_serg' | 'bahia_serg_alagoas' | 'colombia' | 'argentina' | 'argentina_brazil' | 'brazil' | 'south_africa' | 'sergipe';
   dias: DayOption[];
   manha: ScheduleCell[];
   tarde: ScheduleCell[];
@@ -36,6 +36,68 @@ interface TripItineraryConfig {
 }
 
 const ITINERARY_DATABASE: Record<string, TripItineraryConfig> = {
+  // Plano B: Aracaju Econômico (Foco na Capital - Grátis e Cultural)
+  'am_aracaju_planob': {
+    id: 'am_aracaju_planob',
+    title: 'Plano A (Novo): Aracaju Cultural, Forró & Econômico (Foco na Capital)',
+    date: '16 de Julho a 23 de Julho de 2026',
+    base: 'Base: Orla de Atalaia, Aracaju',
+    mode: 'Modo Econômico • Foco na Capital',
+    flagType: 'sergipe',
+    dias: [
+      { data: '16/07 (Qui)', label: 'Quinta' },
+      { data: '17/07 (Sex)', label: 'Sexta' },
+      { data: '18/07 (Sáb)', label: 'Sábado' },
+      { data: '19/07 (Dom)', label: 'Domingo' },
+      { data: '20/07 (Seg)', label: 'Segunda' },
+      { data: '21/07 (Ter)', label: 'Terça' },
+      { data: '22/07 (Qua)', label: 'Quarta' },
+      { data: '23/07 (Qui)', label: 'Quinta' }
+    ],
+    manha: [
+      { time: "Manhã", activity: "Voo de Ida / Chegada em Aracaju", details: "Embarque no Rio de Janeiro (GIG) com destino ao Aeroporto de Aracaju (AJU). Chegada e recepção sob o sol de Sergipe.", costType: "pago", costLabel: "💳 Gasto: Voo de Ida" },
+      { time: "09:00", activity: "Manhã de Mar na Praia de Atalaia", details: "Banho de mar relaxante nas águas calmas e mornas da badalada Praia de Atalaia. Desfrutar da larga faixa de areia para caminhar.", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "09:00", activity: "Manhã de Sol na Praia de Aruana", details: "Aproveite a manhã na belíssima Praia de Aruana, conhecida por suas areias claras e águas calmas, ideal para relaxar na areia e nadar sem pressa.", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "09:30", activity: "Passeio Verde no Parque da Sementeira", details: "Caminhada matinal sob as copas das árvores no Parque Augusto Franco (Sementeira). Lugar lindo com lagos, pistas de caminhada e ar puríssimo.", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "09:00", activity: "Mercados Municipais & Caranguejo Gigante", details: "Passeio imperdível e gratuito pelos tradicionais mercados de artesanato Antônio Franco e Thales Ferraz no Centro Histórico para ver a cultura e os sabores sergipanos, finalizando com a clássica foto ao lado do famoso Caranguejo Gigante na Passarela!", costType: "gratuito", costLabel: "💸 100% Gratuito" },
+      { time: "09:30", activity: "Caminhada no Calçadão da Formosa", details: "Aproveite o ventinho fresco do Rio Sergipe caminhando pelo Calçadão da Formosa. Excelente infraestrutura de lazer e mirante para fotos.", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "10:00", activity: "Praia dos Artistas & Coroa do Meio", details: "Mergulho refrescante na Praia dos Artistas e observação da bela foz onde o Rio Sergipe encontra o Oceano Atlântico.", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "09:00", activity: "Arrumar Malas e Despedida", details: "Check-out no Airbnb ou pousada econômica na Orla de Atalaia. Organizar bagagens e aproveitar as últimas horas para comprar as últimas castanhas.", costType: "gratuito", costLabel: "Sem Gastos" }
+    ],
+    tarde: [
+      { time: "14:00", activity: "Check-in Econômico & Reconhecimento", details: "Check-in na hospedagem próxima à Orla de Atalaia. Caminhada inicial de reconhecimento para conhecer as redondezas do bairro.", costType: "gratuito", costLabel: "Sem Gastos" },
+      { time: "14:30", activity: "Lagos da Atalaia & Projeto Tamar", details: "Visita aos lagos artificiais da Orla de Atalaia (Gratuito!) e passeio opcional no Oceanário de Aracaju (Projeto Tamar) para ver as tartarugas.", costType: "pago", costLabel: "💳 Opcional: R$ 20,00" },
+      { time: "14:30", activity: "Largo da Gente Sergipana & Ponte do Imperador", details: "Visitar o majestoso Largo da Gente Sergipana, com estátuas gigantes que emergem do rio representando as manifestações folclóricas locais. Depois, ver a histórica Ponte do Imperador.", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "15:00", activity: "Colina de Santo Antônio (Vista Panorâmica)", details: "Visita à Colina de Santo Antônio, marco de fundação de Aracaju. Além de conhecer a igrejinha histórica, contemple a mais deslumbrante vista panorâmica da capital.", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "14:00", activity: "Museu da Gente Sergipana & Pôr do Sol na Orla", details: "Visitar o espetacular Museu da Gente Sergipana (100% interativo e com entrada franca!) para conhecer as lendas e ritmos locais. No fim de tarde, contemplar o mágico pôr do sol na Orla Pôr do Sol ao som de um sanfoneiro tradicional de forró pé-de-serra às margens do rio.", costType: "gratuito", costLabel: "💸 100% Gratuito" },
+      { time: "14:30", activity: "Parque dos Cajueiros", details: "Passar a tarde no revitalizado Parque dos Cajueiros, rodeado de natureza. Ótimo espaço para caminhar à beira do rio ou simplesmente relaxar nas sombras.", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "14:00", activity: "Centro de Turismo & Catedral Metropolitana", details: "Visitar o Centro de Turismo (antigo prédio histórico com lojas de artesanato e bordados) e a bela arquitetura da Catedral Metropolitana de Aracaju.", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "13:00", activity: "Voo de Volta", details: "Embarque no Aeroporto de Aracaju (AJU) de volta para o Rio de Janeiro (GIG) com memórias inesquecíveis e bolso intacto!", costType: "pago", costLabel: "💳 Gasto: Voo de Volta" }
+    ],
+    noite: [
+      { time: "19:00", activity: "Caminhada Inicial & Jantar na Passarela", details: "Conhecer a Passarela do Caranguejo e fazer uma caminhada agradável pela iluminada e plana Orla de Atalaia, coroando o dia com um jantar de petiscos saborosos na orla.", costType: "misto", costLabel: "⚖️ Misto: Alimentação" },
+      { time: "19:00", activity: "Passeio na Feira do Turista da Atalaia", details: "Passeio tranquilo e agradável pela Feira do Turista da Atalaia, onde você pode apreciar barraquinhas de artesanato local, souvenirs e música ao vivo instrumental.", costType: "gratuito", costLabel: "💸 Gratuito (Entrada)" },
+      { time: "19:00", activity: "Noite de Jantar & Música ao Vivo na Atalaia", details: "Aproveitar o clima boêmio da orla de Atalaia para jantar em um dos barzinhos ou restaurantes tradicionais de Sergipe com música regional ao vivo de qualidade.", costType: "pago", costLabel: "💳 Gasto: Alimentação" },
+      { time: "19:00", activity: "Noite de Descanso na Atalaia", details: "Caminhar pela orla iluminada e cozinhar uma janta caseira saborosa e econômica no Airbnb para recarregar as energias para a segunda-feira cultural.", costType: "gratuito", costLabel: "Sem Gastos" },
+      { time: "19:00", activity: "Segundona do Turista (Forró Pé-de-Serra!)", details: "O ápice cultural! Participar da espetacular Segundona do Turista na feira, com o autêntico forró pé-de-serra ao vivo e apresentações folclóricas subsidiadas pelo governo estadual toda segunda-feira. Uma experiência cultural inesquecível e totalmente de graça!", costType: "gratuito", costLabel: "💸 Entrada 100% Gratuita" },
+      { time: "19:30", activity: "Jantar Econômico & Suco de Frutas", details: "Deliciar-se com tapiocas tradicionais recheadas e sucos de frutas nordestinas em um quiosque econômico na orla.", costType: "pago", costLabel: "💳 Gasto: Tapioca R$ 15,00" },
+      { time: "19:00", activity: "Noite de Pizza de Despedida", details: "Dividir uma pizza deliciosa em pizzaria local celebrando o sucesso da viagem econômica, fechando com chave de ouro.", costType: "pago", costLabel: "💳 Gasto: Pizza R$ 35,00" },
+      { time: "-", activity: "Chegada ao Rio", details: "Retorno seguro à residência no RJ. Fim do planejamento perfeito!", costType: "gratuito", costLabel: "-" }
+    ],
+    culturalTitle: "🏺 Cultura, Identidade & Forró de Graça",
+    culturalTips: [
+      "Museu da Gente Sergipana: Reserve cerca de 2h a 3h para curtir tudo. É 100% interativo e excelente para casais ou famílias.",
+      "Segundona do Turista: Começa por volta das 19:00. Vá com roupas confortáveis para dançar o autêntico forró pé-de-serra!",
+      "Fotos Marcantes: Não saia de Aracaju sem a clássica foto com o Caranguejo Gigante na Passarela e as estátuas do Largo da Gente Sergipana."
+    ],
+    logisticsTitle: "🚌 Mobilidade Urbana Sem Carro Alugado",
+    logisticsTips: [
+      "Uber e Táxi: Aracaju é uma capital compacta. O deslocamento de Uber entre a Atalaia e o Centro Histórico é rápido e muito barato.",
+      "Caminhadas Saudáveis: A Orla de Atalaia tem 6 km de extensão totalmente planos e iluminados, perfeita para caminhar no fim da tarde sem gastar nada.",
+      "Hospedagem Estratégica: Fique na Atalaia ou Coroa do Meio para ter fácil acesso à praia e a restaurantes econômicos a pé."
+    ]
+  },
+
   // 1. Salvador - Plano E (Férias em Salvador)
   'am_salvador_julho': {
     id: 'am_salvador_julho',
@@ -70,7 +132,7 @@ const ITINERARY_DATABASE: Record<string, TripItineraryConfig> = {
       { time: "12:00", activity: "Catamarã, Piscinas Naturais & Caminho de Moisés", details: "Passeio de Catamarã para as incríveis Piscinas Naturais de Maragogi e caminhada no deslumbrante banco de areia 'Caminho de Moisés'. Retorno por volta das 15:00.", costType: "pago", costLabel: "Incluso no Combo" },
       { time: "12:00", activity: "Tarde na Praia do Gunga & Saída p/ Aracaju", details: "Aproveite o dia inteiro na espetacular Praia do Gunga. Retorno do passeio por volta das 15:30. Atividades opcionais locais: Buggy pelas falésias, Quadriciclo, Helicóptero, Lancha, Paramotor, Tirolesa ou Jetski.\n\nApós o retorno, fazer o check-out no Airbnb de Luciano em Maceió e pegar a estrada rumo a Aracaju (aprox. 270 km, 4h de viagem).", costType: "pago", costLabel: "💳 Opcionais + Combustível" },
       { time: "14:00", activity: "Lagoa dos Tambaquis", details: "Visitar a lagoa e entrar na água doce super agradável para alimentar na mão os tambaquis gigantes. Experiência incrível.", costType: "pago", costLabel: "💳 Gasto: Entrada R$ 20/px" },
-      { time: "14:00", activity: "Check-in em Salvador", details: "Chegada em Salvador. Check-in no Airbnb Caminho das Árvores. Tarde livre para caminhar pela bela orla da Barra e tomar sorvete.", costType: "gratuito", costLabel: "Sem Custos" },
+      { time: "14:00", activity: "Terreiro da Casa Branca & Museus", details: "Após check-in no Airbnb Caminho das Árvores, visita ao bairro da Federação para conhecer o Terreiro da Casa Branca (Ilê Axé Iyá Nassô Oká), o templo de Candomblé de matriz iorubá mais antigo do Brasil. Em seguida, explore o MAB (Museu de Arte da Bahia) no Corredor da Vitória e o MAM (Museu de Arte Moderna) no Solar do Unhão para um lindo pôr do sol, sem focar tanto no Pelourinho.", costType: "gratuito", costLabel: "💸 Entrada Gratuita" },
       { time: "14:00", activity: "MUNCAB (Pelourinho)", details: "Visita imperdível à exposição 'Padê Onã' no MUNCAB. Quarta-feira a entrada é totalmente gratuita! Explore o Pelourinho e Mercado Modelo.", costType: "gratuito", costLabel: "💸 Gratuito às Quartas", links: [{ title: 'Exposição Padê Onã', url: 'https://www.salvadordabahia.com/eventos/exposicao-caso-pade-ona-encontrar-caminhos/' }] },
       { time: "-", activity: "Retorno ao Rio", details: "Chegada previsto no Aeroporto Galeão (GIG) às 07:55. Retorno para casa finalizando as férias.", costType: "gratuito", costLabel: "-" }
     ],
@@ -660,6 +722,8 @@ const GuideList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
         const flagType = activeConfig.flagType;
         if (flagType === 'bahia') {
           drawBahiaFlag(ctx, w, h);
+        } else if (flagType === 'sergipe') {
+          drawSergipeFlag(ctx, w, h);
         } else if (flagType === 'bahia_serg') {
           // Blended side-by-side flags
           ctx.save();
