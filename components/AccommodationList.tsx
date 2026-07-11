@@ -462,25 +462,25 @@ const AccommodationList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                     colorTheme = {
                         bg: 'bg-cyan-950/40',
                         border: 'border-cyan-500/30',
-                        titleBg: 'bg-cyan-500/20',
-                        textTitle: 'text-cyan-300',
-                        textSub: 'text-cyan-400'
+                        titleBg: 'bg-cyan-500/50',
+                        textTitle: 'text-white',
+                        textSub: 'text-slate-100'
                     };
                 } else if (cityLower.includes('maceió') || cityLower.includes('maceio')) {
                     colorTheme = {
                         bg: 'bg-emerald-950/40',
                         border: 'border-emerald-500/30',
-                        titleBg: 'bg-emerald-500/20',
-                        textTitle: 'text-emerald-300',
-                        textSub: 'text-emerald-400'
+                        titleBg: 'bg-emerald-500/50',
+                        textTitle: 'text-white',
+                        textSub: 'text-slate-100'
                     };
                 } else if (cityLower.includes('aracaju') || cityLower.includes('aracajú')) {
                     colorTheme = {
                         bg: 'bg-rose-950/40',
                         border: 'border-rose-500/30',
-                        titleBg: 'bg-rose-500/20',
-                        textTitle: 'text-rose-300',
-                        textSub: 'text-rose-400'
+                        titleBg: 'bg-rose-500/50',
+                        textTitle: 'text-white',
+                        textSub: 'text-slate-100'
                     };
                 }
 

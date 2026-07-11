@@ -33,6 +33,7 @@ interface HeaderProps {
   lon?: number;
   onBack?: () => void;
   tripId?: string;
+  userName?: string;
 }
 
 interface CostDetails {
@@ -176,7 +177,7 @@ const getTripBgImage = (id: string) => {
   return images[id] || '/salvador_aracaju_maceio.jpg';
 };
 
-const Header: React.FC<HeaderProps> = ({ tripName, lat, lon, onBack, tripId }) => {
+const Header: React.FC<HeaderProps> = ({ tripName, lat, lon, onBack, tripId, userName }) => {
   const { isDesktop } = useDevice();
   const [weather, setWeather] = useState<any>(null);
   const [loading, setLoading] = useState(false);
@@ -414,7 +415,7 @@ const Header: React.FC<HeaderProps> = ({ tripName, lat, lon, onBack, tripId }) =
             )}
             <div className="flex flex-col">
               <h1 className="text-xl sm:text-2xl lg:text-3xl font-normal text-white tracking-tight">
-                BEM-VINDO AO SEU PERFIL, <span className="font-bold">ANDRÉ BRITO</span>
+                BEM-VINDO AO SEU PERFIL, <span className="font-bold">{userName || 'ANDRÉ BRITO'}</span>
               </h1>
               <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl">
                 Tudo pronto para você explorar o melhor de Salvador, Aracaju e Maceió. Deixe os detalhes com a gente.
@@ -432,7 +433,7 @@ const Header: React.FC<HeaderProps> = ({ tripName, lat, lon, onBack, tripId }) =
           {/* Right side */}
           <div className="flex items-center gap-3 pointer-events-auto self-start sm:self-auto">
             <div className="w-10 h-10 rounded-full overflow-hidden border border-emerald-500/50 bg-emerald-950 flex items-center justify-center">
-              <span className="text-emerald-400 font-bold text-lg">A</span>
+              <span className="text-emerald-400 font-bold text-lg">{userName ? userName.charAt(0).toUpperCase() : 'A'}</span>
             </div>
             <button className="p-2 bg-white/5 hover:bg-white/10 rounded-full border border-white/10 transition-colors">
               <Bell className="w-4 h-4 text-slate-300" />

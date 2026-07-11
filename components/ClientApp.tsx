@@ -317,7 +317,7 @@ const ClientApp: React.FC = () => {
           <PWAInstallPrompt />
           
           <div className="relative z-10 flex flex-col min-h-screen">
-            <Header tripName={selectedTrip.name} lat={selectedTrip.lat} lon={selectedTrip.lon} tripId={selectedTrip.id} onBack={handleResetTrip} />
+            <Header tripName={selectedTrip.name} lat={selectedTrip.lat} lon={selectedTrip.lon} tripId={selectedTrip.id} onBack={handleResetTrip} userName={userName} />
             
             <main className="max-w-7xl mx-auto py-4 pb-12 w-full px-4 relative z-20 pointer-events-auto">
               <ItineraryVisualOverview tripId={selectedTrip.id} />

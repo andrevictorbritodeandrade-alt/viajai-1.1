@@ -375,7 +375,7 @@ const TripSelection: React.FC<TripSelectionProps> = ({ onSelect, userName }) => 
           <div className="flex items-center gap-4 text-left">
             {/* Elegant avatar holding first initial with styled borders */}
             <div className="w-14 h-14 bg-emerald-500 rounded-full flex items-center justify-center text-slate-950 font-black text-xl shadow-[0_0_20px_rgba(16,185,129,0.4)] border-2 border-white/20 shrink-0">
-              A
+              {userName ? userName.charAt(0).toUpperCase() : 'A'}
             </div>
             
             <div>
@@ -383,7 +383,7 @@ const TripSelection: React.FC<TripSelectionProps> = ({ onSelect, userName }) => 
                 BEM-VINDO AO SEU PERFIL
               </p>
               <h2 className="text-xl font-black text-white hover:text-emerald-400 transition-colors uppercase">
-                ANDRÉ BRITO
+                {userName || 'ANDRÉ BRITO'}
               </h2>
             </div>
           </div>
