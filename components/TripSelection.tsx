@@ -132,7 +132,7 @@ const ANDRE_MARCELLY_TRIPS: Trip[] = [
     id: 'am_salvador_julho',
     name: 'Plano E: Salvador + Maceió + Aracaju (Carro)',
     date: '16 a 23 de Julho',
-    image: '/ssa_aju_premium.png',
+    image: '/salvador_aracaju_maceio.jpg',
     lat: -12.9714,
     lon: -38.5014,
     userId: 'shared_andre_marcelly',
@@ -408,16 +408,20 @@ const TripSelection: React.FC<TripSelectionProps> = ({ onSelect, userName }) => 
             
             {/* CATEGORY 1: Opções para os próximos meses (Julho de 2026) */}
             {julyTrips.length > 0 && (
-              <div>
-                <div className="flex items-center gap-2 mb-8 bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 rounded-full w-fit shadow-inner">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                  <h2 className="text-[10px] font-bold text-emerald-400 uppercase tracking-[0.2em]">
-                    OPÇÕES PARA OS PRÓXIMOS MESES (JULHO DE 2026)
-                  </h2>
+              <div className={`grid grid-cols-1 ${doneTrips.length > 0 ? 'lg:grid-cols-4' : ''} gap-12 items-start`}>
+                <div className={`${doneTrips.length > 0 ? 'lg:col-span-3' : ''} space-y-8`}>
+                  <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 rounded-full w-fit shadow-inner">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <h2 className="text-[10px] font-bold text-emerald-400 uppercase tracking-[0.2em]">
+                      OPÇÕES PARA OS PRÓXIMOS MESES (JULHO DE 2026)
+                    </h2>
+                  </div>
+                  <div className="grid grid-cols-1 gap-6">
+                    {julyTrips.map(trip => renderFrostedCard(trip, 'large'))}
+                  </div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                  {julyTrips.map(trip => renderFrostedCard(trip, 'medium'))}
-                </div>
+                {/* Spacer column on desktop so it matches the alignment perfectly with January column */}
+                {doneTrips.length > 0 && <div className="hidden lg:block lg:col-span-1"></div>}
               </div>
             )}
 

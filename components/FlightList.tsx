@@ -19,8 +19,22 @@ import {
   ShieldCheck,
   Check,
   Bus,
-  Car
+  Car,
+  Smartphone,
+  ArrowLeft,
+  CheckCircle2,
+  Armchair,
+  Ticket,
+  ChevronLeft,
+  ChevronRight,
+  Sparkles,
+  Calendar,
+  X,
+  FileText,
+  Download,
+  Share2
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 import CategoryHeader from './CategoryHeader';
 
 interface Passenger {
@@ -319,21 +333,26 @@ const SALVADOR_TRIPS: any[] = [
     id: 'salvador-ida',
     type: 'ida',
     title: 'Ida: Rio de Janeiro (GIG) → Salvador (SSA)',
-    bookingReference: 'HQW5AK',
+    bookingReference: 'HQWSNK',
     provider: 'GOL Linhas Aéreas',
     baggage: 'Mala de mão 10kg inclusa • Mochila inclusa',
     financials: { 
       total: 'R$ 1.394,00 (Total Ida e Volta para 2 Pessoas)', 
       status: 'Confirmado' 
     },
-    passengers: [{ name: 'André Victor' }, { name: 'Marcelly Bispo' }],
+    passengers: [
+      { name: 'André Victor Brito de Andrade' },
+      { name: 'Marcelly Bispo Pereira da Silva' }
+    ],
     legs: [
       {
         flightNumber: 'G3 1898',
         airline: 'GOL Linhas Aéreas',
-        departure: { code: 'GIG', city: 'Rio de Janeiro', time: '23:20', date: 'Quinta-feira, 16 de Jul de 2026' },
-        arrival: { code: 'SSA', city: 'Salvador', time: '01:25', date: 'Sexta-feira, 17 de Jul de 2026' },
-        duration: '2h 05m'
+        departure: { code: 'GIG', city: 'Rio de Janeiro, RJ', time: '23:20', date: 'Quinta-feira, 16 de Jul de 2026' },
+        arrival: { code: 'SSA', city: 'Salvador, BA', time: '01:25', date: 'Sexta-feira, 17 de Jul de 2026' },
+        duration: '2h 05m',
+        weatherDeparture: RIO_WEATHER_DEP,
+        weatherArrival: SALVADOR_WEATHER_ARR
       }
     ]
   },
@@ -341,23 +360,27 @@ const SALVADOR_TRIPS: any[] = [
     id: 'salvador-volta',
     type: 'volta',
     title: 'Volta: Salvador (SSA) → Rio de Janeiro (GIG)',
-    bookingReference: 'HQW5AK',
+    bookingReference: 'HQWSNK',
     provider: 'GOL Linhas Aéreas',
     baggage: 'Mala de mão 10kg inclusa • Mochila inclusa',
     financials: { 
       total: 'Incluso no total', 
       status: 'Confirmado' 
     },
-    passengers: [{ name: 'André Victor' }, { name: 'Marcelly Bispo' }],
+    passengers: [
+      { name: 'André Victor Brito de Andrade' },
+      { name: 'Marcelly Bispo Pereira da Silva' }
+    ],
     legs: [
       {
         flightNumber: 'G3 1865',
         airline: 'GOL Linhas Aéreas',
         checkInTime: '03:50',
-        departure: { code: 'SSA', city: 'Salvador, Bahia', time: '05:50', date: '23/07/2026' },
-        arrival: { code: 'GIG', city: 'Galeão, Rio de Janeiro', time: '07:55', date: '23/07/2026' },
+        departure: { code: 'SSA', city: 'Salvador, BA', time: '05:50', date: 'Quinta-feira, 23 de Jul de 2026' },
+        arrival: { code: 'GIG', city: 'Rio de Janeiro, RJ', time: '07:55', date: 'Quinta-feira, 23 de Jul de 2026' },
         duration: '2h 05m',
-        weatherArrival: { tempMax: 26, tempMin: 19, feelsLike: 27, humidity: 70, rainProb: 10, condition: "Agradável" }
+        weatherDeparture: SALVADOR_WEATHER_ARR,
+        weatherArrival: RIO_WEATHER_DEP
       }
     ]
   }
@@ -414,17 +437,19 @@ const RIO_SAN_ANDRES_TRIPS: any[] = [
   }
 ];
 
-const WeatherWidget: React.FC<{ weather: WeatherForecast, label: string }> = ({ weather, label }) => (
-  <div className="bg-white/50 rounded-lg p-2 text-xs flex flex-col items-center border border-gray-100 min-w-[80px]">
-    <span className="font-bold text-gray-500 mb-1">{label}</span>
-    <div className="flex items-center gap-1 mb-1">
-      {weather.rainProb > 40 ? <Droplets className="w-4 h-4 text-blue-500" /> : <CloudSun className="w-4 h-4 text-amber-500" />}
-      <span className="font-bold text-lg">{weather.tempMax}°</span>
+const WeatherWidget: React.FC<{ weather: WeatherForecast, label: string, compact?: boolean }> = ({ weather, label, compact }) => (
+  <div className={`bg-white/50 rounded-lg p-2 text-xs flex ${compact ? 'flex-row items-center gap-3' : 'flex-col items-center'} border border-gray-100 min-w-[80px]`}>
+    <div className={`flex ${compact ? 'flex-col items-start' : 'flex-col items-center'}`}>
+      <span className="font-bold text-gray-500 mb-1">{label}</span>
+      <div className="flex items-center gap-1 mb-1">
+        {weather.rainProb > 40 ? <Droplets className="w-4 h-4 text-blue-500" /> : <CloudSun className="w-4 h-4 text-amber-500" />}
+        <span className="font-bold text-lg">{weather.tempMax}°</span>
+      </div>
     </div>
-    <div className="flex flex-col gap-0.5 w-full text-[10px] text-gray-600">
-      <div className="flex justify-between"><span>Min:</span> <span className="font-medium">{weather.tempMin}°</span></div>
-      <div className="flex justify-between text-orange-600"><ThermometerSun className="w-3 h-3" /> <span className="font-medium">{weather.feelsLike}°</span></div>
-      <div className="flex justify-between text-blue-600"><Droplets className="w-3 h-3" /> <span className="font-medium">{weather.rainProb}%</span></div>
+    <div className={`flex flex-col gap-0.5 ${compact ? 'w-auto' : 'w-full'} text-[10px] text-gray-600`}>
+      <div className="flex justify-between gap-2"><span>Min:</span> <span className="font-medium">{weather.tempMin}°</span></div>
+      <div className="flex justify-between gap-2 text-orange-600"><ThermometerSun className="w-3 h-3" /> <span className="font-medium">{weather.feelsLike}°</span></div>
+      <div className="flex justify-between gap-2 text-blue-600"><Droplets className="w-3 h-3" /> <span className="font-medium">{weather.rainProb}%</span></div>
     </div>
   </div>
 );
@@ -591,6 +616,26 @@ const FlightList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const [selectedPlan, setSelectedPlan] = React.useState<'A' | 'B' | 'C'>('A');
   const [selectedOptionIdx, setSelectedOptionIdx] = React.useState<number>(1);
 
+  const [openBoardingPass, setOpenBoardingPass] = React.useState(false);
+  const [selectedPassPassenger, setSelectedPassPassenger] = React.useState<number>(0); // 0 = Andre, 1 = Marcelly
+  const [selectedPassDirection, setSelectedPassDirection] = React.useState<'ida' | 'volta'>('ida');
+  const [showEmdReceipt, setShowEmdReceipt] = React.useState(false);
+  const [showSeatMap, setShowSeatMap] = React.useState(false);
+  
+  // Seat selection state
+  const [chosenSeats, setChosenSeats] = React.useState<Record<string, string>>({
+    'ida-0': '', // Andre Ida
+    'ida-1': '', // Marcelly Ida
+    'volta-0': '', // Andre Volta
+    'volta-1': '', // Marcelly Volta
+  });
+
+  // Check-in status
+  const [checkinDone, setCheckinDone] = React.useState<Record<string, boolean>>({
+    'ida': false,
+    'volta': false,
+  });
+
   React.useEffect(() => {
     const saved = localStorage.getItem('selected_trip');
     if (saved) {
@@ -603,7 +648,32 @@ const FlightList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const isSalvadorAracaju = selectedTrip?.id === 'am_sp_ssa_aju';
   const isFozBa = selectedTrip?.id === 'am_foz_ass_ba';
 
-  const rawFlight = null;
+  const rawFlight = React.useMemo(() => {
+    return {
+      id: 'salvador-ida',
+      type: 'ida',
+      title: 'Ida: Rio de Janeiro (GIG) → Salvador (SSA)',
+      bookingReference: 'HQWSNK',
+      provider: 'GOL Linhas Aéreas',
+      baggage: 'Mala de mão 10kg inclusa • Mochila inclusa',
+      financials: { 
+        total: 'R$ 1.394,00 (Total Ida e Volta para 2 Pessoas)', 
+        status: 'Confirmado' 
+      },
+      passengers: [{ name: 'André Victor' }, { name: 'Marcelly Bispo' }],
+      legs: [
+        {
+          flightNumber: 'G3 1898',
+          airline: 'GOL Linhas Aéreas',
+          departure: { code: 'GIG', city: 'Rio de Janeiro', time: '23:20', date: 'Quinta-feira, 16 de Jul de 2026' },
+          arrival: { code: 'SSA', city: 'Salvador', time: '01:25', date: 'Sexta-feira, 17 de Jul de 2026' },
+          duration: '2h 05m',
+          weatherDeparture: RIO_WEATHER_DEP,
+          weatherArrival: SALVADOR_WEATHER_ARR
+        }
+      ]
+    };
+  }, []);
 
   const isSPRoute = selectedTrip?.id === 'am_sp_ssa_aju';
 
@@ -782,6 +852,654 @@ const FlightList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       }
     ];
   }, [isPlanoD, selectedOptionIdx]);
+
+  // DIGITAL BOARDING PASS WALLET (GOL LINHAS AÉREAS)
+  const renderBoardingPassModal = () => {
+    if (!openBoardingPass) return null;
+
+    const passengers = [
+      { name: "ANDRE VICTOR BRITO DE ANDRADE", ticket: "1272306987554", type: "ADT" },
+      { name: "MARCELLY BISPO PEREIRA DA SILVA", ticket: "1272306987555", type: "ADT" }
+    ];
+
+    const currentPassengerObj = passengers[selectedPassPassenger];
+    
+    const legsData = {
+      ida: {
+        flight: "G3 1898",
+        aircraft: "BOEING 737 MAX",
+        class: "O (Econômica)",
+        fromCode: "GIG",
+        fromName: "Galeão - Rio de Janeiro, RJ (T2)",
+        toCode: "SSA",
+        toName: "Deputado Luís Eduardo Magalhães - Salvador, BA",
+        date: "16 JUL 2026",
+        depTime: "23:20",
+        arrTime: "01:25",
+        boarding: "22:40",
+        gate: "T2 - B22",
+        group: "Grupo 3",
+        duration: "2h 05m"
+      },
+      volta: {
+        flight: "G3 1865",
+        aircraft: "BOEING 737-800 JET",
+        class: "O (Econômica)",
+        fromCode: "SSA",
+        fromName: "Deputado Luís Eduardo Magalhães - Salvador, BA",
+        toCode: "GIG",
+        toName: "Galeão - Rio de Janeiro, RJ (T2)",
+        date: "23 JUL 2026",
+        depTime: "05:50",
+        arrTime: "07:55",
+        boarding: "05:10",
+        gate: "Portão 11",
+        group: "Grupo 3",
+        duration: "2h 05m"
+      }
+    };
+
+    const currentLeg = legsData[selectedPassDirection];
+    const isChecked = checkinDone[selectedPassDirection];
+    const seatKey = `${selectedPassDirection}-${selectedPassPassenger}`;
+    const currentSeat = chosenSeats[seatKey] || "";
+
+    // Blocked seats for visual density and realism
+    const blockedSeats = ['12A', '12C', '14C', '14E', '15B', '15E', '16A', '16D', '17C', '17F', '18A', '18B', '18D'];
+
+    // Local state inside the modal for seat choice session
+    const handleSeatSelect = (seatCode: string) => {
+      setChosenSeats(prev => ({
+        ...prev,
+        [`${selectedPassDirection}-${selectedPassPassenger}`]: seatCode
+      }));
+    };
+
+    const completeCheckin = () => {
+      const p0Seat = chosenSeats[`${selectedPassDirection}-0`];
+      const p1Seat = chosenSeats[`${selectedPassDirection}-1`];
+      if (!p0Seat || !p1Seat) {
+        alert("Por favor, selecione os assentos para ambos os passageiros antes de concluir o check-in!");
+        return;
+      }
+      setCheckinDone(prev => ({
+        ...prev,
+        [selectedPassDirection]: true
+      }));
+      setShowSeatMap(false);
+    };
+
+    return (
+      <AnimatePresence>
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-50 flex items-center justify-center p-0 sm:p-4 overflow-y-auto font-sans"
+        >
+          {/* Custom style for scanner bar */}
+          <style>{`
+            @keyframes scanAnimation {
+              0% { top: 4%; }
+              50% { top: 96%; }
+              100% { top: 4%; }
+            }
+            .laser-line-anim {
+              animation: scanAnimation 3s infinite linear;
+            }
+          `}</style>
+
+          {/* Smartphone Frame mockup */}
+          <motion.div 
+            initial={{ scale: 0.95, y: 20 }}
+            animate={{ scale: 1, y: 0 }}
+            exit={{ scale: 0.95, y: 20 }}
+            className="bg-[#0B0F19] w-full max-w-md h-full sm:h-[840px] sm:rounded-[40px] sm:border-[8px] sm:border-slate-800 shadow-2xl overflow-hidden relative flex flex-col"
+          >
+            {/* Top Phone Header Bezel Notch */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-black rounded-b-2xl z-50 flex items-center justify-center">
+              <div className="w-1.5 h-1.5 bg-slate-800 rounded-full mr-2"></div>
+              <div className="w-10 h-1 bg-slate-800 rounded-full"></div>
+            </div>
+
+            {/* Simulated Phone Status Bar */}
+            <div className="pt-7 px-6 pb-2 flex justify-between items-center text-[11px] text-slate-400 font-bold tracking-tight bg-[#FF6600]">
+              <span>09:41</span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[9px] font-semibold bg-white/20 px-1 py-0.5 rounded-sm">5G</span>
+                <div className="flex gap-0.5 items-end h-2.5">
+                  <div className="w-0.5 h-1 bg-slate-200"></div>
+                  <div className="w-0.5 h-1.5 bg-slate-200"></div>
+                  <div className="w-0.5 h-2 bg-slate-200"></div>
+                  <div className="w-0.5 h-2.5 bg-slate-200"></div>
+                </div>
+                <div className="w-5 h-2.5 border border-slate-300 rounded-sm p-0.5 flex items-center">
+                  <div className="w-3 h-full bg-emerald-400 rounded-2xs"></div>
+                </div>
+              </div>
+            </div>
+
+            {/* GOL App Header Navigation */}
+            <div className="bg-[#FF6600] px-5 pb-5 text-white shadow-md relative">
+              <div className="flex justify-between items-center mb-3">
+                <button 
+                  onClick={() => {
+                    if (showSeatMap) {
+                      setShowSeatMap(false);
+                    } else if (showEmdReceipt) {
+                      setShowEmdReceipt(false);
+                    } else {
+                      setOpenBoardingPass(false);
+                    }
+                  }}
+                  className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition"
+                >
+                  <ArrowLeft className="w-4 h-4 text-white" />
+                </button>
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-orange-200 animate-pulse"></span>
+                  <span className="text-xs font-bold uppercase tracking-wider text-orange-100 font-mono">GOL WALLET</span>
+                </div>
+                <div className="w-8"></div> {/* Spacer */}
+              </div>
+
+              <div className="flex justify-between items-end">
+                <div>
+                  <h3 className="text-xl font-black tracking-tight font-display">Cartão de Embarque</h3>
+                  <p className="text-xs text-orange-100 mt-0.5 font-semibold">Localizador: <strong className="font-mono text-white text-sm bg-orange-800/40 px-2 py-0.5 rounded">{legsData.ida.fromCode === "GIG" ? "HQWSNK" : "HQWSNK"}</strong></p>
+                </div>
+                {/* Logo GOL */}
+                <div className="flex items-center">
+                  <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center text-xs font-black tracking-tighter">G</div>
+                  <div className="w-7 h-7 rounded-full bg-white/20 -ml-2.5 flex items-center justify-center text-xs font-black tracking-tighter border-2 border-[#FF6600]">O</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Scrollable Smartphone Screen area */}
+            <div className="flex-1 overflow-y-auto bg-slate-950 p-4 space-y-4 pb-24">
+              
+              {/* SCREEN FLOW 1: SEAT MAP SELECTOR */}
+              {showSeatMap && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-slate-900 rounded-3xl p-5 border border-slate-800 relative space-y-6"
+                >
+                  <div className="text-center">
+                    <span className="text-[10px] bg-orange-500/10 text-[#FF6600] px-2.5 py-1 rounded-full font-mono font-black border border-orange-500/20">BOEING 737 MAX</span>
+                    <h4 className="text-base font-black text-white mt-1.5">Selecione seu Assento GOL</h4>
+                    <p className="text-xs text-slate-400 mt-0.5">Voo {currentLeg.flight} | {currentLeg.fromCode} ➔ {currentLeg.toCode}</p>
+                  </div>
+
+                  {/* Passenger selector within seat map */}
+                  <div className="grid grid-cols-2 gap-2 bg-slate-950 p-1.5 rounded-2xl border border-slate-800">
+                    {passengers.map((p, idx) => {
+                      const passSeat = chosenSeats[`${selectedPassDirection}-${idx}`];
+                      return (
+                        <button
+                          key={idx}
+                          onClick={() => setSelectedPassPassenger(idx)}
+                          className={`py-2 px-3 rounded-xl flex flex-col items-center justify-center transition-all ${selectedPassPassenger === idx ? 'bg-[#FF6600] text-white shadow-md' : 'bg-transparent text-slate-400 hover:text-slate-200'}`}
+                        >
+                          <span className="text-[9.5px] font-bold tracking-wider truncate max-w-full uppercase">{p.name.split(' ')[0]}</span>
+                          <span className="text-[10.5px] font-black font-mono mt-0.5">
+                            {passSeat ? `Assento ${passSeat}` : "Selecionar..."}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Airplane cabin mockup visual */}
+                  <div className="bg-slate-950 rounded-2xl p-4 border border-slate-800/60 max-w-xs mx-auto space-y-5 relative">
+                    {/* Airplane nose mockup outline */}
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-12 h-1.5 bg-slate-800 rounded-full"></div>
+                    <div className="text-center text-[10px] font-bold text-slate-500 tracking-widest font-mono uppercase">
+                      ▲ FRENTE DO AVIÃO ▲
+                    </div>
+
+                    {/* Column Headers */}
+                    <div className="grid grid-cols-7 gap-1.5 text-center text-[10.5px] font-black text-slate-400 font-mono">
+                      <span>A</span>
+                      <span>B</span>
+                      <span>C</span>
+                      <span className="text-slate-600">|</span>
+                      <span>D</span>
+                      <span>E</span>
+                      <span>F</span>
+                    </div>
+
+                    {/* Cabin Row Grid */}
+                    <div className="space-y-3">
+                      {[12, 14, 15, 16, 17, 18].map((rowNum) => {
+                        const isEspacoMais = rowNum === 12;
+                        return (
+                          <div key={rowNum} className="grid grid-cols-7 gap-1.5 items-center">
+                            {['A', 'B', 'C', 'CORREDOR', 'D', 'E', 'F'].map((col) => {
+                              if (col === 'CORREDOR') {
+                                return (
+                                  <span key={col} className="text-[10.5px] font-mono text-slate-600 font-bold text-center">
+                                    {rowNum}
+                                  </span>
+                                );
+                              }
+
+                              const seatCode = `${rowNum}${col}`;
+                              const isOccupied = blockedSeats.includes(seatCode);
+                              
+                              // Check who has selected this seat
+                              const selectedByAndre = chosenSeats[`${selectedPassDirection}-0`] === seatCode;
+                              const selectedByMarcelly = chosenSeats[`${selectedPassDirection}-1`] === seatCode;
+
+                              let seatStyle = "border border-slate-700 bg-slate-900/40 text-slate-300 hover:border-slate-500";
+                              if (isEspacoMais) {
+                                seatStyle = "border-2 border-[#FF6600]/40 bg-orange-950/20 text-orange-200 hover:border-[#FF6600]";
+                              }
+                              if (isOccupied) {
+                                seatStyle = "bg-slate-800 text-slate-600 border-transparent cursor-not-allowed text-[10px]";
+                              }
+                              if (selectedByAndre) {
+                                seatStyle = "bg-emerald-500 text-slate-950 font-black border-transparent shadow-md shadow-emerald-500/20";
+                              }
+                              if (selectedByMarcelly) {
+                                seatStyle = "bg-cyan-400 text-slate-950 font-black border-transparent shadow-md shadow-cyan-400/20";
+                              }
+
+                              return (
+                                <button
+                                  key={col}
+                                  disabled={isOccupied}
+                                  onClick={() => handleSeatSelect(seatCode)}
+                                  className={`aspect-square w-full rounded-md flex items-center justify-center text-[10.5px] font-bold tracking-tighter transition-all duration-150 ${seatStyle}`}
+                                >
+                                  {selectedByAndre ? "A" : selectedByMarcelly ? "M" : isOccupied ? "✕" : col}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* Legend */}
+                    <div className="grid grid-cols-3 gap-2 pt-3 border-t border-slate-900 text-[9px] text-slate-400">
+                      <div className="flex items-center gap-1.5 justify-center">
+                        <span className="w-3 h-3 rounded bg-emerald-500 block"></span>
+                        <span>André (A)</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 justify-center">
+                        <span className="w-3 h-3 rounded bg-cyan-400 block"></span>
+                        <span>Marcelly (M)</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 justify-center">
+                        <span className="w-3 h-3 rounded bg-orange-950/20 border border-[#FF6600]/40 block"></span>
+                        <span>Espaço+ GOL</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Seat Selection CTA */}
+                  <div className="space-y-3 pt-2">
+                    <button
+                      onClick={completeCheckin}
+                      className="w-full bg-[#FF6600] hover:bg-[#E05000] text-white py-3.5 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-lg shadow-[#FF6600]/25"
+                    >
+                      CONFIRMAR SELEÇÃO DE ASSENTOS
+                    </button>
+                    <button
+                      onClick={() => setShowSeatMap(false)}
+                      className="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition"
+                    >
+                      VOLTAR AO BILHETE
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+
+
+              {/* SCREEN FLOW 2: EMD RECEIPTS INVOICE */}
+              {showEmdReceipt && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-white rounded-3xl p-5 text-slate-900 shadow-2xl relative space-y-6 font-mono leading-relaxed"
+                >
+                  <div className="border-b-2 border-dashed border-slate-300 pb-4 text-center">
+                    <div className="flex justify-center items-center gap-1 mb-2">
+                      <div className="w-6 h-6 rounded-full bg-[#FF6600] flex items-center justify-center text-[10px] font-black text-white">G</div>
+                      <div className="w-6 h-6 rounded-full bg-[#FF6600] -ml-2 flex items-center justify-center text-[10px] font-black text-white border border-white">O</div>
+                      <span className="font-sans font-black text-slate-800 text-sm ml-1">GOL LINHAS AÉREAS</span>
+                    </div>
+                    <h4 className="text-xs font-black text-slate-900 tracking-wider">RECIBO DE DOCUMENTO ELETRÔNICO (EMD)</h4>
+                    <p className="text-[10px] text-slate-500">EMITIDO EM: 01 JUL 2026 - 15:42 BRT</p>
+                  </div>
+
+                  {/* Document metadata table */}
+                  <div className="text-[11.5px] space-y-1 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                    <p><strong>NÚMERO DO EMD:</strong> 1274442020507</p>
+                    <p><strong>LOCALIZADOR DA RESERVA:</strong> HQWSNK</p>
+                    <p><strong>PASSAGEIRO:</strong> BRITO DE ANDRADE/ANDRE VICTOR</p>
+                    <p><strong>CIA EMISSORA:</strong> GOL LINHAS AEREAS S/A</p>
+                    <p><strong>AGENTE EMISSOR:</strong> SSW COMPANHIA WEB / GOL</p>
+                  </div>
+
+                  {/* Invoice itemized details */}
+                  <div className="space-y-2 text-xs">
+                    <p className="font-bold border-b border-slate-300 pb-1 text-slate-800">SERVIÇO ADICIONAL CONTRATADO</p>
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <p className="font-bold">ASSENTO ESPAÇO+ GOL</p>
+                        <p className="text-[10px] text-slate-500">Trecho: GIG ➔ SSA | Assento: 14A</p>
+                        <p className="text-[10px] text-slate-500">Código do Motivo: PAY 6MO INT 1 99PCT / D</p>
+                      </div>
+                      <span className="font-black">BRL 43,02</span>
+                    </div>
+                    <div className="flex justify-between items-start pt-2 border-t border-slate-100">
+                      <div>
+                        <p className="font-bold">ASSENTO ESPAÇO+ GOL</p>
+                        <p className="text-[10px] text-slate-500">Trecho: GIG ➔ SSA | Assento: 14B</p>
+                        <p className="text-[10px] text-slate-500">Código do Motivo: PAY 6MO INT 1 99PCT / D</p>
+                      </div>
+                      <span className="font-black">BRL 43,02</span>
+                    </div>
+                  </div>
+
+                  {/* Total pricing */}
+                  <div className="bg-slate-900 text-white p-3.5 rounded-xl flex justify-between items-center">
+                    <span className="font-black text-xs tracking-wider">VALOR TOTAL DO EMD:</span>
+                    <span className="font-mono font-black text-sm text-emerald-400">BRL 86,04</span>
+                  </div>
+
+                  {/* Payment method info */}
+                  <div className="text-[10.5px] text-slate-600 space-y-1 pt-1 border-t border-slate-200">
+                    <p className="font-bold uppercase text-slate-800 text-[11px] mb-1">MÉTODO DE PAGAMENTO</p>
+                    <p>FORMA: CARTÃO DE CRÉDITO - MASTERCARD</p>
+                    <p>NÚMERO: XXXXXXXXXXXX-6758</p>
+                    <p>OPERAÇÃO: AUTORIZADO ONLINE DEBITO DIRETO</p>
+                    <p>PARCELAMENTO: 06X FIXAS DE BRL 14,34</p>
+                  </div>
+
+                  <button
+                    onClick={() => setShowEmdReceipt(false)}
+                    className="w-full bg-[#FF6600] hover:bg-[#E05000] text-white py-3 rounded-2xl font-black text-xs uppercase tracking-wider transition-all font-sans"
+                  >
+                    FECHAR DETALHES DE FATURAMENTO
+                  </button>
+                </motion.div>
+              )}
+
+
+              {/* SCREEN FLOW 3: WALLET CARDS OVERVIEW */}
+              {!showSeatMap && !showEmdReceipt && (
+                <div className="space-y-4">
+                  {/* Passenger Switching Pills */}
+                  <div className="grid grid-cols-2 gap-2 p-1 bg-slate-900 rounded-2xl border border-slate-800">
+                    {passengers.map((p, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setSelectedPassPassenger(idx)}
+                        className={`py-2 px-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all ${selectedPassPassenger === idx ? 'bg-[#FF6600] text-white shadow' : 'bg-transparent text-slate-400 hover:text-slate-200'}`}
+                      >
+                        {p.name.split(' ')[0]} {p.name.split(' ')[1]}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Trecho Segment Selector */}
+                  <div className="flex border-b border-slate-900 text-xs">
+                    <button
+                      onClick={() => setSelectedPassDirection('ida')}
+                      className={`flex-1 py-3 text-center font-bold uppercase tracking-wider transition relative ${selectedPassDirection === 'ida' ? 'text-white' : 'text-slate-500 hover:text-slate-300'}`}
+                    >
+                      Ida: G3 1898
+                      {selectedPassDirection === 'ida' && <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#FF6600]"></span>}
+                    </button>
+                    <button
+                      onClick={() => setSelectedPassDirection('volta')}
+                      className={`flex-1 py-3 text-center font-bold uppercase tracking-wider transition relative ${selectedPassDirection === 'volta' ? 'text-white' : 'text-slate-500 hover:text-slate-300'}`}
+                    >
+                      Volta: G3 1865
+                      {selectedPassDirection === 'volta' && <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#FF6600]"></span>}
+                    </button>
+                  </div>
+
+                  {/* Warning banner when checkin is pending */}
+                  {!isChecked && (
+                    <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-4 flex gap-3 items-start animate-pulse">
+                      <AlertCircle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+                      <div>
+                        <h4 className="text-xs font-black text-amber-400 uppercase tracking-wider">CHECK-IN PENDENTE</h4>
+                        <p className="text-[10.5px] text-slate-300 mt-1 leading-relaxed">
+                          Os cartões de embarque e os códigos QR não foram gerados porque seu assento ainda não foi confirmado na aeronave.
+                        </p>
+                        <button
+                          onClick={() => setShowSeatMap(true)}
+                          className="mt-2 flex items-center gap-1 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-[10px] uppercase tracking-wider px-3 py-1.5 rounded-lg transition"
+                        >
+                          <Armchair className="w-3.5 h-3.5" /> ESCOLHER SEU ASSENTO AGORA
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Actual Boarding Ticket component */}
+                  <div className="bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden relative shadow-lg">
+                    {/* Upper side color tab */}
+                    <div className="bg-gradient-to-r from-[#FF6600] to-orange-500 h-2 w-full"></div>
+
+                    <div className="p-5 space-y-4">
+                      {/* Brand name & Flight details */}
+                      <div className="flex justify-between items-center text-xs">
+                        <div className="flex items-center gap-1">
+                          <span className="font-mono font-black text-[#FF6600]">G3</span>
+                          <span className="text-slate-500 font-bold">| Voo {currentLeg.flight}</span>
+                        </div>
+                        <span className="bg-slate-800 text-slate-300 px-2 py-0.5 rounded font-mono text-[10.5px] font-bold">
+                          CABINE: {currentLeg.class}
+                        </span>
+                      </div>
+
+                      {/* Airport IATA segment large view */}
+                      <div className="flex justify-between items-center py-2 relative">
+                        {/* Dot connectors */}
+                        <div className="absolute top-1/2 left-12 right-12 h-0.5 border-t border-dashed border-slate-700 -translate-y-1/2 z-0"></div>
+                        
+                        <div className="text-left z-10 relative bg-slate-900 pr-3">
+                          <h2 className="text-3xl font-black text-white font-display tracking-tight">{currentLeg.fromCode}</h2>
+                          <p className="text-[10px] text-slate-400 font-bold truncate max-w-[100px]">{currentLeg.fromName.split(' - ')[0]}</p>
+                        </div>
+
+                        <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center z-10 text-[#FF6600]">
+                          <Plane className="w-4 h-4 transform rotate-90" />
+                        </div>
+
+                        <div className="text-right z-10 relative bg-slate-900 pl-3">
+                          <h2 className="text-3xl font-black text-white font-display tracking-tight">{currentLeg.toCode}</h2>
+                          <p className="text-[10px] text-slate-400 font-bold truncate max-w-[100px]">{currentLeg.toName.split(' - ')[0]}</p>
+                        </div>
+                      </div>
+
+                      {/* Info grid */}
+                      <div className="grid grid-cols-2 gap-y-3.5 gap-x-4 pt-3 border-t border-slate-800 text-xs">
+                        <div>
+                          <p className="text-[9.5px] text-slate-500 font-bold uppercase tracking-wider">DATA DO VOO</p>
+                          <p className="font-black text-slate-200 mt-0.5">{currentLeg.date}</p>
+                        </div>
+                        <div>
+                          <p className="text-[9.5px] text-slate-500 font-bold uppercase tracking-wider">PARTIDA ESTIMADA</p>
+                          <p className="font-black text-slate-200 mt-0.5">{currentLeg.depTime}</p>
+                        </div>
+                        <div>
+                          <p className="text-[9.5px] text-slate-500 font-bold uppercase tracking-wider">CHEGADA ESTIMADA</p>
+                          <p className="font-black text-slate-200 mt-0.5">{currentLeg.arrTime}</p>
+                        </div>
+                        <div>
+                          <p className="text-[9.5px] text-slate-500 font-bold uppercase tracking-wider">DURAÇÃO</p>
+                          <p className="font-black text-slate-200 mt-0.5">{currentLeg.duration}</p>
+                        </div>
+                      </div>
+
+                      {/* Dashboard Cutout Ticket Border Notch */}
+                      <div className="flex items-center justify-between mx--5 py-2">
+                        <div className="w-5 h-5 rounded-full bg-slate-950 -ml-7 border-r border-slate-800"></div>
+                        <div className="flex-1 border-t border-dashed border-slate-800"></div>
+                        <div className="w-5 h-5 rounded-full bg-slate-950 -mr-7 border-l border-slate-800"></div>
+                      </div>
+
+                      {/* Boarding times and seats */}
+                      <div className="grid grid-cols-3 gap-3 text-center">
+                        <div className="bg-slate-950/40 p-2.5 rounded-2xl border border-slate-800/80">
+                          <p className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">PORTÃO</p>
+                          <p className="font-black text-slate-200 text-xs mt-0.5 truncate">{currentLeg.gate}</p>
+                        </div>
+                        <div className="bg-orange-500/5 p-2.5 rounded-2xl border border-[#FF6600]/25">
+                          <p className="text-[9px] text-[#FF6600] font-black uppercase tracking-wider">EMBARQUE</p>
+                          <p className="font-black text-[#FF6600] text-sm mt-0.5">{currentLeg.boarding}</p>
+                        </div>
+                        <div className="bg-slate-950/40 p-2.5 rounded-2xl border border-slate-800/80">
+                          <p className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">ASSENTO</p>
+                          <p className={`font-black text-sm mt-0.5 ${currentSeat ? "text-emerald-400 font-mono" : "text-amber-500 font-semibold italic text-[11px]"}`}>
+                            {currentSeat || "Não conf."}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Group and Class */}
+                      <div className="grid grid-cols-2 gap-3 text-center text-xs">
+                        <div className="bg-slate-950/40 p-2 rounded-xl border border-slate-800/60">
+                          <span className="text-[9px] text-slate-500 font-bold uppercase">GRUPO DE EMBARQUE</span>
+                          <p className="font-black text-slate-200 mt-0.5">{currentLeg.group}</p>
+                        </div>
+                        <div className="bg-slate-950/40 p-2 rounded-xl border border-slate-800/60">
+                          <span className="text-[9px] text-slate-500 font-bold uppercase">BAGAGENS INCLUSAS</span>
+                          <p className="font-black text-emerald-400 mt-0.5">Mão (10kg) + Mochila</p>
+                        </div>
+                      </div>
+
+                      {/* Passenger details section */}
+                      <div className="p-3 bg-slate-950 rounded-2xl border border-slate-800 text-xs flex justify-between items-center">
+                        <div>
+                          <p className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">PASSAGEIRO</p>
+                          <h4 className="font-black text-slate-200 uppercase truncate max-w-[190px]">{currentPassengerObj.name}</h4>
+                          <p className="text-[9px] font-mono text-slate-400 mt-0.5">BILHETE: {currentPassengerObj.ticket} ({currentPassengerObj.type})</p>
+                        </div>
+                        <span className="text-[10px] bg-[#FF6600]/15 text-[#FF6600] border border-[#FF6600]/25 px-2 py-0.5 rounded-full font-bold uppercase">
+                          G3 ADT
+                        </span>
+                      </div>
+
+                      {/* BARCODE / QR CODE CONFLICT HANDLER */}
+                      <div className="pt-4 border-t border-slate-800">
+                        {isChecked ? (
+                          <div className="space-y-4">
+                            {/* Live QR Code Box with scanning laser light */}
+                            <div className="bg-white p-4 rounded-2xl w-48 h-48 mx-auto relative overflow-hidden flex items-center justify-center border-4 border-emerald-500/20 shadow-lg">
+                              {/* Laser glow bar */}
+                              <div className="absolute left-0 w-full h-1 bg-gradient-to-r from-transparent via-red-500 to-transparent laser-line-anim shadow-[0_0_10px_red] z-10"></div>
+                              
+                              <QrCode className="w-40 h-40 text-slate-950 z-0" />
+                            </div>
+                            <div className="text-center space-y-1">
+                              <span className="inline-flex items-center gap-1 text-[10px] bg-emerald-500/10 text-emerald-400 font-mono font-black border border-emerald-500/20 px-3 py-1 rounded-full uppercase tracking-wider">
+                                <CheckCircle2 className="w-3 h-3 text-emerald-400" /> VOO PRONTO PARA EMBARQUE
+                              </span>
+                              <p className="text-[10px] text-slate-500">Apresente este código no portão de embarque ou no leitor digital</p>
+                            </div>
+
+                            {/* Wallet Badges */}
+                            <div className="flex gap-2 justify-center pt-2">
+                              <button 
+                                onClick={() => alert("Simulado: Cartão adicionado com sucesso à sua Apple Wallet!")}
+                                className="flex items-center gap-1.5 bg-black text-white hover:bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-[10px] font-semibold transition"
+                              >
+                                <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor">
+                                  <path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.1 22C7.79 22.05 6.8 20.68 5.96 19.48C4.25 17 2.94 12.45 4.7 9.39C5.57 7.87 7.13 6.91 8.82 6.88C10.1 6.86 11.32 7.75 12.11 7.75C12.89 7.75 14.37 6.68 15.92 6.84C16.57 6.87 18.39 7.1 19.56 8.82C19.47 8.88 17.39 10.1 17.41 12.63C17.44 15.65 20.06 16.66 20.1 16.67C20.08 16.74 19.67 18.11 18.71 19.5M15.97 4.17C16.63 3.37 17.07 2.28 16.95 1C15.85 1.04 14.51 1.73 13.73 2.65C13.07 3.41 12.49 4.52 12.64 5.78C13.87 5.87 15.12 5.17 15.97 4.17Z" />
+                                </svg>
+                                Add to Apple Wallet
+                              </button>
+                              <button 
+                                onClick={() => alert("Simulado: Cartão adicionado com sucesso à sua Google Wallet!")}
+                                className="flex items-center gap-1.5 bg-slate-900 text-white hover:bg-slate-800 border border-slate-800 rounded-lg px-3 py-2 text-[10px] font-semibold transition"
+                              >
+                                <svg className="w-4 h-4 text-amber-500" viewBox="0 0 24 24" fill="currentColor">
+                                  <path d="M21 7.28V5c0-1.1-.9-2-2-2H5c-1.11 0-2 .9-2 2v2.28c.59-.35 1.27-.56 2-.56h14c.73 0 1.41.21 2 .56zM21 10.9V19c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2v-8.1c.59.35 1.27.56 2 .56h14c.73 0 1.41-.21 2-.56z" />
+                                </svg>
+                                Add to Google Pay
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="bg-slate-950 p-6 rounded-2xl border border-slate-800 text-center relative overflow-hidden group">
+                            {/* Blur effect of barcode */}
+                            <div className="w-44 h-16 mx-auto opacity-10 bg-slate-400 blur-sm flex flex-col justify-between p-1">
+                              {Array.from({ length: 14 }).map((_, i) => (
+                                <div key={i} className="h-full bg-slate-300" style={{ width: `${Math.random() * 4 + 1}px` }}></div>
+                              ))}
+                            </div>
+                            <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/80 p-4">
+                              <span className="w-8 h-8 rounded-full bg-orange-500/10 flex items-center justify-center text-[#FF6600] border border-orange-500/15 mb-2">
+                                <QrCode className="w-4 h-4" />
+                              </span>
+                              <h5 className="text-[11px] font-black text-slate-300 uppercase tracking-wider">CÓDIGO QR BLOQUEADO</h5>
+                              <p className="text-[9.5px] text-slate-500 max-w-[200px] mt-0.5 leading-tight">Escolha os assentos no check-in para liberar seu passe e QR code</p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* BOTTOM PHONE NAVIGATION BAR FOR ADDITIONAL OPTIONS */}
+                  <div className="grid grid-cols-2 gap-2 pt-2 text-xs">
+                    <button
+                      onClick={() => setShowEmdReceipt(true)}
+                      className="flex items-center justify-center gap-1.5 py-3 bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 font-bold rounded-xl transition"
+                    >
+                      <FileText className="w-4 h-4 text-slate-400" />
+                      RECIBO EMD (R$ 86,04)
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (isChecked) {
+                          alert("Aviso: Check-in já realizado! Deseja alterar seus assentos?");
+                        }
+                        setShowSeatMap(true);
+                      }}
+                      className="flex items-center justify-center gap-1.5 py-3 bg-[#FF6600]/10 border border-[#FF6600]/25 hover:bg-[#FF6600]/15 text-[#FF6600] font-black rounded-xl transition"
+                    >
+                      <Armchair className="w-4 h-4 text-[#FF6600]" />
+                      {isChecked ? "ALTERAR ASSENTOS" : "SELECIONAR ASSENTO"}
+                    </button>
+                  </div>
+
+                  <div className="text-center pt-2">
+                    <button
+                      onClick={() => {
+                        alert("Simulando download do cartão de embarque em formato PDF...");
+                        const link = document.createElement('a');
+                        link.href = '#';
+                        link.click();
+                      }}
+                      className="inline-flex items-center gap-1 text-[11px] text-slate-500 hover:text-slate-300 font-bold tracking-tight"
+                    >
+                      <Download className="w-3.5 h-3.5" /> Baixar Cartão em formato PDF (A4)
+                    </button>
+                  </div>
+                </div>
+              )}
+
+            </div>
+
+            {/* Bottom Safe Area / Home indicator line */}
+            <div className="bg-slate-950 py-3 flex justify-center items-center border-t border-slate-900 shrink-0">
+              <div className="w-28 h-1 bg-slate-700 rounded-full"></div>
+            </div>
+          </motion.div>
+        </motion.div>
+      </AnimatePresence>
+    );
+  };
 
   if (isSalvadorAracaju && activeFlight) {
     const leg = activeFlight.legs[0];
@@ -1049,32 +1767,15 @@ const FlightList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
               </div>
 
               {/* Weather info for ports */}
-              <div className="grid grid-cols-2 gap-3">
-                {leg.weatherDeparture && (
-                  <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3 text-xs">
-                    <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase">Clima {leg.departure.code}</span>
-                      <span className="text-xs">{leg.weatherDeparture.condition}</span>
-                    </div>
-                    <div className="flex items-baseline gap-1 text-slate-900">
-                      <span className="text-base font-black">{leg.weatherDeparture.tempMax}°C</span>
-                      <span className="text-[10px] text-slate-500">Sensação {leg.weatherDeparture.feelsLike}°C</span>
-                    </div>
+              {(leg.weatherDeparture || leg.weatherArrival) && (
+                <div className="flex items-center gap-3 mt-4 pt-4 border-t border-slate-200">
+                  <span className="text-[9px] uppercase font-black text-slate-500 tracking-wider font-mono mr-2">CLIMA:</span>
+                  <div className="flex gap-2 overflow-x-auto">
+                    {leg.weatherDeparture && <WeatherWidget weather={leg.weatherDeparture} label={leg.departure.code} compact={true} />}
+                    {leg.weatherArrival && <WeatherWidget weather={leg.weatherArrival} label={leg.arrival.code} compact={true} />}
                   </div>
-                )}
-                {leg.weatherArrival && (
-                  <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3 text-xs">
-                    <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase">Clima {leg.arrival.code}</span>
-                      <span className="text-xs">{leg.weatherArrival.condition}</span>
-                    </div>
-                    <div className="flex items-baseline gap-1 text-slate-900">
-                      <span className="text-base font-black">{leg.weatherArrival.tempMax}°C</span>
-                      <span className="text-[10px] text-slate-500">Sensação {leg.weatherArrival.feelsLike}°C</span>
-                    </div>
-                  </div>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -1152,15 +1853,24 @@ const FlightList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
           </div>
 
           {/* Action button at bottom */}
-          <div className="mt-6 pt-4 border-t border-slate-200/80 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <span className="text-[10.5px] text-slate-500 font-semibold">Localizador da Reserva: <strong className="font-mono text-slate-900 text-xs ml-1 bg-slate-200 px-2.5 py-1 rounded">{activeFlight.bookingReference}</strong></span>
+          <div className="mt-6 pt-4 border-t border-slate-200/80 flex flex-col gap-4">
             <button 
-              id="edit_ticket_btn"
-              onClick={() => alert('Para editar dados do bilhete, entre em contato com kiss&fly ou agência parceira.')}
-              className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 border border-slate-200 hover:border-slate-500 rounded-xl transition-all font-black text-xs uppercase tracking-wider text-slate-600 hover:text-slate-900 bg-slate-900"
+              id="open_boarding_pass_premium_btn"
+              onClick={() => setOpenBoardingPass(true)}
+              className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-[#FF6600] hover:bg-[#E05000] text-white rounded-2xl transition-all font-black text-xs uppercase tracking-widest shadow-lg shadow-[#FF6600]/25 border border-[#FF6600]/20"
             >
-              EDITAR DADOS DO BILHETE
+              <Smartphone className="w-4 h-4 text-white" /> EMITIR CARTÕES DE EMBARQUE DIGITAL (GOL)
             </button>
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <span className="text-[10.5px] text-slate-500 font-semibold">Localizador da Reserva: <strong className="font-mono text-slate-900 text-xs ml-1 bg-slate-200 px-2.5 py-1 rounded">{activeFlight.bookingReference}</strong></span>
+              <button 
+                id="edit_ticket_btn"
+                onClick={() => alert('Para editar dados do bilhete, entre em contato com kiss&fly ou agência parceira.')}
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 border border-slate-200 hover:border-slate-500 rounded-xl transition-all font-black text-xs uppercase tracking-wider text-slate-600 hover:text-slate-900 bg-slate-900"
+              >
+                EDITAR DADOS DO BILHETE
+              </button>
+            </div>
           </div>
         </div>
 
@@ -1206,6 +1916,7 @@ const FlightList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
             ))}
           </div>
         </div>
+        {renderBoardingPassModal()}
       </div>
     );
   }
@@ -1439,35 +2150,41 @@ const FlightList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                           <Clock className="w-3.5 h-3.5" /> {leg.duration}
                         </span>
                       </div>
-                      
-                      <div className="grid grid-cols-[1fr,auto,1fr] gap-4 items-center mb-4 text-center max-w-md">
-                        <div>
-                          <p className="text-2xl font-display font-black text-slate-900">{leg.departure.code}</p>
-                          <p className="text-[11px] font-black text-emerald-600 font-mono">{leg.departure.time}</p>
-                          <p className="text-[10px] text-slate-500 font-medium leading-tight mt-1">{leg.departure.city}</p>
-                          <p className="text-[9px] text-slate-500 font-mono mt-0.5 font-bold">{leg.departure.date}</p>
-                        </div>
-                        <Plane className="w-5 h-5 text-slate-700 rotate-90" />
-                        <div>
-                          <p className="text-2xl font-display font-black text-slate-900">{leg.arrival.code}</p>
-                          <p className="text-[11px] font-black text-orange-400 font-mono">{leg.arrival.time}</p>
-                          <p className="text-[10px] text-slate-500 font-medium leading-tight mt-1">{leg.arrival.city}</p>
-                          <p className="text-[9px] text-slate-500 font-mono mt-0.5 font-bold">{leg.arrival.date}</p>
-                        </div>
-                      </div>
 
-                      {leg.weatherArrival && (
-                        <div className="mt-3 bg-white/5 border border-slate-200 rounded-2xl p-3 w-fit max-w-[280px]">
-                          <span className="text-[9px] font-black text-slate-500 tracking-wider block mb-1 font-mono uppercase">Previsão Destino ({leg.arrival.code})</span>
-                          <div className="flex items-center gap-2">
-                            <CloudSun className="w-5 h-5 text-amber-600" />
-                            <div>
-                              <p className="text-xs font-black text-slate-900">{leg.weatherArrival.tempMax}°C <span className="text-[10px] text-slate-500 font-bold">Max</span></p>
-                              <p className="text-[9.5px] text-slate-500 font-mono font-medium">{leg.weatherArrival.condition} • Sente {leg.weatherArrival.feelsLike}°C</p>
+                      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-4">
+                        <div className="flex items-center justify-between gap-6 max-w-md flex-1">
+                          <div className="flex flex-col items-start">
+                            <div className="flex items-baseline gap-2">
+                              <p className="text-2xl font-display font-black text-slate-900">{leg.departure.code}</p>
+                              <p className="text-[11px] font-black text-emerald-600 font-mono">{leg.departure.time}</p>
                             </div>
+                            <p className="text-[10px] text-slate-500 font-medium leading-tight">{leg.departure.city}</p>
+                            <p className="text-[9px] text-slate-500 font-mono mt-0.5 font-bold">{leg.departure.date}</p>
+                          </div>
+                          <Plane className="w-5 h-5 text-slate-700" />
+                          <div className="flex flex-col items-end">
+                            <div className="flex items-baseline gap-2">
+                              <p className="text-2xl font-display font-black text-slate-900">{leg.arrival.code}</p>
+                              <p className="text-[11px] font-black text-orange-400 font-mono">{leg.arrival.time}</p>
+                            </div>
+                            <p className="text-[10px] text-slate-500 font-medium leading-tight">{leg.arrival.city}</p>
+                            <p className="text-[9px] text-slate-500 font-mono mt-0.5 font-bold">{leg.arrival.date}</p>
                           </div>
                         </div>
-                      )}
+
+                        {leg.weatherArrival && (
+                          <div className="bg-white/5 border border-slate-200 rounded-2xl p-3 w-fit shrink-0 mt-3 md:mt-0">
+                            <span className="text-[9px] font-black text-slate-500 tracking-wider block mb-1 font-mono uppercase">Previsão Destino ({leg.arrival.code})</span>
+                            <div className="flex items-center gap-2">
+                              <CloudSun className="w-5 h-5 text-amber-600" />
+                              <div>
+                                <p className="text-xs font-black text-slate-900">{leg.weatherArrival.tempMax}°C <span className="text-[10px] text-slate-500 font-bold">Max</span></p>
+                                <p className="text-[9.5px] text-slate-500 font-mono font-medium">{leg.weatherArrival.condition} • Sente {leg.weatherArrival.feelsLike}°C</p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -1491,6 +2208,7 @@ const FlightList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
           </div>
 
         </div>
+        {renderBoardingPassModal()}
       </div>
     );
   }
@@ -1512,18 +2230,31 @@ const FlightList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
               {trip.legs.map((leg: FlightLeg, idx: number) => (
                 <div key={idx} className="relative pl-4 border-l-2 border-dashed border-gray-300">
                   <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-white border-4 border-green-500"></div>
-                  <div className="mb-2 flex justify-between items-center"><span className="text-xs font-bold text-green-700 bg-green-100 px-2 py-0.5 rounded">{leg.airline} - {leg.flightNumber}</span><span className="text-xs text-gray-400 flex items-center gap-1"><Clock className="w-3 h-3" /> {leg.duration}</span></div>
-                  <div className="grid grid-cols-[1fr,auto,1fr] gap-2 items-center mb-4 text-center">
-                    <div><p className="text-2xl font-display font-black text-slate-800">{leg.departure.code}</p><p className="text-xs font-bold text-gray-600">{leg.departure.time}</p></div>
-                    <Plane className="w-4 h-4 text-gray-300 rotate-90" />
-                    <div><p className="text-2xl font-display font-black text-slate-800">{leg.arrival.code}</p><p className="text-xs font-bold text-gray-600">{leg.arrival.time}</p></div>
-                  </div>
-                  {(leg.weatherDeparture || leg.weatherArrival) && (
-                    <div className="flex gap-2 overflow-x-auto pb-2">
-                      {leg.weatherDeparture && <WeatherWidget weather={leg.weatherDeparture} label={leg.departure.code} />}
-                      {leg.weatherArrival && <WeatherWidget weather={leg.weatherArrival} label={leg.arrival.code} />}
+                  
+                  <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div className="flex-1 w-full">
+                      <div className="mb-2 flex justify-between items-center"><span className="text-xs font-bold text-green-700 bg-green-100 px-2 py-0.5 rounded">{leg.airline} - {leg.flightNumber}</span><span className="text-xs text-gray-400 flex items-center gap-1"><Clock className="w-3 h-3" /> {leg.duration}</span></div>
+                      
+                      <div className="flex items-center gap-6 mb-2">
+                        <div className="flex items-baseline gap-2">
+                          <p className="text-2xl font-display font-black text-slate-800">{leg.departure.code}</p>
+                          <p className="text-sm font-bold text-gray-600">{leg.departure.time}</p>
+                        </div>
+                        <Plane className="w-4 h-4 text-gray-400" />
+                        <div className="flex items-baseline gap-2">
+                          <p className="text-2xl font-display font-black text-slate-800">{leg.arrival.code}</p>
+                          <p className="text-sm font-bold text-gray-600">{leg.arrival.time}</p>
+                        </div>
+                      </div>
                     </div>
-                  )}
+
+                    {(leg.weatherDeparture || leg.weatherArrival) && (
+                      <div className="flex items-center gap-2 shrink-0">
+                        {leg.weatherDeparture && <WeatherWidget weather={leg.weatherDeparture} label={leg.departure.code} compact={true} />}
+                        {leg.weatherArrival && <WeatherWidget weather={leg.weatherArrival} label={leg.arrival.code} compact={true} />}
+                      </div>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
@@ -1537,10 +2268,19 @@ const FlightList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                   <span className="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[10px] ml-auto">{trip.financials.status}</span>
                 </div>
               )}
+              {trip.provider?.toLowerCase().includes('gol') && (
+                <button
+                  onClick={() => setOpenBoardingPass(true)}
+                  className="w-full mt-3 flex items-center justify-center gap-2 py-3 bg-[#FF6600] hover:bg-[#E05000] text-white font-black text-xs uppercase tracking-widest rounded-2xl transition-all shadow-md shadow-[#FF6600]/20"
+                >
+                  <Smartphone className="w-4 h-4 text-white" /> EMITIR CARTÃO DE EMBARQUE DIGITAL (GOL)
+                </button>
+              )}
             </div>
           </div>
         ))}
       </div>
+      {renderBoardingPassModal()}
     </div>
   );
 };

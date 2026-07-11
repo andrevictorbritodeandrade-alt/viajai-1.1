@@ -414,7 +414,7 @@ const Header: React.FC<HeaderProps> = ({ tripName, lat, lon, onBack, tripId }) =
             )}
             <div className="flex flex-col">
               <h1 className="text-xl sm:text-2xl lg:text-3xl font-normal text-white tracking-tight">
-                Sua Viagem, Seu Jeito. Olá, <span className="font-bold">André!</span>
+                BEM-VINDO AO SEU PERFIL, <span className="font-bold">ANDRÉ BRITO</span>
               </h1>
               <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl">
                 Tudo pronto para você explorar o melhor de Salvador, Aracaju e Maceió. Deixe os detalhes com a gente.
