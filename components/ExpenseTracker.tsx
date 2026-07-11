@@ -12,7 +12,7 @@ import {
   Coins,
   AlertTriangle
 } from 'lucide-react';
-import { syncDataToCloud, loadDataFromCloud } from '../services/firebase';
+import { syncDataToCloud, loadDataFromCloud, subscribeToCloudData } from '../services/firebase';
 import { getRates } from '../services/currencyService';
 import { EXPENSES_STORAGE_KEY } from '../constants';
 import { CurrencyCode } from '../types';
@@ -38,17 +38,13 @@ const ExpenseTracker: React.FC<{
   const [expenses, setExpenses] = useState<Expense[]>(() => {
     try {
       const saved = localStorage.getItem(EXPENSES_STORAGE_KEY);
-      if (saved) return JSON.parse(saved);
-      
-      // If nothing saved, initialize with cheapest accommodation
-      return [{
-          id: 'initial_stay_mar_hotel',
-          description: 'Estadia: Mar Hotel Rio Vermelho (Salvador)',
-          amount: 570,
-          currency: 'BRL',
-          amountInBRL: 570,
-          date: new Date().toLocaleDateString('pt-BR')
-      }];
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          return parsed.filter((e: any) => e.id !== 'initial_stay_mar_hotel' && !e.description.includes('Mar Hotel Rio Vermelho'));
+        }
+      }
+      return [];
     } catch { return []; }
   });
 
@@ -57,28 +53,31 @@ const ExpenseTracker: React.FC<{
 
   const [desc, setDesc] = useState('');
   const [amount, setAmount] = useState('');
-  const [currency, setCurrency] = useState<CurrencyCode>('ZAR');
+  const [currency, setCurrency] = useState<CurrencyCode>(() => {
+    return trip.isDomestic ? 'BRL' : 'ZAR';
+  });
   const [rates, setRates] = useState<{USD: number, BRL: number, ZAR: number} | null>(null);
 
   useEffect(() => {
     // 1. Load Rates (Network First, but CurrencyService handles cache)
-    const initData = async () => {
+    const initRates = async () => {
       const r = await getRates();
       setRates(r);
-
-      // 2. Background Sync for Expenses
-      if (navigator.onLine) {
-        try {
-            const cloudData = await loadDataFromCloud('expenses_log');
-            if (cloudData && cloudData.list) {
-                // Em um app real, faríamos merge. Aqui, assumimos cloud como verdade se online.
-                setExpenses(cloudData.list);
-                localStorage.setItem(EXPENSES_STORAGE_KEY, JSON.stringify(cloudData.list));
-            }
-        } catch (e) { console.error("Background sync failed", e); }
-      }
     };
-    initData();
+    initRates();
+
+    // 2. Real-time Cloud Sync for Expenses
+    const unsubscribe = subscribeToCloudData('expenses_log', (data) => {
+      if (data && Array.isArray(data.list)) {
+        const filtered = data.list.filter((e: any) => e.id !== 'initial_stay_mar_hotel' && !e.description.includes('Mar Hotel Rio Vermelho'));
+        setExpenses(filtered);
+        localStorage.setItem(EXPENSES_STORAGE_KEY, JSON.stringify(filtered));
+      }
+    });
+
+    return () => {
+      if (typeof unsubscribe === 'function') unsubscribe();
+    };
   }, []);
 
   // Fetch AI Advice on expenses with cache
@@ -319,9 +318,19 @@ const ExpenseTracker: React.FC<{
                  onChange={e => setCurrency(e.target.value as CurrencyCode)}
                  className="w-full p-3 bg-gray-100 rounded-xl font-bold text-gray-700 appearance-none outline-none border border-transparent focus:bg-white focus:border-purple-500"
                >
-                 <option value="ZAR">Rand (R)</option>
-                 <option value="USD">Dólar ($)</option>
-                 <option value="BRL">Real (R$)</option>
+                 {trip.isDomestic ? (
+                   <>
+                     <option value="BRL">Real (R$)</option>
+                     <option value="USD">Dólar ($)</option>
+                     <option value="ZAR">Rand (R)</option>
+                   </>
+                 ) : (
+                   <>
+                     <option value="ZAR">Rand (R)</option>
+                     <option value="USD">Dólar ($)</option>
+                     <option value="BRL">Real (R$)</option>
+                   </>
+                 )}
                </select>
             </div>
             <input 

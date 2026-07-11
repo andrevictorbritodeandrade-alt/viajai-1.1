@@ -16,7 +16,9 @@ import {
   ShieldCheck,
   CreditCard,
   Sparkles,
-  Loader2
+  Loader2,
+  Coins,
+  Plane
 } from 'lucide-react';
 import { GUIDE_STORAGE_KEY } from './GuideList';
 import { EXPENSES_STORAGE_KEY } from '../constants';
@@ -69,20 +71,20 @@ const WalletInput: React.FC<{
   onChange: (val: string) => void;
   colorClass: string;
 }> = ({ label, icon, value, onChange, colorClass }) => (
-  <div className={`flex items-center gap-3 p-3 rounded-xl border ${colorClass} bg-white shadow-sm transition-all focus-within:ring-2 focus-within:ring-blue-200`}>
+  <div className={`flex items-center gap-4 p-4 rounded-2xl border ${colorClass} shadow-md transition-all focus-within:ring-2 focus-within:ring-cyan-500/20`}>
     <div className="shrink-0">
       {icon}
     </div>
-    <div className="flex-1">
-      <span className="text-[10px] font-bold text-gray-400 uppercase block mb-0.5">{label}</span>
-      <div className="flex items-center gap-1">
-        <span className="text-gray-400 text-xs font-bold">R$</span>
+    <div className="flex-1 min-w-0">
+      <span className="text-xs md:text-sm font-black tracking-wider text-slate-100 uppercase block mb-1">{label}</span>
+      <div className="flex items-center gap-1.5">
+        <span className="text-slate-200 text-sm md:text-base font-black">R$</span>
         <input 
           type="number" 
           value={value || ''}
           onChange={(e) => onChange(e.target.value)}
           placeholder="0"
-          className="w-full text-sm font-bold text-gray-800 outline-none bg-transparent"
+          className="w-full text-lg md:text-2xl font-black text-white outline-none bg-transparent"
         />
       </div>
     </div>
@@ -113,6 +115,9 @@ const FinancialControl: React.FC<{
         const saved = localStorage.getItem('viajai_finance_v1');
         const parsed = saved ? JSON.parse(saved) : null;
         if (parsed && typeof parsed.hotelCost === 'number') {
+          if (selectedTrip?.id === 'am_salvador_julho' && parsed.hotelCost === 0) {
+            return 1281.51;
+          }
           return parsed.hotelCost;
         }
     } catch {}
@@ -124,6 +129,9 @@ const FinancialControl: React.FC<{
         const saved = localStorage.getItem('viajai_finance_v1');
         const parsed = saved ? JSON.parse(saved) : null;
         if (parsed && typeof parsed.carRentalCost === 'number') {
+          if (selectedTrip?.id === 'am_salvador_julho' && parsed.carRentalCost === 0) {
+            return 455.53;
+          }
           return parsed.carRentalCost;
         }
     } catch {}
@@ -137,6 +145,20 @@ const FinancialControl: React.FC<{
     } catch { return 0; }
   });
 
+  const [airfareCost, setAirfareCost] = useState<number>(() => {
+    try {
+        const saved = localStorage.getItem('viajai_finance_v1');
+        const parsed = saved ? JSON.parse(saved) : null;
+        if (parsed && typeof parsed.airfareCost === 'number') {
+          if (selectedTrip?.id === 'am_salvador_julho' && parsed.airfareCost === 0) {
+            return 1394.00;
+          }
+          return parsed.airfareCost;
+        }
+    } catch { return 0; }
+    return (selectedTrip?.id === 'am_salvador_julho') ? 1394.00 : 0;
+  });
+
   // Sync defaults on trip.id change
   useEffect(() => {
     const saved = localStorage.getItem('viajai_finance_v1');
@@ -146,18 +168,22 @@ const FinancialControl: React.FC<{
         if (trip.id === 'am_salvador_julho') {
           setHotelCost(typeof parsed.hotelCost === 'number' && parsed.hotelCost !== 0 ? parsed.hotelCost : 1281.51);
           setCarRentalCost(typeof parsed.carRentalCost === 'number' && parsed.carRentalCost !== 0 ? parsed.carRentalCost : 455.53);
+          setAirfareCost(typeof parsed.airfareCost === 'number' && parsed.airfareCost !== 0 ? parsed.airfareCost : 1394.00);
         } else {
           setHotelCost(parsed.hotelCost || 0);
           setCarRentalCost(parsed.carRentalCost || 0);
+          setAirfareCost(parsed.airfareCost || 0);
         }
         setBusCost(parsed.busCost || 0);
       } catch {
         if (trip.id === 'am_salvador_julho') {
           setHotelCost(1281.51);
           setCarRentalCost(455.53);
+          setAirfareCost(1394.00);
         } else {
           setHotelCost(0);
           setCarRentalCost(0);
+          setAirfareCost(0);
         }
         setBusCost(0);
       }
@@ -165,9 +191,11 @@ const FinancialControl: React.FC<{
       if (trip.id === 'am_salvador_julho') {
         setHotelCost(1281.51);
         setCarRentalCost(455.53);
+        setAirfareCost(1394.00);
       } else {
         setHotelCost(0);
         setCarRentalCost(0);
+        setAirfareCost(0);
       }
       setBusCost(0);
     }
@@ -189,17 +217,33 @@ const FinancialControl: React.FC<{
             const cloudData = await loadDataFromCloud('financial_data');
             if (cloudData) {
                 if (cloudData.wallets) setWallets(cloudData.wallets);
-                if (cloudData.hotelCost) setHotelCost(cloudData.hotelCost);
-                if (cloudData.busCost) setBusCost(cloudData.busCost);
-                if (cloudData.carRentalCost) setCarRentalCost(cloudData.carRentalCost);
-                localStorage.setItem('viajai_finance_v1', JSON.stringify(cloudData));
+                
+                if (trip.id === 'am_salvador_julho') {
+                  setHotelCost(typeof cloudData.hotelCost === 'number' && cloudData.hotelCost !== 0 ? cloudData.hotelCost : 1281.51);
+                  setCarRentalCost(typeof cloudData.carRentalCost === 'number' && cloudData.carRentalCost !== 0 ? cloudData.carRentalCost : 455.53);
+                  setAirfareCost(typeof cloudData.airfareCost === 'number' && cloudData.airfareCost !== 0 ? cloudData.airfareCost : 1394.00);
+                } else {
+                  if (typeof cloudData.hotelCost === 'number') setHotelCost(cloudData.hotelCost);
+                  if (typeof cloudData.carRentalCost === 'number') setCarRentalCost(cloudData.carRentalCost);
+                  if (typeof cloudData.airfareCost === 'number') setAirfareCost(cloudData.airfareCost);
+                }
+                if (typeof cloudData.busCost === 'number') setBusCost(cloudData.busCost);
+                
+                const updatedLocal = {
+                  wallets: cloudData.wallets || { wise: 0, nomad: 0, inter: 0, cash: 0 },
+                  hotelCost: trip.id === 'am_salvador_julho' ? (typeof cloudData.hotelCost === 'number' && cloudData.hotelCost !== 0 ? cloudData.hotelCost : 1281.51) : (cloudData.hotelCost || 0),
+                  carRentalCost: trip.id === 'am_salvador_julho' ? (typeof cloudData.carRentalCost === 'number' && cloudData.carRentalCost !== 0 ? cloudData.carRentalCost : 455.53) : (cloudData.carRentalCost || 0),
+                  airfareCost: trip.id === 'am_salvador_julho' ? (typeof cloudData.airfareCost === 'number' && cloudData.airfareCost !== 0 ? cloudData.airfareCost : 1394.00) : (cloudData.airfareCost || 0),
+                  busCost: cloudData.busCost || 0
+                };
+                localStorage.setItem('viajai_finance_v1', JSON.stringify(updatedLocal));
             }
         } catch (e) {
             console.error("Erro sync financeiro (background)", e);
         }
     };
     if (navigator.onLine) initData();
-  }, []);
+  }, [trip.id]);
 
   // Load Estimated Costs from GuideList (Local)
   useEffect(() => {
@@ -281,7 +325,7 @@ const FinancialControl: React.FC<{
 
   // Auto Save
   useEffect(() => {
-    const dataToSave = { wallets, hotelCost, busCost, carRentalCost };
+    const dataToSave = { wallets, hotelCost, busCost, carRentalCost, airfareCost };
     localStorage.setItem('viajai_finance_v1', JSON.stringify(dataToSave));
     
     // Debounce cloud sync
@@ -289,7 +333,7 @@ const FinancialControl: React.FC<{
         syncDataToCloud('financial_data', dataToSave);
     }, 2000);
     return () => clearTimeout(timeoutId);
-  }, [wallets, hotelCost, busCost, carRentalCost]);
+  }, [wallets, hotelCost, busCost, carRentalCost, airfareCost]);
 
   // Wallet Handlers
   const updateWallet = (key: keyof Wallets, value: string) => {
@@ -300,7 +344,7 @@ const FinancialControl: React.FC<{
   // Calculations
   const totalBalance = wallets.wise + wallets.nomad + wallets.inter + wallets.cash;
   const totalGuideEstimated = totalCPT + totalJNB;
-  const totalPending = hotelCost + busCost + carRentalCost; 
+  const totalPending = hotelCost + busCost + carRentalCost + airfareCost; 
   const totalEstimatedTripCost = totalPending + totalGuideEstimated;
   
   const currentWalletBalance = totalBalance - totalExpenses;
@@ -319,54 +363,47 @@ const FinancialControl: React.FC<{
              <Cloud className="w-3 h-3 text-blue-300 opacity-50" />
           </div>
 
-          <div className="grid grid-cols-2 gap-2 mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
             <WalletInput 
-              label="Wise" 
-              icon={<WiseLogo />} 
-              value={wallets.wise} 
-              onChange={(v) => updateWallet('wise', v)}
-              colorClass="border-[#9FE870]/30"
-            />
-            <WalletInput 
-              label="Nomad" 
-              icon={<NomadLogo />} 
-              value={wallets.nomad} 
-              onChange={(v) => updateWallet('nomad', v)}
-              colorClass="border-[#FFD700]/30"
-            />
-            <WalletInput 
-              label="Banco Inter" 
-              icon={<InterLogo />} 
-              value={wallets.inter} 
-              onChange={(v) => updateWallet('inter', v)}
-              colorClass="border-[#FF7A00]/30"
-            />
-            <WalletInput 
-              label="Em Espécie" 
+              label="Dinheiro Vivo (Espécie)" 
               icon={<CashLogo />} 
               value={wallets.cash} 
               onChange={(v) => updateWallet('cash', v)}
-              colorClass="border-green-200"
+              colorClass="border-emerald-500/30 bg-slate-900/40 text-white"
+            />
+            <WalletInput 
+              label="Débito / PIX" 
+              icon={<InterLogo />} 
+              value={wallets.inter} 
+              onChange={(v) => updateWallet('inter', v)}
+              colorClass="border-orange-500/30 bg-slate-900/40 text-white"
+            />
+            <WalletInput 
+              label="Cartão de Crédito" 
+              icon={<WiseLogo />} 
+              value={wallets.wise} 
+              onChange={(v) => updateWallet('wise', v)}
+              colorClass="border-blue-500/30 bg-slate-900/40 text-white"
             />
           </div>
         </div>
 
-        <div className="bg-white m-1 rounded-2xl p-4">
-          <div className="flex justify-between items-center mb-2 border-b border-gray-100 pb-2">
-             <span className="text-xs font-bold text-gray-400">Total Acumulado</span>
-             <span className="text-sm font-bold text-slate-700">{toBRL(totalBalance)}</span>
+        <div className="bg-slate-900/60 m-1 rounded-2xl p-5 border border-white/5">
+          <div className="flex justify-between items-center mb-3 border-b border-white/5 pb-3">
+             <span className="text-sm font-black text-slate-300">Total Levado (Dinheiro, Débito e Crédito)</span>
+             <span className="text-base font-black text-white">{toBRL(totalBalance)}</span>
           </div>
           
           <div className="flex justify-between items-center mb-4">
-             <span className="text-xs font-bold text-red-400 flex items-center gap-1">
-               <Receipt className="w-3 h-3" /> Gastos
+             <span className="text-sm font-black text-rose-400 flex items-center gap-1.5">
+               <Receipt className="w-4 h-4" /> Gastos Realizados (Mercado, etc.)
              </span>
-             <span className="text-sm font-bold text-red-500">- {toBRL(totalExpenses)}</span>
+             <span className="text-base font-black text-rose-400">- {toBRL(totalExpenses)}</span>
           </div>
 
-          <div className="bg-slate-50 p-3 rounded-xl border border-slate-100 flex justify-between items-end">
-              <span className="text-slate-500 text-[10px] uppercase font-black tracking-widest mb-1">Saldo Líquido</span>
-              <span className={`text-2xl font-black font-display tracking-tight ${currentWalletBalance < 0 ? 'text-red-500' : 'text-green-600'}`}>
+          <div className="bg-emerald-950/40 p-4 rounded-xl border border-emerald-500/20 flex justify-between items-center">
+              <span className="text-emerald-300 text-xs uppercase font-black tracking-widest">Saldo Restante Disponível</span>
+              <span className={`text-2xl font-black font-display tracking-tight ${currentWalletBalance < 0 ? 'text-rose-400' : 'text-emerald-400'}`}>
                 {toBRL(currentWalletBalance)}
               </span>
           </div>
@@ -514,56 +551,71 @@ const FinancialControl: React.FC<{
        </div>
 
       <div className="bg-white rounded-3xl border border-gray-200 p-5 shadow-sm">
-        <h3 className="text-gray-800 font-bold flex items-center gap-2 mb-4 font-display">
-          <TrendingDown className="w-5 h-5 text-orange-500" />
-          Custos Extras (Pendentes)
+        <h3 className="text-gray-900 font-extrabold flex items-center gap-2 mb-4 font-display text-base">
+          <TrendingDown className="w-5 h-5 text-orange-500 animate-pulse" />
+          Custos Extras da Viagem (Pendentes)
         </h3>
-        <p className="text-xs text-gray-400 mb-4 leading-relaxed">
+        <p className="text-xs text-slate-500 mb-4 leading-relaxed font-semibold">
           Estes valores são somados à meta da viagem, mas não são descontados do saldo até você pagar.
         </p>
         <div className="space-y-4">
           <div>
-            <label className="text-xs font-bold text-gray-500 uppercase mb-1 flex items-center gap-1">
-              <Hotel className="w-3.5 h-3.5" /> Hospedagem (Reservas)
+            <label className="text-sm md:text-base font-black text-slate-900 uppercase mb-1.5 flex items-center gap-1.5">
+              <Plane className="w-5 h-5 text-blue-500" /> Aéreo / Passagens Aéreas
             </label>
-            <div className="flex items-center bg-gray-50 rounded-xl px-3 border border-gray-200 focus-within:border-orange-400 transition-colors">
-              <span className="text-gray-400 text-sm font-bold mr-2">R$</span>
+            <div className="flex items-center bg-slate-50 rounded-2xl px-4 border border-slate-300 focus-within:border-cyan-500 focus-within:ring-2 focus-within:ring-cyan-500/10 transition-all">
+              <span className="text-slate-900 text-base md:text-xl font-black mr-2">R$</span>
+              <input 
+                type="number"
+                value={airfareCost || ''}
+                onChange={(e) => setAirfareCost(parseFloat(e.target.value) || 0)}
+                placeholder="0,00"
+                className="bg-transparent w-full py-4 text-slate-950 font-black text-xl md:text-2xl outline-none placeholder:text-slate-400 placeholder:font-black placeholder:text-xl md:placeholder:text-2xl"
+              />
+            </div>
+          </div>
+          <div>
+            <label className="text-sm md:text-base font-black text-slate-900 uppercase mb-1.5 flex items-center gap-1.5">
+              <Hotel className="w-5 h-5 text-indigo-500" /> Hospedagem (Reservas)
+            </label>
+            <div className="flex items-center bg-slate-50 rounded-2xl px-4 border border-slate-300 focus-within:border-cyan-500 focus-within:ring-2 focus-within:ring-cyan-500/10 transition-all">
+              <span className="text-slate-900 text-base md:text-xl font-black mr-2">R$</span>
               <input 
                 type="number"
                 value={hotelCost || ''}
                 onChange={(e) => setHotelCost(parseFloat(e.target.value) || 0)}
                 placeholder="0,00"
-                className="bg-transparent w-full py-3 text-gray-700 font-bold outline-none"
+                className="bg-transparent w-full py-4 text-slate-950 font-black text-xl md:text-2xl outline-none placeholder:text-slate-400 placeholder:font-black placeholder:text-xl md:placeholder:text-2xl"
               />
             </div>
           </div>
           <div>
-            <label className="text-xs font-bold text-gray-500 uppercase mb-1 flex items-center gap-1">
-              <Car className="w-3.5 h-3.5" /> Aluguel de Carro (Voucher)
+            <label className="text-sm md:text-base font-black text-slate-900 uppercase mb-1.5 flex items-center gap-1.5">
+              <Car className="w-5 h-5 text-emerald-500" /> Aluguel de Carro (Voucher)
             </label>
-            <div className="flex items-center bg-gray-50 rounded-xl px-3 border border-gray-200 focus-within:border-orange-400 transition-colors">
-              <span className="text-gray-400 text-sm font-bold mr-2">R$</span>
+            <div className="flex items-center bg-slate-50 rounded-2xl px-4 border border-slate-300 focus-within:border-cyan-500 focus-within:ring-2 focus-within:ring-cyan-500/10 transition-all">
+              <span className="text-slate-900 text-base md:text-xl font-black mr-2">R$</span>
               <input 
                 type="number"
                 value={carRentalCost || ''}
                 onChange={(e) => setCarRentalCost(parseFloat(e.target.value) || 0)}
                 placeholder="0,00"
-                className="bg-transparent w-full py-3 text-gray-700 font-bold outline-none"
+                className="bg-transparent w-full py-4 text-slate-950 font-black text-xl md:text-2xl outline-none placeholder:text-slate-400 placeholder:font-black placeholder:text-xl md:placeholder:text-2xl"
               />
             </div>
           </div>
           <div>
-            <label className="text-xs font-bold text-gray-500 uppercase mb-1 flex items-center gap-1">
-              <Bus className="w-3.5 h-3.5" /> Ônibus / Transfers Extras
+            <label className="text-sm md:text-base font-black text-slate-900 uppercase mb-1.5 flex items-center gap-1.5">
+              <Bus className="w-5 h-5 text-amber-500" /> Ônibus / Transfers Extras
             </label>
-             <div className="flex items-center bg-gray-50 rounded-xl px-3 border border-gray-200 focus-within:border-orange-400 transition-colors">
-              <span className="text-gray-400 text-sm font-bold mr-2">R$</span>
+            <div className="flex items-center bg-slate-50 rounded-2xl px-4 border border-slate-300 focus-within:border-cyan-500 focus-within:ring-2 focus-within:ring-cyan-500/10 transition-all">
+              <span className="text-slate-900 text-base md:text-xl font-black mr-2">R$</span>
               <input 
                 type="number"
                 value={busCost || ''}
                 onChange={(e) => setBusCost(parseFloat(e.target.value) || 0)}
                 placeholder="0,00"
-                className="bg-transparent w-full py-3 text-gray-700 font-bold outline-none"
+                className="bg-transparent w-full py-4 text-slate-950 font-black text-xl md:text-2xl outline-none placeholder:text-slate-400 placeholder:font-black placeholder:text-xl md:placeholder:text-2xl"
               />
             </div>
           </div>

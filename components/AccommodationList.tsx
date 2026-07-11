@@ -341,22 +341,22 @@ const SALVADOR_ARACAJU_ACCOMMODATION_DATA = [
     ]
   },
   {
-    region: 'Maragogi — Temporada (17 a 19 de Julho de 2026 — 2 noites)',
+    region: 'Maceió — Temporada (17 a 19 de Julho de 2026 — 2 noites)',
     options: [
       {
-        id: 'ssa_aju_airbnb_maragogi',
-        name: 'Apartamento em Maragogi (JV APRTS 05)',
-        type: 'Quarto privativo • 1 cama',
-        neighborhood: 'Praia de Maragogi',
-        rating: 4.96,
-        pricePerDay: 97.20,
-        totalPrice: 225.64,
+        id: 'ssa_aju_airbnb_maceio',
+        name: 'Casa/apto inteiro em Maceió',
+        type: 'Casa/apto inteiro • 1 cama • 2 hóspedes',
+        neighborhood: 'Maceió',
+        rating: 4.97,
+        pricePerDay: 190.00,
+        totalPrice: 380.00,
         totalDays: 2,
-        proximity: 'Rua Fernando Paes. Apenas 3 minutos de caminhada até a praia!',
-        description: 'Oferecido por Fabiana. Código de confirmação: HM5SHNNWAR. Check-in depois das 14:00, Checkout antes das 12:00. Localização privilegiada com Wi-Fi, ar-condicionado e cozinha equipada. Preço total: R$ 225,64.',
-        amenities: ['Oferecido por Fabiana', 'Conf: HM5SHNNWAR', 'Cozinha Completa', 'Apenas 3 min da praia', 'Wi-Fi de Alta Velocidade', 'Ar-condicionado'],
-        image: 'https://images.unsplash.com/photo-1540518614846-7eded433c457?q=80&w=500&auto=format&fit=crop',
-        url: 'https://www.airbnb.com.br/s/Maragogi--Alagoas'
+        proximity: 'Hospedagem em Maceió. Código de confirmação: HMEPQPS338.',
+        description: 'Oferecido por Luciano. Código de confirmação: HMEPQPS338. Check-in 17/07, Checkout 19/07. Casa/apto inteiro, 1 cama, 2 hóspedes. Preço total: R$ 380,00.',
+        amenities: ['Oferecido por Luciano', 'Conf: HMEPQPS338', '1 cama', '2 hóspedes', 'Ar-condicionado', 'Cozinha Completa', 'Wi-Fi'],
+        image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=500&auto=format&fit=crop',
+        url: 'https://www.airbnb.com.br/s/Maceio--Alagoas'
       }
     ]
   },
@@ -433,17 +433,90 @@ const AccommodationList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       <CategoryHeader title={menuItem?.title || 'HOSPEDAGEM'} onBack={onBack} bgImage={menuItem?.bgImage} />
 
       <div className="space-y-8 px-2">
-        {currentAccommodationData.map((regionGroup) => (
-            <div key={regionGroup.region} className="space-y-4">
-                <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest px-1">
-                    {regionGroup.region}
-                </h3>
-                
-                {regionGroup.options.map(acc => (
-                    <AccommodationCard key={acc.id} acc={acc} />
-                ))}
-            </div>
-        ))}
+        {currentAccommodationData.map((regionGroup) => {
+            const renderRegionHeader = (regionStr: string) => {
+                const match = regionStr.match(/^(.*?) — (.*?) \((.*?) — (.*?)\)$/);
+                if (!match) {
+                    return (
+                        <h3 className="text-sm font-black text-emerald-400 uppercase tracking-widest px-1">
+                            {regionStr}
+                        </h3>
+                    );
+                }
+
+                const city = match[1];
+                const phase = match[2];
+                const dates = match[3];
+                const nights = match[4];
+
+                let colorTheme = {
+                    bg: 'bg-white/5',
+                    border: 'border-white/10',
+                    titleBg: 'bg-white/10',
+                    textTitle: 'text-slate-200',
+                    textSub: 'text-slate-400'
+                };
+
+                const cityLower = city.toLowerCase();
+                if (cityLower.includes('salvador')) {
+                    colorTheme = {
+                        bg: 'bg-cyan-950/40',
+                        border: 'border-cyan-500/30',
+                        titleBg: 'bg-cyan-500/20',
+                        textTitle: 'text-cyan-300',
+                        textSub: 'text-cyan-400'
+                    };
+                } else if (cityLower.includes('maceió') || cityLower.includes('maceio')) {
+                    colorTheme = {
+                        bg: 'bg-emerald-950/40',
+                        border: 'border-emerald-500/30',
+                        titleBg: 'bg-emerald-500/20',
+                        textTitle: 'text-emerald-300',
+                        textSub: 'text-emerald-400'
+                    };
+                } else if (cityLower.includes('aracaju') || cityLower.includes('aracajú')) {
+                    colorTheme = {
+                        bg: 'bg-rose-950/40',
+                        border: 'border-rose-500/30',
+                        titleBg: 'bg-rose-500/20',
+                        textTitle: 'text-rose-300',
+                        textSub: 'text-rose-400'
+                    };
+                }
+
+                return (
+                    <div className={`rounded-xl border p-3 flex flex-col gap-1.5 shadow-lg ${colorTheme.bg} ${colorTheme.border}`}>
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div className="flex flex-wrap items-center gap-2">
+                                <div className={`px-2 py-0.5 rounded border font-black uppercase text-xs tracking-widest shadow-sm ${colorTheme.titleBg} ${colorTheme.textTitle} ${colorTheme.border}`}>
+                                    {city}
+                                </div>
+                                <span className={`text-[10px] font-black uppercase tracking-widest ${colorTheme.textSub}`}>
+                                    {phase}
+                                </span>
+                            </div>
+                            <div className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded bg-black/20 self-start sm:self-auto ${colorTheme.textSub}`}>
+                                {nights}
+                            </div>
+                        </div>
+                        <div className={`text-xs font-semibold flex items-center gap-1.5 opacity-90 pl-0.5 mt-1 ${colorTheme.textSub}`}>
+                            <CalendarDays className="w-3.5 h-3.5" />
+                            {dates}
+                        </div>
+                    </div>
+                );
+            };
+
+            return (
+                <div key={regionGroup.region} className="space-y-4">
+                    {renderRegionHeader(regionGroup.region)}
+                    
+                    {regionGroup.options.map(acc => (
+                        <AccommodationCard key={acc.id} acc={acc} />
+                    ))}
+                </div>
+            );
+        })}
       </div>
     </div>
   );

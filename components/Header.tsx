@@ -21,7 +21,9 @@ import {
   Sunset,
   CloudDrizzle,
   CloudLightning,
-  Cloud
+  Cloud,
+  Bell,
+  LogOut
 } from 'lucide-react';
 import { getWeather } from '../services/weatherService';
 
@@ -150,10 +152,10 @@ const TRIP_COSTS: Record<string, CostDetails> = {
     flightDesc: 'Voo GIG ⇄ SSA (por pessoa)',
     bus: 0.00,
     busDesc: 'Sem ônibus rodoviário na viagem',
-    accommodation: 1000.00,
-    accommodationDesc: 'Hospedagem Salvador 7 noites (metade p/pessoa)',
+    accommodation: 625.08,
+    accommodationDesc: 'Hospedagem Salvador + Maceió + Aracaju (metade p/pessoa)',
     uber: 250.00,
-    uberDesc: 'Passeios e deslocamentos locais (por pessoa)'
+    uberDesc: 'Aluguel de Carro + Combustível (metade p/pessoa)'
   }
 };
 
@@ -167,11 +169,11 @@ const getTripBgImage = (id: string) => {
     'am_foz_ba': '/foz_ba_premium.png',
     'am_foz_ass_ba': '/ba_ass_foz_premium.png',
     'am_rio_foz_ba': '/foz_ba_premium.jpg',
-    'am_salvador_julho': '/salvador_premium.jpg',
+    'am_salvador_julho': '/salvador_aracaju_maceio.jpg',
     'am_rio_san': '/colombia_premium.jpg',
     'am_bh_med_san': '/colombia_premium.png'
   };
-  return images[id] || '/salvador_premium.jpg';
+  return images[id] || '/salvador_aracaju_maceio.jpg';
 };
 
 const Header: React.FC<HeaderProps> = ({ tripName, lat, lon, onBack, tripId }) => {
@@ -188,7 +190,7 @@ const Header: React.FC<HeaderProps> = ({ tripName, lat, lon, onBack, tripId }) =
 
   const SALVADOR_JULHO_LOCATIONS = [
     { name: 'Salvador', lat: -12.9714, lon: -38.5014, dateRange: '16 Jul', description: 'Salvador' },
-    { name: 'Maragogi', lat: -9.0122, lon: -35.2221, dateRange: '17-19 Jul', description: 'Maragogi' },
+    { name: 'Maceió', lat: -9.6658, lon: -35.7353, dateRange: '17-19 Jul', description: 'Maceió' },
     { name: 'Aracaju', lat: -10.9472, lon: -37.0731, dateRange: '19-21 Jul', description: 'Aracaju' },
     { name: 'Salvador', lat: -12.9714, lon: -38.5014, dateRange: '21-24 Jul', description: 'Salvador (Retorno)' }
   ];
@@ -247,12 +249,95 @@ const Header: React.FC<HeaderProps> = ({ tripName, lat, lon, onBack, tripId }) =
   const activeTripKey = tripId || 'am_ssa_aju';
   const activeCosts = TRIP_COSTS[activeTripKey] || TRIP_COSTS['am_ssa_aju'];
 
-  // Calculates per-person estimated cost in real-time
-  const totalEstimated = 
-    (includeFlight && activeCosts.flight > 0 ? activeCosts.flight : 0) +
-    (includeBus && activeCosts.bus > 0 ? activeCosts.bus : 0) +
-    (includeAccommodation && activeCosts.accommodation > 0 ? activeCosts.accommodation : 0) +
-    (includeUber && activeCosts.uber > 0 ? activeCosts.uber : 0);
+  // Define dynamic cost items list so all cards have same layout and size!
+  interface CostCardItem {
+    id: string;
+    title: string;
+    icon: React.ComponentType<any>;
+    included: boolean;
+    onToggle: () => void;
+    valuePerPerson: number;
+    valueTotal: number;
+    description: string;
+    breakdown?: { label: string; value: number }[];
+    colorTheme: 'emerald' | 'cyan' | 'indigo' | 'amber';
+  }
+
+  const costItems: CostCardItem[] = [];
+
+  if (activeCosts.flight > 0) {
+    costItems.push({
+      id: 'flight',
+      title: 'Aéreo',
+      icon: Plane,
+      included: includeFlight,
+      onToggle: () => setIncludeFlight(!includeFlight),
+      valuePerPerson: activeCosts.flight,
+      valueTotal: activeCosts.flight * 2,
+      description: activeTripKey === 'am_salvador_julho' ? 'Voo GIG ⇄ SSA (por pessoa)' : activeCosts.flightDesc,
+      colorTheme: 'emerald'
+    });
+  }
+
+  if (activeCosts.accommodation > 0) {
+    const isSalvadorJulho = activeTripKey === 'am_salvador_julho';
+    const breakdown = isSalvadorJulho ? [
+      { label: '1 diária em Salvador (Chegada)', value: 185.71 },
+      { label: '2 diárias em Maceió', value: 380.00 },
+      { label: '2 diárias em Aracaju', value: 313.03 },
+      { label: 'Restante (2 diárias) em Salvador', value: 371.42 }
+    ] : undefined;
+
+    costItems.push({
+      id: 'accommodation',
+      title: 'Hospedagem',
+      icon: Building,
+      included: includeAccommodation,
+      onToggle: () => setIncludeAccommodation(!includeAccommodation),
+      valuePerPerson: isSalvadorJulho ? 625.08 : activeCosts.accommodation,
+      valueTotal: isSalvadorJulho ? 1250.16 : activeCosts.accommodation * 2,
+      description: isSalvadorJulho ? 'Hospedagem Salvador + Maceió + Aracaju (metade p/pessoa)' : activeCosts.accommodationDesc,
+      breakdown,
+      colorTheme: 'emerald'
+    });
+  }
+
+  if (activeCosts.bus > 0) {
+    costItems.push({
+      id: 'bus',
+      title: activeTripKey === 'am_ssa_aju' || activeTripKey === 'am_sp_ssa_aju' ? 'Carro Alugado' : 'Rodoviário',
+      icon: activeTripKey === 'am_ssa_aju' || activeTripKey === 'am_sp_ssa_aju' ? Car : Bus,
+      included: includeBus,
+      onToggle: () => setIncludeBus(!includeBus),
+      valuePerPerson: activeCosts.bus,
+      valueTotal: activeCosts.bus * 2,
+      description: activeCosts.busDesc,
+      colorTheme: 'cyan'
+    });
+  }
+
+  if (activeCosts.uber > 0) {
+    const isSalvadorJulho = activeTripKey === 'am_salvador_julho';
+    costItems.push({
+      id: 'uber',
+      title: isSalvadorJulho ? 'Aluguel do Carro' : 'Deslocamento',
+      icon: Car,
+      included: includeUber,
+      onToggle: () => setIncludeUber(!includeUber),
+      valuePerPerson: activeCosts.uber,
+      valueTotal: activeCosts.uber * 2,
+      description: isSalvadorJulho ? 'Aluguel de Carro + Combustível (metade/pessoa)' : activeCosts.uberDesc,
+      colorTheme: 'cyan'
+    });
+  }
+
+  const totalEstimated = costItems
+    .filter(item => item.included)
+    .reduce((sum, item) => sum + item.valuePerPerson, 0);
+
+  const totalEstimatedForTwo = costItems
+    .filter(item => item.included)
+    .reduce((sum, item) => sum + item.valueTotal, 0);
 
   const locationName = (tripId === 'am_salvador_julho'
     ? SALVADOR_JULHO_LOCATIONS[selectedLocIdx].name
@@ -301,16 +386,6 @@ const Header: React.FC<HeaderProps> = ({ tripName, lat, lon, onBack, tripId }) =
   return (
     <div className="relative w-full shrink-0 flex flex-col items-center justify-center overflow-hidden bg-[#0B0F19] h-auto pt-6 pb-6 px-4 sm:px-8 md:px-10 border-b border-white/10">
       
-      {onBack && (
-        <button
-          onClick={onBack}
-          className="absolute top-4 left-4 z-20 p-2 bg-white/5 hover:bg-white/10 active:scale-95 text-slate-300 hover:text-white rounded-full border border-white/10 shadow-2xl transition-all flex items-center justify-center group pointer-events-auto backdrop-blur-md"
-          title="Trocar Viagem"
-        >
-          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
-        </button>
-      )}
-      
       {/* Background Layer with low opacity for modern look */}
       <div className="absolute inset-0 z-0 h-full w-full bg-[#080c14]">
         <img 
@@ -321,171 +396,215 @@ const Header: React.FC<HeaderProps> = ({ tripName, lat, lon, onBack, tripId }) =
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0B0F19]/60 to-[#0B0F19]"></div>
       </div>
 
-      {/* Main Container - App name on top, widgets side-by-side below */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center gap-4 md:gap-5">
+      {/* Main Container */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center gap-6">
         
-        {/* LOGO CENTRALIZADO NO TOPO - MINIMALISTA & MODERNO 2026 */}
-        <div className="flex flex-col items-center justify-center py-1 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 backdrop-blur-md mb-2 shadow-sm">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span className="text-[9px] font-bold tracking-[0.25em] text-emerald-400 uppercase">ROTEIRO INTELIGENTE</span>
+        {/* TOP HEADER - USER INFO */}
+        <div className="w-full flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+          {/* Left side */}
+          <div className="flex items-start gap-4">
+            {onBack && (
+              <button
+                onClick={onBack}
+                className="mt-1 p-2.5 bg-white/5 hover:bg-white/10 active:scale-95 text-slate-300 hover:text-white rounded-full border border-white/10 shadow transition-all flex items-center justify-center group pointer-events-auto backdrop-blur-md"
+                title="Trocar Viagem"
+              >
+                <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
+              </button>
+            )}
+            <div className="flex flex-col">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-normal text-white tracking-tight">
+                Sua Viagem, Seu Jeito. Olá, <span className="font-bold">André!</span>
+              </h1>
+              <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl">
+                Tudo pronto para você explorar o melhor de Salvador, Aracaju e Maceió. Deixe os detalhes com a gente.
+              </p>
+              
+              {/* Progress bar */}
+              <div className="flex items-center gap-1 mt-4">
+                <div className="h-1 w-8 sm:w-12 bg-white rounded-full"></div>
+                <div className="h-1 w-8 sm:w-12 bg-white/20 rounded-full"></div>
+                <div className="h-1 w-8 sm:w-12 bg-white/20 rounded-full"></div>
+              </div>
+            </div>
           </div>
-          <p className="text-[10px] text-slate-300 font-medium tracking-[0.15em] uppercase mt-1">
-            EXECUTIVO : {tripName ? tripName.toUpperCase() : "PLANO 8: FÉRIAS EM SALVADOR"}
-          </p>
+          
+          {/* Right side */}
+          <div className="flex items-center gap-3 pointer-events-auto self-start sm:self-auto">
+            <div className="w-10 h-10 rounded-full overflow-hidden border border-emerald-500/50 bg-emerald-950 flex items-center justify-center">
+              <span className="text-emerald-400 font-bold text-lg">A</span>
+            </div>
+            <button className="p-2 bg-white/5 hover:bg-white/10 rounded-full border border-white/10 transition-colors">
+              <Bell className="w-4 h-4 text-slate-300" />
+            </button>
+            <button className="p-2 bg-white/5 hover:bg-white/10 rounded-full border border-white/10 transition-colors">
+              <LogOut className="w-4 h-4 text-slate-300" />
+            </button>
+          </div>
         </div>
 
         {/* CONTENEDOR DE WIDGETS LADO A LADO */}
-        <div className="flex flex-col lg:flex-row items-stretch justify-center gap-4 w-full max-w-7xl">
+        <div className="flex flex-col lg:flex-row items-stretch justify-center gap-4 w-full max-w-7xl relative">
           
           {/* BUDGET ESTIMATOR WIDGET (ABAIXO, À ESQUERDA) */}
-          <div className="w-full lg:w-1/2 max-w-xl bg-slate-950/40 backdrop-blur-md border border-white/10 rounded-3xl p-4 sm:p-5 shadow-2xl flex flex-col justify-between text-white hover:border-emerald-500/30 hover:shadow-[0_20px_50px_rgba(0,0,0,0.4)] transition-all duration-300 mx-auto">
+          <div className="w-full lg:w-2/3 bg-slate-950/40 backdrop-blur-md border border-white/10 rounded-3xl p-4 sm:p-5 shadow-2xl flex flex-col justify-between text-white hover:border-emerald-500/30 hover:shadow-[0_20px_50px_rgba(0,0,0,0.4)] transition-all duration-300">
             
+            {/* TAG FLUTUANTE (ROTEIRO INTELIGENTE) */}
+            <div className="absolute -top-3 left-1/2 lg:left-1/3 -translate-x-1/2 inline-flex items-center gap-2 px-4 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 backdrop-blur-md shadow-sm z-20">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span className="text-[10px] font-black tracking-[0.2em] text-emerald-400 uppercase">ROTEIRO INTELIGENTE</span>
+            </div>
+            
+            {/* SUBTITULO FLUTUANTE */}
+            <div className="absolute -top-10 left-1/2 lg:left-1/3 -translate-x-1/2 w-max z-20">
+              <p className="text-[10px] sm:text-xs text-slate-300 font-bold tracking-[0.15em] uppercase shadow-sm">
+                EXECUTIVO : {tripName ? tripName.toUpperCase() : "PLANO 8: FÉRIAS EM SALVADOR"}
+              </p>
+            </div>            
             <div className="flex flex-col gap-3 flex-1 w-full justify-between">
               <div>
                 <div className="flex items-center justify-between border-b border-white/10 pb-2">
                   <div className="flex items-center gap-2">
                     <Wallet className="w-4 h-4 text-emerald-400" />
-                    <span className="text-xs font-bold tracking-wider uppercase text-slate-300">
-                      Resumo de Custos (por Pessoa)
+                    <span className="text-sm font-black tracking-wider uppercase text-slate-200">
+                      Resumo de Custos
                     </span>
                   </div>
-                  <span className="text-[8px] font-black text-emerald-400 tracking-widest uppercase font-mono bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
+                  <span className="text-[10px] font-black text-emerald-400 tracking-widest uppercase font-mono bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
                     Tempo Real
                   </span>
                 </div>
 
                 <div className="flex flex-col items-center justify-center py-4 text-center">
-                  <span className="text-3xl sm:text-4xl font-black text-[#81E6D9] tracking-tight leading-none font-mono">
-                    R$ {totalEstimated.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                  </span>
-                  <span className="text-[8px] font-black uppercase text-slate-400 tracking-widest leading-none mt-2.5">
-                    CUSTO TOTAL CALCULADO
-                  </span>
-                  <span className="text-[8px] font-black uppercase text-slate-400 tracking-widest leading-none mt-0.5">
-                    TODAS AS TAXAS INCLUÍDAS
+                  <div className="flex flex-col items-center gap-1">
+                    <span className="text-3xl sm:text-4xl font-black text-[#81E6D9] tracking-tight leading-none font-mono">
+                      R$ {totalEstimated.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                    </span>
+                    <span className="text-[10px] font-black uppercase text-emerald-400 tracking-widest leading-none mt-1.5">
+                      VALOR CALCULADO POR PESSOA
+                    </span>
+                  </div>
+
+                  <div className="w-2/3 my-2 border-t border-white/10"></div>
+
+                  <div className="flex flex-col items-center gap-0.5">
+                    <span className="text-2xl sm:text-3xl font-black text-emerald-300 tracking-tight leading-none font-mono">
+                      R$ {totalEstimatedForTwo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                    </span>
+                    <span className="text-[9px] font-black uppercase text-cyan-400 tracking-widest leading-none mt-1">
+                      VALOR TOTAL PARA 2 PESSOAS
+                    </span>
+                  </div>
+                  
+                  <span className="text-[9px] font-black uppercase text-slate-500 tracking-widest leading-none mt-3.5">
+                    TODAS AS TAXAS E DIÁRIAS INCLUÍDAS
                   </span>
                 </div>
               </div>
 
-              {/* Interactive Checkbox List in Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2 flex-1 justify-center">
-                {/* Flight Cost */}
-                {activeCosts.flight > 0 && (
-                  <div 
-                    onClick={() => setIncludeFlight(!includeFlight)}
-                    className={`col-span-1 flex items-center justify-between p-2 rounded-xl border text-left cursor-pointer transition-all duration-200 ${includeFlight ? 'bg-white/5 border-white/15 text-white hover:bg-white/10 shadow-sm' : 'bg-white/0 border-white/5 text-slate-500 hover:bg-white/5'}`}
-                  >
-                    <div className="flex items-center gap-2 min-w-0 flex-1 mr-2">
-                      <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-all ${includeFlight ? 'bg-emerald-500/10 border border-emerald-500/20' : 'bg-white/5'}`}>
-                        <Plane className={`w-3.5 h-3.5 ${includeFlight ? 'text-emerald-400' : 'text-slate-500'}`} />
+              {/* Interactive Checkbox List in Grid of Equal Sized Cards */}
+              <div className={`grid grid-cols-1 ${costItems.length === 2 ? 'sm:grid-cols-2' : costItems.length >= 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-1'} gap-2.5 mt-2 items-stretch w-full`}>
+                {costItems.map((item) => {
+                  const IconComponent = item.icon;
+                  return (
+                    <div 
+                      key={item.id}
+                      onClick={item.onToggle}
+                      className={`col-span-1 flex flex-col justify-between p-3.5 rounded-2xl border text-left cursor-pointer transition-all duration-300 h-full ${
+                        item.included 
+                          ? 'bg-white/5 border-white/15 text-white hover:bg-white/10 shadow-[0_4px_20px_rgba(0,0,0,0.15)] hover:border-emerald-500/20' 
+                          : 'bg-white/0 border-white/5 text-slate-500 hover:bg-white/5'
+                      }`}
+                    >
+                      {/* Top Header of Card */}
+                      <div className="flex items-center justify-between w-full pb-1.5 border-b border-white/5">
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-all ${
+                            item.included 
+                              ? item.colorTheme === 'emerald' 
+                                ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400' 
+                                : 'bg-cyan-500/10 border border-cyan-500/20 text-cyan-400'
+                              : 'bg-white/5 text-slate-500'
+                          }`}>
+                            <IconComponent className="w-3.5 h-3.5" />
+                          </div>
+                          <span className={`text-[10px] font-black uppercase tracking-wider truncate leading-none ${
+                            item.included ? 'text-slate-100' : 'text-slate-500'
+                          }`}>
+                            {item.title}
+                          </span>
+                        </div>
+                        <div className={`w-3.5 h-3.5 rounded-md border flex items-center justify-center shrink-0 transition-all ${
+                          item.included 
+                            ? 'bg-emerald-500 border-emerald-400 text-slate-950' 
+                            : 'border-white/20'
+                        }`}>
+                          {item.included && <Check className="w-2.5 h-2.5 stroke-[3]" />}
+                        </div>
                       </div>
-                      <div className="flex flex-col min-w-0">
-                        <span className="text-[9px] font-black uppercase tracking-wider truncate leading-tight">Aéreo</span>
-                        <span className="text-[7.5px] opacity-60 leading-normal truncate">{activeCosts.flightDesc}</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <span className="text-[11px] font-black leading-none font-mono">
-                        R$ {activeCosts.flight.toLocaleString('pt-BR', { minimumFractionDigits: 0 })}
-                      </span>
-                      <div className={`w-3.5 h-3.5 rounded-md border flex items-center justify-center shrink-0 transition-all ${includeFlight ? 'bg-emerald-500 border-emerald-400 text-slate-950' : 'border-white/20'}`}>
-                        {includeFlight && <Check className="w-2.5 h-2.5 stroke-[3]" />}
-                      </div>
-                    </div>
-                  </div>
-                )}
 
-                {/* Accommodation/Stay Cost */}
-                {activeCosts.accommodation > 0 && (
-                  <div 
-                    onClick={() => setIncludeAccommodation(!includeAccommodation)}
-                    className={`col-span-1 flex items-center justify-between p-2 rounded-xl border text-left cursor-pointer transition-all duration-200 ${includeAccommodation ? 'bg-white/5 border-white/15 text-white hover:bg-white/10 shadow-sm' : 'bg-white/0 border-white/5 text-slate-500 hover:bg-white/5'}`}
-                  >
-                    <div className="flex items-center gap-2 min-w-0 flex-1 mr-2">
-                      <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-all ${includeAccommodation ? 'bg-emerald-500/10 border border-emerald-500/20' : 'bg-white/5'}`}>
-                        <Building className={`w-3.5 h-3.5 ${includeAccommodation ? 'text-emerald-400' : 'text-slate-500'}`} />
-                      </div>
-                      <div className="flex flex-col min-w-0">
-                        <span className="text-[9px] font-black uppercase tracking-wider truncate leading-tight">Hospedagem</span>
-                        <span className="text-[7.5px] opacity-60 leading-normal truncate">{activeCosts.accommodationDesc}</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <span className="text-[11px] font-black leading-none font-mono">
-                        R$ {activeCosts.accommodation.toLocaleString('pt-BR', { minimumFractionDigits: 0 })}
-                      </span>
-                      <div className={`w-3.5 h-3.5 rounded-md border flex items-center justify-center shrink-0 transition-all ${includeAccommodation ? 'bg-emerald-50 border-emerald-400 text-slate-950' : 'border-white/20'}`}>
-                        {includeAccommodation && <Check className="w-2.5 h-2.5 stroke-[3]" />}
-                      </div>
-                    </div>
-                  </div>
-                )}
+                      {/* Content Area */}
+                      <div className="flex-1 pt-2 flex flex-col justify-between gap-2">
+                        {/* Main Price Numbers */}
+                        <div className="space-y-1">
+                          <div className="flex items-baseline justify-between gap-1">
+                            <span className={`text-[13px] sm:text-[14px] font-black font-mono leading-none ${
+                              item.included ? 'text-[#81E6D9]' : 'text-slate-500'
+                            }`}>
+                              R$ {item.valuePerPerson.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                            </span>
+                            <span className="text-[7.5px] font-bold uppercase tracking-wider text-slate-400 opacity-80 shrink-0">
+                              / Pessoa
+                            </span>
+                          </div>
+                          
+                          <div className="flex items-baseline justify-between gap-1 pt-1 border-t border-white/5">
+                            <span className={`text-[11px] sm:text-[12px] font-bold font-mono leading-none ${
+                              item.included ? 'text-emerald-400' : 'text-slate-500'
+                            }`}>
+                              R$ {item.valueTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                            </span>
+                            <span className="text-[7px] font-semibold uppercase tracking-wider text-slate-400 opacity-70 shrink-0">
+                              / 2 Pessoas
+                            </span>
+                          </div>
+                        </div>
 
-                {/* Bus / Car Cost */}
-                {activeCosts.bus > 0 && (
-                  <div 
-                    onClick={() => setIncludeBus(!includeBus)}
-                    className={`col-span-1 sm:col-span-2 flex items-center justify-between p-2 rounded-xl border text-left cursor-pointer transition-all duration-200 ${includeBus ? 'bg-white/5 border-white/15 text-white hover:bg-white/10 shadow-sm' : 'bg-white/0 border-white/5 text-slate-500 hover:bg-white/5'}`}
-                  >
-                    <div className="flex items-center gap-2 min-w-0 flex-1 mr-2">
-                      <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-all ${includeBus ? 'bg-cyan-500/10 border border-cyan-500/20' : 'bg-white/5'}`}>
-                        {activeTripKey === 'am_ssa_aju' || activeTripKey === 'am_sp_ssa_aju' ? (
-                          <Car className={`w-3.5 h-3.5 ${includeBus ? 'text-cyan-400' : 'text-slate-500'}`} />
-                        ) : (
-                          <Bus className={`w-3.5 h-3.5 ${includeBus ? 'text-cyan-400' : 'text-slate-500'}`} />
+                        {/* Detailed Breakdown for Accommodation */}
+                        {item.breakdown && (
+                          <div className="mt-2 pt-1.5 border-t border-white/10 space-y-1 text-[8px] font-mono leading-tight">
+                            {item.breakdown.map((b, i) => (
+                              <div key={i} className="flex flex-col justify-start">
+                                <span className={`${item.included ? 'text-slate-400 font-medium' : 'text-slate-500'} truncate`}>
+                                  {b.label}
+                                </span>
+                                <span className={`font-bold text-right ${item.included ? 'text-slate-200' : 'text-slate-500'}`}>
+                                  R$ {b.value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Simple Description for non-breakdown items */}
+                        {!item.breakdown && (
+                          <p className={`text-[9px] font-medium leading-normal mt-1.5 ${
+                            item.included ? 'text-slate-300' : 'text-slate-500'
+                          }`}>
+                            {item.description}
+                          </p>
                         )}
                       </div>
-                      <div className="flex flex-col min-w-0">
-                        <span className="text-[9px] font-black uppercase tracking-wider truncate leading-tight">
-                          {activeTripKey === 'am_ssa_aju' || activeTripKey === 'am_sp_ssa_aju' ? 'Carro Alugado' : 'Rodoviário'}
-                        </span>
-                        <span className="text-[7.5px] opacity-60 leading-normal truncate">{activeCosts.busDesc}</span>
-                      </div>
                     </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <span className="text-[11px] font-black leading-none font-mono">
-                        R$ {activeCosts.bus.toLocaleString('pt-BR', { minimumFractionDigits: 0 })}
-                      </span>
-                      <div className={`w-3.5 h-3.5 rounded-md border flex items-center justify-center shrink-0 transition-all ${includeBus ? 'bg-cyan-500 border-cyan-400 text-slate-950' : 'border-white/20'}`}>
-                        {includeBus && <Check className="w-2.5 h-2.5 stroke-[3]" />}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Uber Cost */}
-                {activeCosts.uber > 0 && (
-                  <div 
-                    onClick={() => setIncludeUber(!includeUber)}
-                    className={`col-span-1 ${activeCosts.bus > 0 ? 'sm:col-span-1' : 'sm:col-span-2'} flex items-center justify-between p-2 rounded-xl border text-left cursor-pointer transition-all duration-200 ${includeUber ? 'bg-white/5 border-white/15 text-white hover:bg-white/10 shadow-sm' : 'bg-white/0 border-white/5 text-slate-500 hover:bg-white/5'}`}
-                  >
-                    <div className="flex items-center gap-2 min-w-0 flex-1 mr-2">
-                      <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-all ${includeUber ? 'bg-cyan-500/10 border border-cyan-500/20' : 'bg-white/5'}`}>
-                        <Car className={`w-3.5 h-3.5 ${includeUber ? 'text-cyan-400' : 'text-slate-500'}`} />
-                      </div>
-                      <div className="flex flex-col min-w-0">
-                        <span className="text-[9px] font-black uppercase tracking-wider truncate leading-tight">Deslocamento</span>
-                        <span className="text-[7.5px] opacity-60 leading-normal truncate">{activeCosts.uberDesc}</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <span className="text-[11px] font-black leading-none font-mono">
-                        R$ {activeCosts.uber.toLocaleString('pt-BR', { minimumFractionDigits: 0 })}
-                      </span>
-                      <div className={`w-3.5 h-3.5 rounded-md border flex items-center justify-center shrink-0 transition-all ${includeUber ? 'bg-cyan-500 border-cyan-400 text-slate-950' : 'border-white/20'}`}>
-                        {includeUber && <Check className="w-2.5 h-2.5 stroke-[3]" />}
-                      </div>
-                    </div>
-                  </div>
-                )}
+                  );
+                })}
               </div>
             </div>
 
           </div>
 
           {/* WEATHER WIDGET (ABAIXO, À DIREITA) */}
-          <div className={`w-full lg:w-1/2 max-w-xl backdrop-blur-md border rounded-3xl p-4 sm:p-5 flex flex-col justify-between text-white transition-all duration-500 mx-auto ${getWeatherBgClass()}`}>
+          <div className={`w-full lg:w-1/3 backdrop-blur-md border rounded-3xl p-4 sm:p-5 flex flex-col justify-between text-white transition-all duration-500 ${getWeatherBgClass()}`}>
             
             <div className="flex flex-col gap-3.5 flex-1 w-full justify-between">
               
@@ -493,13 +612,13 @@ const Header: React.FC<HeaderProps> = ({ tripName, lat, lon, onBack, tripId }) =
               <div className="flex items-center justify-between border-b border-white/10 pb-2.5 shrink-0 gap-2">
                 <div className="flex items-center gap-1.5 min-w-0 flex-1">
                   <MapPin className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                  <span className="text-xs font-bold tracking-wider uppercase truncate text-slate-300">
+                  <span className="text-sm font-extrabold tracking-wider uppercase truncate text-slate-200">
                     {locationName}
                   </span>
                 </div>
 
                 {/* Clock: Always showing current date and time */}
-                <div className="flex items-center gap-1.5 text-center font-mono text-[9px] font-black text-emerald-400 bg-emerald-500/10 border border-emerald-500/15 px-2.5 py-1 rounded-xl shrink-0">
+                <div className="flex items-center gap-1.5 text-center font-mono text-[11px] font-black text-emerald-400 bg-emerald-500/10 border border-emerald-500/15 px-2.5 py-1 rounded-xl shrink-0">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
                   {currentTime.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }).toUpperCase()} • {currentTime.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                 </div>
@@ -533,40 +652,54 @@ const Header: React.FC<HeaderProps> = ({ tripName, lat, lon, onBack, tripId }) =
               {/* Itinerary Day & City Selector (Only for am_salvador_julho trip) */}
               {tripId === 'am_salvador_julho' && (
                 <div className="grid grid-cols-4 gap-1.5 bg-slate-950/40 border border-white/5 p-1 rounded-2xl shrink-0">
-                  {SALVADOR_JULHO_LOCATIONS.map((loc, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setSelectedLocIdx(idx)}
-                      className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition-all border ${
-                        selectedLocIdx === idx 
-                          ? 'bg-cyan-500/10 border-cyan-500/30 text-cyan-400 font-bold shadow-[0_0_15px_rgba(6,182,212,0.15)]' 
-                          : 'bg-transparent border-transparent text-slate-400 hover:bg-white/5 hover:text-white'
-                      }`}
-                    >
-                      <span className="text-[9px] font-extrabold tracking-wide uppercase leading-none">{loc.dateRange}</span>
-                      <span className="text-[7px] font-medium opacity-85 uppercase leading-none mt-1">{loc.name}</span>
-                    </button>
-                  ))}
+                  {SALVADOR_JULHO_LOCATIONS.map((loc, idx) => {
+                    const isActive = selectedLocIdx === idx;
+                    let colorClasses = '';
+                    if (idx === 0 || idx === 3) { // Salvador (emerald)
+                      colorClasses = isActive 
+                        ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-300 font-extrabold shadow-[0_0_12px_rgba(16,185,129,0.3)]'
+                        : 'bg-emerald-500/[0.04] border-emerald-500/10 text-emerald-400/80 hover:bg-emerald-500/10';
+                    } else if (idx === 1) { // Maceió (sky)
+                      colorClasses = isActive 
+                        ? 'bg-sky-500/20 border-sky-500/50 text-sky-300 font-extrabold shadow-[0_0_12px_rgba(14,165,233,0.3)]'
+                        : 'bg-sky-500/[0.04] border-sky-500/10 text-sky-400/80 hover:bg-sky-500/10';
+                    } else if (idx === 2) { // Aracaju (amber)
+                      colorClasses = isActive 
+                        ? 'bg-amber-500/20 border-amber-500/50 text-amber-300 font-extrabold shadow-[0_0_12px_rgba(245,158,11,0.3)]'
+                        : 'bg-amber-500/[0.04] border-amber-500/10 text-amber-400/80 hover:bg-amber-500/10';
+                    }
+                    
+                    return (
+                      <button
+                        key={idx}
+                        onClick={() => setSelectedLocIdx(idx)}
+                        className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition-all border ${colorClasses}`}
+                      >
+                        <span className="text-[11px] font-extrabold tracking-wide uppercase leading-none">{loc.dateRange}</span>
+                        <span className="text-[9px] font-semibold opacity-90 uppercase leading-none mt-1">{loc.name}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               )}
 
               {loading ? (
                 <div className="flex-1 flex flex-col items-center justify-center py-6">
                   <Loader2 className="w-8 h-8 animate-spin text-cyan-400 mb-2" />
-                  <span className="text-[9px] font-black uppercase text-slate-400 tracking-widest">Sincronizando Satélites...</span>
+                  <span className="text-[11px] font-black uppercase text-slate-400 tracking-widest">Sincronizando Satélites...</span>
                 </div>
               ) : weather ? (
                 <div className="flex-1 flex flex-col justify-between gap-2.5 mt-2">
                   
                   {/* Current conditions */}
-                  <div className="grid grid-cols-2 gap-2.5 flex-1">
+                  <div className="flex flex-col gap-2.5 flex-1">
                     
                     <div className="bg-white/5 border border-white/10 rounded-xl p-2.5 flex items-center justify-around h-full hover:border-white/20 transition-all duration-200">
                       <div className="flex flex-col items-center">
                         {React.createElement(getWeatherDetails(weather.weatherCode).icon, { 
                           className: `w-7 h-7 ${getWeatherDetails(weather.weatherCode).color} mb-1 animate-bounce-slow` 
                         })}
-                        <span className="text-[9px] font-black tracking-widest text-slate-300 uppercase leading-none mt-1">
+                        <span className="text-[11px] font-black tracking-widest text-slate-300 uppercase leading-none mt-1">
                           {getCurrentWeatherStatusText()}
                         </span>
                       </div>
@@ -575,7 +708,7 @@ const Header: React.FC<HeaderProps> = ({ tripName, lat, lon, onBack, tripId }) =
                           <span className="text-2xl font-black leading-none text-white">{Math.round(weather.temp)}</span>
                           <span className="text-[10px] font-bold text-slate-400 ml-0.5">°C</span>
                         </div>
-                        <span className="text-[8px] font-bold text-slate-400 tracking-wider mt-1 uppercase leading-none">
+                        <span className="text-[10px] font-extrabold text-slate-400 tracking-wider mt-1 uppercase leading-none">
                           Sensação {Math.round(weather.feelsLike)}°
                         </span>
                       </div>
@@ -586,19 +719,19 @@ const Header: React.FC<HeaderProps> = ({ tripName, lat, lon, onBack, tripId }) =
                         <div className="w-3.5 h-3.5 rounded-full bg-white/5 flex items-center justify-center shrink-0 border border-white/10">
                           <CloudRain className="w-2 h-2 text-cyan-400" />
                         </div>
-                        <span className="text-[9px] font-semibold text-slate-300">Chuva: <span className="font-black text-white">{Math.round(rainPercent)}%</span></span>
+                        <span className="text-xs font-bold text-slate-300">Chuva: <span className="font-black text-white">{Math.round(rainPercent)}%</span></span>
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-3.5 h-3.5 rounded-full bg-white/5 flex items-center justify-center shrink-0 border border-white/10">
                           <Droplets className="w-2 h-2 text-cyan-400" />
                         </div>
-                        <span className="text-[9px] font-semibold text-slate-300">Umidade: <span className="font-black text-white">{Math.round(weather.humidity)}%</span></span>
+                        <span className="text-xs font-bold text-slate-300">Umidade: <span className="font-black text-white">{Math.round(weather.humidity)}%</span></span>
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-3.5 h-3.5 rounded-full bg-white/5 flex items-center justify-center shrink-0 border border-white/10">
                           <Wind className="w-2 h-2 text-cyan-400" />
                         </div>
-                        <span className="text-[9px] font-semibold text-slate-300">Vento: <span className="font-black text-white">{Math.round(weather.windSpeed)} km/h</span></span>
+                        <span className="text-xs font-bold text-slate-300">Vento: <span className="font-black text-white">{Math.round(weather.windSpeed)} km/h</span></span>
                       </div>
                     </div>
  
@@ -606,7 +739,7 @@ const Header: React.FC<HeaderProps> = ({ tripName, lat, lon, onBack, tripId }) =
  
                   {/* 7-Day Forecast Grid (Fidedigno e Completo) */}
                   <div className="bg-white/5 border border-white/10 rounded-xl p-2 flex flex-col justify-between hover:border-white/20 transition-all duration-200">
-                    <h4 className="text-[7.5px] font-black tracking-[0.15em] text-cyan-400 uppercase mb-2 border-b border-white/10 pb-1 shrink-0">
+                    <h4 className="text-[10px] font-black tracking-[0.15em] text-cyan-400 uppercase mb-2 border-b border-white/10 pb-1 shrink-0">
                       PREVISÃO COMPLETA PARA OS PRÓXIMOS 7 DIAS
                     </h4>
                     <div className="grid grid-cols-7 gap-1 flex-1 py-0.5">
@@ -621,15 +754,15 @@ const Header: React.FC<HeaderProps> = ({ tripName, lat, lon, onBack, tripId }) =
                         
                         return (
                           <div key={time} className="flex flex-col items-center justify-between py-1 px-0.5 rounded-lg hover:bg-white/5 transition-colors duration-200">
-                            <span className="text-[7.5px] text-slate-400 font-bold uppercase leading-none mb-1.5">
+                            <span className="text-[9.5px] text-slate-400 font-bold uppercase leading-none mb-1.5">
                               {dayName}
                             </span>
                             <IconComponent className={`w-4 h-4 ${details.color} mb-1.5`} />
                             <div className="flex flex-col items-center leading-none mb-1">
-                              <span className="text-[9px] font-black text-white">{max}°</span>
-                              <span className="text-[7px] text-slate-500 font-medium mt-0.5">{min}°</span>
+                              <span className="text-[9.5px] font-black text-white">{max}°</span>
+                              <span className="text-[9px] text-slate-400 font-bold mt-0.5">{min}°</span>
                             </div>
-                            <span className="text-[6.5px] text-cyan-400 font-black leading-none">{prob}%</span>
+                            <span className="text-[8.5px] text-cyan-400 font-black leading-none">{prob}%</span>
                           </div>
                         );
                       })}

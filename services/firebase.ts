@@ -139,9 +139,9 @@ export const subscribeToCloudData = (collectionName: string, callback: (data: an
   });
 };
 
-export const loadDataFromCloud = async (collectionName: string): Promise<any> => {
+export const loadDataFromCloud = async (collectionName: string, customDocId?: string): Promise<any> => {
   if (!isFirebaseInitialized || !db || !navigator.onLine) return null;
-  const userId = getUserDocId();
+  const userId = customDocId || getUserDocId();
   const path = `${collectionName}/${userId}`;
   const isShared = userId === 'shared_andre_marcelly';
   const legacyIds = ['André Brito', 'Marcelly Bispo', 'andré brito', 'marcelly bispo'];
@@ -168,17 +168,5 @@ export const loadDataFromCloud = async (collectionName: string): Promise<any> =>
     return null;
   }
 };
-
-async function testConnection() {
-  if (!db) return;
-  try {
-    await getDocFromServer(doc(db, 'test', 'connection'));
-  } catch (error) {
-    if(error instanceof Error && error.message.includes('the client is offline')) {
-      console.error("Please check your Firebase configuration. ");
-    }
-  }
-}
-testConnection();
 
 export { db, auth };

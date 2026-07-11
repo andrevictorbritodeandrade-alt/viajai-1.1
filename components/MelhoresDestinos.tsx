@@ -19,7 +19,7 @@ import {
   ShieldCheck
 } from 'lucide-react';
 
-type City = 'SSA' | 'AJU' | 'MRG';
+type City = 'SSA' | 'AJU' | 'MCZ';
 
 interface SubTopic {
   id: string;
@@ -219,98 +219,98 @@ const TOPICS_AJU: SubTopic[] = [
   }
 ];
 
-const TOPICS_MRG: SubTopic[] = [
+const TOPICS_MCZ: SubTopic[] = [
   {
     id: 'quando-ir',
     title: 'Quando Ir',
     icon: <Calendar className="w-5 h-5" />,
-    content: 'De outubro a janeiro para encontrar águas incrivelmente claras e calmas. Crucial: sempre planeje passeios de acordo com a Tábua de Marés (marés de 0.0 a 0.3 são perfeitas).',
-    highlights: ['Out-Jan: Água ultra-cristalina', 'Atenção total à Tábua de Marés']
+    content: 'De setembro a março para encontrar águas extremamente calmas, transparentes e piscinas naturais na melhor forma. Crucial: planeje seus passeios de jangada de acordo com a maré baixa (marés abaixo de 0.3 são ideais).',
+    highlights: ['Set-Mar: Sol e Água Cristalina', 'Consultar Tábua de Marés']
   },
   {
     id: 'como-chegar',
     title: 'Como Chegar',
     icon: <Bus className="w-5 h-5" />,
-    content: 'Maragogi fica localizada exatamente a 130 km de Recife (REC) e 130 km de Maceió (MCZ). É recomendável alugar um carro ou reservar traslado privativo.',
+    content: 'O Aeroporto de Maceió (MCZ) recebe voos diários de várias capitais. É altamente recomendável alugar um carro para circular com total liberdade pelas praias urbanas, litoral sul e litoral norte.',
   },
   {
     id: 'onde-ficar',
     title: 'Onde Ficar',
     icon: <Hotel className="w-5 h-5" />,
-    content: 'Fique na Praia de Antunes ou Barra Grande para pousadas de charme pé na areia e isolamento. Se preferir agito, bares e comércio, fique no Centro de Maragogi.',
-    highlights: ['Antunes / Barra Grande: Sossego', 'Centro de Maragogi: Conveniência']
+    content: 'Ponta Verde, Jatiúca e Pajuçara concentram a melhor e mais bonita infraestrutura da orla urbana do Nordeste brasileiro, com hotéis fantásticos e restaurantes de ponta.',
+    highlights: ['Ponta Verde: Orla e Lazer', 'Jatiúca: Gastronomia de Qualidade']
   },
   {
     id: 'o-que-fazer',
     title: 'O Que Fazer',
     icon: <Compass className="w-5 h-5" />,
-    content: 'Faça o passeio de jangada até as famosas Galés (piscinas naturais) e caminhe pelo Caminho de Moisés, um banco de areia espetacular na praia de Barra Grande na maré baixa.',
+    content: 'Aproveite para caminhar pela orla de Ponta Verde, tirar foto no letreiro "Eu Amo Maceió", curtir o clima nos quiosques Lopana ou Kanoa, e fazer passeios até as praias do Gunga e Francês.',
   },
   {
     id: 'passeios',
     title: 'Passeios',
     icon: <Palmtree className="w-5 h-5" />,
-    content: 'Passeio completo de buggy que percorre todas as praias do norte, incluindo as paradisíacas Antunes, Ponta de Mangue e Burgalhau.',
+    content: 'O passeio clássico de jangada até as piscinas naturais de Pajuçara é indispensável. Também vale a pena fazer passeios de buggy no litoral sul ou um bate-volta até São Miguel dos Milagres.',
   },
   {
     id: 'pontos-turisticos',
     title: 'Pontos Turísticos',
     icon: <Camera className="w-5 h-5" />,
-    content: 'Praia de Antunes, Caminho de Moisés, Mirante do Cruzeiro (vista panorâmica da enseada) e as Ruínas do Mosteiro de São Bento.',
+    content: 'Farol de Ponta Verde, Feirinha de Pajuçara, Letreiro de Maceió, Mirante do Gunga, Praia do Francês e as dunas da Barra de São Miguel.',
   },
   {
     id: 'onde-comer',
     title: 'Onde Comer',
     icon: <Utensils className="w-5 h-5" />,
-    content: 'Frutos do mar fresquíssimos nas pousadas locais. Não saia da cidade sem experimentar o autêntico "Bolo de Goma" feito à mão em São Bento.',
+    content: 'Não perca a comida típica deliciosa no Bodega do Sertão (famoso pela fachada em formato de bule gigante) ou frutos do mar frescos no quiosque Lopana.',
   },
   {
     id: 'dinheiro',
     title: 'Dinheiro',
     icon: <Coins className="w-5 h-5" />,
-    content: 'Real (BRL). A maioria dos restaurantes e agências aceita cartões, mas leve dinheiro ou tenha PIX pronto para jangadeiros e praias isoladas.',
+    content: 'Real (BRL). Cartões de crédito, débito, Pix e dinheiro em espécie são aceitos em qualquer estabelecimento, inclusive pelos jangadeiros.',
   },
   {
     id: 'dicas',
     title: 'Dicas',
     icon: <Info className="w-5 h-5" />,
-    content: 'Agende seu passeio de barco às piscinas naturais com antecedência. O número de visitantes diários é controlado para proteger os corais.',
+    content: 'Aos domingos, a avenida beira-mar de Ponta Verde fecha para veículos e vira uma imensa área de lazer. Não deixe de conferir a tábua de marés antes de marcar passeios de jangada.',
   },
   {
     id: 'vida-noturna',
     title: 'Vida Noturna',
     icon: <Moon className="w-5 h-5" />,
-    content: 'A vida noturna em Maragogi é muito tranquila, ideal para jantar ao som de MPB ao vivo ou curtir a brisa nas pousadas e quiosques de praia.',
+    content: 'Bastante animada ao longo da orla de Ponta Verde com excelentes quiosques que oferecem DJs, bandas de pop/rock e drinks requintados à beira-mar.',
   },
   {
     id: 'atividades',
     title: 'Atividades',
     icon: <Footprints className="w-5 h-5" />,
-    content: 'Mergulho autônomo (batismo) nas águas mornas das galés, passeios guiados de caiaque transparente e SUP.',
+    content: 'Mergulho com snorkel nas águas mornas de Pajuçara, passeios de caiaque transparente e stand up paddle na praia de Ponta Verde.',
   },
   {
     id: 'transportes',
     title: 'Transportes',
     icon: <Bus className="w-5 h-5" />,
-    content: 'Não há Uber abundante na região. Buggies, carros alugados ou vans intermunicipais de linha são as melhores opções para circular entre as praias.',
+    content: 'Excelente disponibilidade de aplicativos de transporte como Uber e 99. Para trajetos mais distantes, vans de agências locais ou aluguel de carros são ideais.',
   },
   {
     id: 'compras',
     title: 'Compras',
     icon: <ShoppingBag className="w-5 h-5" />,
-    content: 'Adquira deliciosos bolos de goma frescos de São Bento, bolsas feitas de fibra de bananeira e suvenires no calçadão central.',
+    content: 'Visite o Pontal da Barra para comprar as famosas rendas de filé tradicionais ou passeie pela clássica Feirinha de Artesanato de Pajuçara.',
   },
   {
     id: 'atracoes-proximas',
     title: 'Atrações Próximas',
     icon: <MapIcon className="w-5 h-5" />,
-    content: 'Conheça a maravilhosa Praia dos Carneiros (Tamandaré), e faça a travessia de balsa para Japaratinga e São Miguel dos Milagres.',
+    content: 'Explore as praias exuberantes do litoral sul (Gunga, Francês) e rume ao norte para conhecer a intocada Rota Ecológica de São Miguel dos Milagres.',
   },
   {
     id: 'seguranca',
     title: 'Segurança',
     icon: <ShieldCheck className="w-5 h-5" />,
-    content: 'Cidade praiana muito pacífica e de clima acolhedor. Tome apenas os cuidados habituais em praias movimentadas para não esquecer bolsas desprotegidas.',
+    content: 'A orla turística de Maceió é muito segura, bem iluminada e constantemente policiada. Mantenha apenas a atenção básica com pertences deixados na areia.',
   }
 ];
 
@@ -337,14 +337,14 @@ import CategoryHeader from './CategoryHeader';
 const getCityUrl = (city: City) => {
   if (city === 'SSA') return 'https://guia.melhoresdestinos.com.br/salvador-120-c.html';
   if (city === 'AJU') return 'https://guia.melhoresdestinos.com.br/aracaju-121-c.html';
-  return 'https://guia.melhoresdestinos.com.br/maragogi-174-c.html';
+  return 'https://guia.melhoresdestinos.com.br/maceio-173-c.html';
 };
 
 const MelhoresDestinos: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const [activeCity, setActiveCity] = useState<City>('SSA');
   const [selectedTopic, setSelectedTopic] = useState<SubTopic | null>(null);
 
-  const topics = activeCity === 'SSA' ? TOPICS_SSA : activeCity === 'AJU' ? TOPICS_AJU : TOPICS_MRG;
+  const topics = activeCity === 'SSA' ? TOPICS_SSA : activeCity === 'AJU' ? TOPICS_AJU : TOPICS_MCZ;
 
   if (selectedTopic) {
     return (
@@ -418,10 +418,10 @@ const MelhoresDestinos: React.FC<{ onBack: () => void }> = ({ onBack }) => {
           Aracaju
         </button>
         <button 
-          onClick={() => setActiveCity('MRG')}
-          className={`flex-1 py-4 rounded-xl text-[10px] font-black font-display uppercase tracking-[0.15em] transition-all ${activeCity === 'MRG' ? 'bg-white text-slate-900 shadow-lg' : 'text-slate-500'}`}
+          onClick={() => setActiveCity('MCZ')}
+          className={`flex-1 py-4 rounded-xl text-[10px] font-black font-display uppercase tracking-[0.15em] transition-all ${activeCity === 'MCZ' ? 'bg-white text-slate-900 shadow-lg' : 'text-slate-500'}`}
         >
-          Maragogi
+          Maceió
         </button>
       </div>
 

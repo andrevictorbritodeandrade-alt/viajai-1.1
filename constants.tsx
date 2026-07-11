@@ -15,6 +15,7 @@ import {
   Wallet,
   Brain,
   Car,
+  Fuel,
   CloudSun,
   ShoppingBasket,
   Shield,
@@ -147,13 +148,13 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     id: 'abastecimento', 
     title: 'Combustível',
-    icon: <Car className="w-12 h-12 text-white" />,
+    icon: <Fuel className="w-12 h-12 text-white" />,
     themeColor: 'green',
     gradientClass: 'bg-[#007749] border-white/20',
     bgColor: '#007749',
     category: 'Geral',
     description: 'Calculadora de combustível e viagem.',
-    bgImage: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?q=80&w=500&auto=format&fit=crop'
+    bgImage: '/gas_station.jpg'
   },
   {
     id: 'melhores_destinos', 

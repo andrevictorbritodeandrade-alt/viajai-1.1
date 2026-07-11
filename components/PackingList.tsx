@@ -425,10 +425,27 @@ const PackingList: React.FC<{
         </div>
       </div>
       
-      <div className="flex bg-gray-100 p-1 rounded-xl mb-6 shadow-inner">
+      <div className="flex bg-slate-100 p-1 rounded-2xl mb-6 shadow-inner border border-slate-200">
         {(['André', 'Marcelly'] as Person[]).map((person) => (
-          <button key={person} onClick={() => setActivePerson(person)} className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-bold transition-all ${activePerson === person ? 'bg-white text-green-700 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}>
-            <User className="w-4 h-4" /> {person}
+          <button 
+            key={person} 
+            onClick={() => setActivePerson(person)} 
+            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-xs font-black font-display uppercase tracking-widest transition-all ${
+              activePerson === person 
+                ? person === 'André'
+                  ? 'bg-gradient-to-r from-cyan-500 to-teal-500 text-white shadow-md shadow-cyan-500/20 ring-1 ring-white/10 scale-[1.02]'
+                  : 'bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-md shadow-rose-500/20 ring-1 ring-white/10 scale-[1.02]'
+                : person === 'André'
+                  ? 'text-slate-400 hover:text-cyan-500 hover:bg-white/50'
+                  : 'text-slate-400 hover:text-rose-500 hover:bg-white/50'
+            }`}
+          >
+            <User className={`w-4 h-4 ${
+              activePerson === person 
+                ? 'text-white' 
+                : person === 'André' ? 'text-cyan-500' : 'text-rose-500'
+            }`} /> 
+            {person}
           </button>
         ))}
       </div>

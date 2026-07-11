@@ -39,9 +39,9 @@ const ITINERARY_DATABASE: Record<string, TripItineraryConfig> = {
   // 1. Salvador - Plano E (Férias em Salvador)
   'am_salvador_julho': {
     id: 'am_salvador_julho',
-    title: 'Roteiro Integrado - Salvador + Maragogi + Aracaju de Carro',
+    title: 'Roteiro Integrado - Salvador + Maceió + Aracaju de Carro',
     date: '16 de Julho a 23 de Julho de 2026',
-    base: 'Bases: Salvador, Maragogi & Orla de Atalaia',
+    base: 'Bases: Salvador, Maceió & Orla de Atalaia',
     mode: 'Modo Road Trip • Carro Alugado',
     flagType: 'bahia_serg_alagoas',
     dias: [
@@ -56,9 +56,9 @@ const ITINERARY_DATABASE: Record<string, TripItineraryConfig> = {
     ],
     manha: [
       { time: "06:00", activity: "Adiantar voo (App da GOL)", details: "Entrar no app da GOL precisamente às 06:00 para tentar adiantar o voo gratuitamente. Malas prontas!\n• Plano A (Conseguiu): Ir correndo para o Galeão (GIG) pegar voo matutino.\n• Plano B (Não conseguiu): Manter plano padrão e trabalhar/descansar durante o dia.", costType: "gratuito", costLabel: "Sem Gastos" },
-      { time: "06:30", activity: "Saída para Maragogi", details: "Check-out no Airbnb em Salvador e saída às 06h30. Viagem de carro com distância de aproximadamente 550 a 600km até o Airbnb em Maragogi (JV APRTS 05, Rua Fernando Paes). Viajando a 70 - 80km/h, a estimativa de viagem é de 8 a 9 horas de estrada.", costType: "pago", costLabel: "💳 Gasto: Aluguel Carro + Combustível" },
-      { time: "07:30", activity: "Piscinas Naturais da Costa dos Corais", details: "Passeio imperdível aos corais! Opções: Galés (tradicional), Taocas (tranquila) ou Barra Grande (Caminho de Moisés). Barcos: Catamarã (R$110-140/px), Lancha Compartilhada (R$115-160/px) ou Privativa. O passeio só ocorre na maré baixa (<0.5).", costType: "pago", costLabel: "💳 Gasto: Passeios de Barco" },
-      { time: "08:30", activity: "Praia de Antunes & Mirante", details: "Aproveite a manhã na belíssima Praia de Antunes, famosa pelos coqueiros inclinados e águas mornas. Antes de partir, suba ao Mirante de Maragogi para tirar a última foto no letreiro. Em seguida, check-out e estrada para Aracaju.", costType: "pago", costLabel: "💳 Gasto: Combustível / Pedágios" },
+      { time: "06:30", activity: "Saída para Maceió", details: "Check-out no Airbnb em Salvador e saída às 06h30. Viagem de carro com distância de 561 km até o Airbnb in Maceió (Luciano). A estimativa de viagem é de aproximadamente 7h 53min de estrada, curtindo o trajeto pela BA-099.", costType: "pago", costLabel: "💳 Gasto: Aluguel Carro + Combustível" },
+      { time: "06:00", activity: "Saída para Maragogi (Caribe Brasileiro) - Combo Dia 1", details: "Embarque por volta das 06:00. Incluso transporte de ida e volta de Maceió para a paradisíaca Maragogi.", costType: "pago", costLabel: "💳 Combo 2 Dias: R$ 190,00" },
+      { time: "07:00", activity: "Saída para Praia do Gunga (Roteiro Completo) - Combo Dia 2", details: "Embarque por volta das 07:00. O roteiro inclui Parada para Fotos, Parada na Praia do Francês, Parada no Mirante do Gunga e Parada na Barra de São Miguel.", costType: "pago", costLabel: "Incluso no Combo" },
       { time: "08:30", activity: "Crooa do Goré / Namorados", details: "Passeio relaxante de barco ou catamarã até a belíssima Crooa do Goré e Ilha dos Namorados. Aproveitar as redes flutuantes na água morna.", costType: "pago", costLabel: "💳 Gasto: Passeio Catamarã R$ 90/px" },
       { time: "09:00", activity: "Checkout & Retorno Salvador", details: "Realizar checkout no Airbnb de Aracaju. Pegar a estrada de volta para a Bahia pela deslumbrante Rodovia Linha Verde (BA-099).", costType: "pago", costLabel: "💳 Gasto: Combustível" },
       { time: "09:30", activity: "Centro Histórico Salvador", details: "Caminhar pelo Pelourinho, descer o Elevador Lacerda, comprar fitinhas e fazer pedidos na Igreja do Bonfim.", costType: "gratuito", costLabel: "💸 Gratuito" },
@@ -66,19 +66,19 @@ const ITINERARY_DATABASE: Record<string, TripItineraryConfig> = {
     ],
     tarde: [
       { time: "Tarde", activity: "Plano A: SSA / Plano B: Trabalho", details: "• Plano A: Chegada cedo em Salvador. Fazer check-in no Airbnb Caminho das Árvores e curtir tarde de sol na Praia do Porto da Barra.\n• Plano B: Dia de trabalho ou descanso em casa no Rio, malas fechadas aguardando a noite.", costType: "gratuito", costLabel: "Sem Gastos" },
-      { time: "15:30", activity: "Chegada em Maragogi & Praias", details: "Estimativa de chegada à tarde em Maragogi (AL). Após check-in no Airbnb (JV APRTS 05), visite a Praia de Maragogi (praia central), a calma Praia do Camacho, ou a famosa Praia de Burgalhau para estender a canga.", costType: "gratuito", costLabel: "Sem Custos" },
-      { time: "13:30", activity: "Caminho de Moisés / Antunes", details: "Visitar a Praia de Barra Grande e caminhar pelo Caminho de Moisés na maré baixa. À tarde, relaxar nas águas calmas da Praia de Antunes.", costType: "gratuito", costLabel: "💸 Gratuito" },
-      { time: "13:30", activity: "Chegada em AJU & Almoço", details: "Chegada em Aracaju. Check-in no Airbnb Premium Orla de Atalaia. Almoço com tempero regional sergipano próximo à orla.", costType: "pago", costLabel: "💳 Gasto: Almoço típico" },
+      { time: "15:30", activity: "Chegada em Maceió & Praias", details: "Estimativa de chegada no meio da tarde em Maceió (AL). Após check-in no aconchegante Airbnb de Luciano, visite a Praia de Ponta Verde, famosa por seus coqueirais e excelente infraestrutura de lazer.", costType: "gratuito", costLabel: "Sem Custos" },
+      { time: "12:00", activity: "Catamarã, Piscinas Naturais & Caminho de Moisés", details: "Passeio de Catamarã para as incríveis Piscinas Naturais de Maragogi e caminhada no deslumbrante banco de areia 'Caminho de Moisés'. Retorno por volta das 15:00.", costType: "pago", costLabel: "Incluso no Combo" },
+      { time: "12:00", activity: "Tarde na Praia do Gunga & Saída p/ Aracaju", details: "Aproveite o dia inteiro na espetacular Praia do Gunga. Retorno do passeio por volta das 15:30. Atividades opcionais locais: Buggy pelas falésias, Quadriciclo, Helicóptero, Lancha, Paramotor, Tirolesa ou Jetski.\n\nApós o retorno, fazer o check-out no Airbnb de Luciano em Maceió e pegar a estrada rumo a Aracaju (aprox. 270 km, 4h de viagem).", costType: "pago", costLabel: "💳 Opcionais + Combustível" },
       { time: "14:00", activity: "Lagoa dos Tambaquis", details: "Visitar a lagoa e entrar na água doce super agradável para alimentar na mão os tambaquis gigantes. Experiência incrível.", costType: "pago", costLabel: "💳 Gasto: Entrada R$ 20/px" },
       { time: "14:00", activity: "Check-in em Salvador", details: "Chegada em Salvador. Check-in no Airbnb Caminho das Árvores. Tarde livre para caminhar pela bela orla da Barra e tomar sorvete.", costType: "gratuito", costLabel: "Sem Custos" },
-      { time: "14:00", activity: "MUNCAB (Pelourinho)", details: "Visita imperdível à exposição 'Padê Onã' no MUNCAB. Quarta-feira a entrada é totalmente gratuita! Explore o Pelourinho e Mercado Modelo.", costType: "gratuito", costLabel: "💸 Gratuito às Quartas", links: [{ title: 'Exposição Padê Onã', url: 'https://www.salvadordabahia.com/eventos/exposicao-pade-ona-encontrar-caminhos/' }] },
+      { time: "14:00", activity: "MUNCAB (Pelourinho)", details: "Visita imperdível à exposição 'Padê Onã' no MUNCAB. Quarta-feira a entrada é totalmente gratuita! Explore o Pelourinho e Mercado Modelo.", costType: "gratuito", costLabel: "💸 Gratuito às Quartas", links: [{ title: 'Exposição Padê Onã', url: 'https://www.salvadordabahia.com/eventos/exposicao-caso-pade-ona-encontrar-caminhos/' }] },
       { time: "-", activity: "Retorno ao Rio", details: "Chegada previsto no Aeroporto Galeão (GIG) às 07:55. Retorno para casa finalizando as férias.", costType: "gratuito", costLabel: "-" }
     ],
     noite: [
       { time: "Noite", activity: "Plano A: Jantar / Plano B: Voo", details: "• Plano A: Jantar romântico e curtir a noite boêmia de Salvador no Rio Vermelho. Dormir no Airbnb Caminho das Árvores.\n• Plano B: Embarque no GIG às 23:20 (voo G3 1898) rumo a SSA. Chegada na madrugada de sexta-feira (01:30), retirar carro na LocarX e ir direto dormir no Airbnb.", costType: "misto", costLabel: "Passagem já paga" },
-      { time: "19:00", activity: "Jantar & Atividades Noturnas", details: "Jantar na orla com vista para o mar! Boas opções: Russo Gastrobar, Croa Lounge (bistrô), Casa da Praia Lounge (pizza) ou Caravelas Gastrobar. Após a refeição, passeie pela Feira de Artesanato local.", costType: "pago", costLabel: "💳 Gasto: Jantar" },
-      { time: "19:00", activity: "Bolinhos de Goma em São Bento", details: "Conhecer a produção tradicional dos famosos bolinhos de gama artesanais de São Bento. Jantar calmo em Maragogi.", costType: "pago", costLabel: "💳 Gasto: Compras locais" },
-      { time: "19:00", activity: "Passarela do Caranguejo, AJU", details: "Caminhar pela passarela, ver as quadras, feirinha de artesanato e jantar na tradicional Passarela do Caranguejo (restaurante Cariri).", costType: "pago", costLabel: "💳 Gasto: Jantar de Caranguejo" },
+      { time: "19:00", activity: "Jantar na Orla de Ponta Verde", details: "Aproveite a noite nos famosos quiosques de praia Lopana ou Kanoa, curtindo boa gastronomia, drinks artesanais e música ao vivo à beira-mar.", costType: "pago", costLabel: "💳 Gasto: Jantar" },
+      { time: "19:00", activity: "Noite em Maceió / Jantar na Orla", details: "Jantar na bela orla de Ponta Verde ou Pajuçara (Lopana ou Kanoa) para repor as energias após o passeio espetacular em Maragogi.", costType: "pago", costLabel: "💳 Gasto: Jantar" },
+      { time: "19:30", activity: "Chegada em AJU & Jantar na Passarela do Caranguejo", details: "Chegada em Aracaju. Check-in no Airbnb Premium na Orla de Atalaia. Jantar saboroso na famosa Passarela do Caranguejo (restaurante Cariri) com música ao vivo (forró).", costType: "pago", costLabel: "💳 Gasto: Jantar de Boas-Vindas" },
       { time: "19:00", activity: "Noite na Atalaia", details: "Passear pela bela Feira do Turista da Atalaia, comprar artesanatos sergipanos e curtir música ao vivo em bar local.", costType: "pago", costLabel: "💳 Gasto: Alimentação" },
       { time: "19:00", activity: "Noite no Largo da Mariquita", details: "Curtir a fantástica boemia de Salvador no Rio Vermelho. Saborear o acarajé de Cira ou Dinha e aproveitar o clima baiano.", costType: "pago", costLabel: "💳 Gasto: Consumos" },
       { time: "19:00", activity: "Jantar Especial de Despedida", details: "Jantar inesquecível no charmoso Santo Antônio Além do Carmo com vista deslumbrante para a Baía de Todos-os-Santos.", costType: "pago", costLabel: "💳 Gasto: Jantar de Despedida" },
@@ -88,7 +88,7 @@ const ITINERARY_DATABASE: Record<string, TripItineraryConfig> = {
     culturalTips: [
       "Voucher LocarX: Guarde o voucher (código QHKJDZC) no celular. Ao desembarcar, suba até a praça de alimentação no 1º andar e vá em frente à lanchonete Tabuleiro para pegar o transfer gratuito da locadora.",
       "App GOL às 6h: Abra o app da GOL logo cedo no dia 16/07 para tentar o adiantamento gratuito do voo. Se conseguir adiantar, você ganha um dia inteiro em Salvador (Plano A)!",
-      "Tábua de Marés em Maragogi: Programe as visitas às Galés e Caminho de Moisés exatamente na hora da maré baixa diária."
+      "Tábua de Marés em Maceió: Programe os passeios de jangada até as piscinas de Pajuçara exatamente na hora da maré baixa diária (<0.3)."
     ],
     logisticsTitle: "🚗 Logística e Lógica de Estrada (Linha Verde)",
     logisticsTips: [
@@ -947,8 +947,8 @@ const GuideList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                         : 'bg-white border-slate-200 text-slate-700 hover:border-blue-300 hover:bg-slate-50'
                     }`}
                   >
-                    <div className="font-extrabold text-xs">{dia.label}</div>
-                    <div className={`text-[9px] font-bold mt-0.5 ${activeDayIndex === idx ? 'text-white/85' : 'text-slate-400'}`}>
+                    <div className="font-extrabold text-sm">{dia.label}</div>
+                    <div className={`text-[11px] font-bold mt-1 ${activeDayIndex === idx ? 'text-white/85' : 'text-slate-400'}`}>
                       {dia.data}
                     </div>
                   </button>
@@ -962,8 +962,8 @@ const GuideList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                   <div className="flex items-center gap-2 pb-3 mb-4 border-b border-slate-100 w-full shrink-0">
                     <span className="text-2xl" role="img" aria-label="Manhã">☀️</span>
                     <div>
-                      <h4 className="font-black text-slate-800 text-sm uppercase tracking-wider">Manhã</h4>
-                      <p className="text-[9px] text-slate-400 font-bold uppercase">Começo do Dia</p>
+                      <h4 className="font-black text-slate-800 text-base uppercase tracking-wider">Manhã</h4>
+                      <p className="text-[11px] text-slate-400 font-bold uppercase">Começo do Dia</p>
                     </div>
                   </div>
                   {renderCardContent(activeConfig.manha[activeDayIndex])}
@@ -974,8 +974,8 @@ const GuideList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                   <div className="flex items-center gap-2 pb-3 mb-4 border-b border-slate-100 w-full shrink-0">
                     <span className="text-2xl" role="img" aria-label="Tarde">🌤️</span>
                     <div>
-                      <h4 className="font-black text-slate-800 text-sm uppercase tracking-wider">Tarde</h4>
-                      <p className="text-[9px] text-slate-400 font-bold uppercase">Meio do Dia</p>
+                      <h4 className="font-black text-slate-800 text-base uppercase tracking-wider">Tarde</h4>
+                      <p className="text-[11px] text-slate-400 font-bold uppercase">Meio do Dia</p>
                     </div>
                   </div>
                   {renderCardContent(activeConfig.tarde[activeDayIndex])}
@@ -986,8 +986,8 @@ const GuideList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                   <div className="flex items-center gap-2 pb-3 mb-4 border-b border-slate-100 w-full shrink-0">
                     <span className="text-2xl" role="img" aria-label="Noite">🌙</span>
                     <div>
-                      <h4 className="font-black text-slate-800 text-sm uppercase tracking-wider">Noite</h4>
-                      <p className="text-[9px] text-slate-400 font-bold uppercase">Encerramento</p>
+                      <h4 className="font-black text-slate-800 text-base uppercase tracking-wider">Noite</h4>
+                      <p className="text-[11px] text-slate-400 font-bold uppercase">Encerramento</p>
                     </div>
                   </div>
                   {renderCardContent(activeConfig.noite[activeDayIndex])}
@@ -1007,7 +1007,7 @@ const GuideList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                       </div>
                       <div>
                         <h3 className="font-black text-[#0038a8] text-sm md:text-base uppercase tracking-tight">{dia.label}</h3>
-                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wide">{dia.data}</p>
+                        <p className="text-[11px] text-slate-400 font-bold uppercase tracking-wide">{dia.data}</p>
                       </div>
                     </div>
                   </div>
@@ -1044,7 +1044,7 @@ const GuideList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
 
           {viewMode === 'table' && (
             <div className="overflow-x-auto">
-              <div className="text-right text-[10px] text-slate-400 font-bold uppercase tracking-wide mb-2 flex items-center justify-end gap-1 select-none">
+              <div className="text-right text-xs text-slate-400 font-bold uppercase tracking-wide mb-2 flex items-center justify-end gap-1 select-none">
                 <span>👉 Arraste lateralmente para ver todos os dias</span>
               </div>
               <table className="w-full text-left border-collapse min-w-[1200px] bg-white rounded-2xl shadow-md overflow-hidden border border-slate-200">
@@ -1056,7 +1056,7 @@ const GuideList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                     {activeConfig.dias.map((dia, idx) => (
                       <th key={idx} className="p-4 bg-[#0038a8] text-white border-r border-blue-800 text-center min-w-[240px]">
                         <div className="font-extrabold text-sm md:text-base">{dia.label}</div>
-                        <div className="text-[11px] md:text-xs font-bold opacity-90 mt-0.5 tracking-wide">{dia.data}</div>
+                        <div className="text-xs md:text-sm font-bold opacity-90 mt-1 tracking-wide">{dia.data}</div>
                       </th>
                     ))}
                   </tr>
@@ -1066,7 +1066,7 @@ const GuideList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                     <td className="p-4 bg-slate-100 border-b border-r border-slate-200 font-bold text-slate-800 align-middle text-center sticky left-0 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
                       <div className="flex flex-col items-center justify-center py-2 select-none">
                         <span className="text-2xl mb-1.5" role="img" aria-label="Manhã">☀️</span>
-                        <span className="uppercase tracking-widest text-[11px] font-black text-slate-500">Manhã</span>
+                        <span className="uppercase tracking-widest text-xs font-black text-slate-500">Manhã</span>
                       </div>
                     </td>
                     {activeConfig.dias.map((_, idx) => renderCell(activeConfig.manha[idx], idx))}
@@ -1076,7 +1076,7 @@ const GuideList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                     <td className="p-4 bg-slate-100 border-b border-r border-slate-200 font-bold text-slate-800 align-middle text-center sticky left-0 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
                       <div className="flex flex-col items-center justify-center py-2 select-none">
                         <span className="text-2xl mb-1.5" role="img" aria-label="Tarde">🌤️</span>
-                        <span className="uppercase tracking-widest text-[11px] font-black text-slate-500">Tarde</span>
+                        <span className="uppercase tracking-widest text-xs font-black text-slate-500">Tarde</span>
                       </div>
                     </td>
                     {activeConfig.dias.map((_, idx) => renderCell(activeConfig.tarde[idx], idx))}
@@ -1086,7 +1086,7 @@ const GuideList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                     <td className="p-4 bg-slate-100 border-r border-slate-200 font-bold text-slate-800 align-middle text-center sticky left-0 z-10 rounded-bl-2xl shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
                       <div className="flex flex-col items-center justify-center py-2 select-none">
                         <span className="text-2xl mb-1.5" role="img" aria-label="Noite">🌙</span>
-                        <span className="uppercase tracking-widest text-[11px] font-black text-slate-500">Noite</span>
+                        <span className="uppercase tracking-widest text-xs font-black text-slate-500">Noite</span>
                       </div>
                     </td>
                     {activeConfig.dias.map((_, idx) => renderCell(activeConfig.noite[idx], idx))}

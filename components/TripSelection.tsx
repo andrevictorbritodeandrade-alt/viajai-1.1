@@ -130,7 +130,7 @@ const ANDRE_MARCELLY_TRIPS: Trip[] = [
   },
   {
     id: 'am_salvador_julho',
-    name: 'Plano E: Salvador + Maragogi + Aracaju (Carro)',
+    name: 'Plano E: Salvador + Maceió + Aracaju (Carro)',
     date: '16 a 23 de Julho',
     image: '/ssa_aju_premium.png',
     lat: -12.9714,
@@ -139,7 +139,7 @@ const ANDRE_MARCELLY_TRIPS: Trip[] = [
     isDomestic: true,
     category: 'julho',
     price: 'Carro + Aéreo: R$ 1.152,53',
-    subtitle: 'Salvador, Maragogi & Aracaju • 16 a 23 de Julho'
+    subtitle: 'Salvador, Maceió & Aracaju • 16 a 23 de Julho'
   }
 ];
 

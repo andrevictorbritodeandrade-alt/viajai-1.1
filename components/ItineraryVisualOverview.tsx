@@ -352,11 +352,11 @@ const TEMPLATE_ITINERARIES: Record<string, ItineraryData> = {
   },
   'am_salvador_julho': {
     id: 'am_salvador_julho',
-    tripName: 'Salvador + Maragogi + Aracaju (Carro Alugado)',
+    tripName: 'Salvador + Maceió + Aracaju (Carro Alugado)',
     stops: [
       { airport: 'GIG', city: 'Rio de Janeiro', coords: '22.8123° S, 43.2505° W' },
       { airport: 'SSA', city: 'Salvador', coords: '12.9110° S, 38.3314° W' },
-      { airport: 'MRG', city: 'Maragogi', coords: '9.0122° S, 35.2217° W' },
+      { airport: 'MCZ', city: 'Maceió', coords: '9.6658° S, 35.7353° W' },
       { airport: 'AJU', city: 'Aracaju', coords: '10.9841° S, 37.0701° W' }
     ],
     outboundDate: '16 de Julho de 2026',
@@ -386,26 +386,26 @@ const TEMPLATE_ITINERARIES: Record<string, ItineraryData> = {
         airline: 'Fiat Mobi ou similar',
         from: 'SSA',
         fromCity: 'Salvador',
-        to: 'MRG',
-        toCity: 'Maragogi',
+        to: 'MCZ',
+        toCity: 'Maceió',
         depTime: '08:00',
-        arrTime: '13:00',
-        duration: '5h00m',
+        arrTime: '16:00',
+        duration: '7h53m',
         dateInfo: 'Sexta-feira, 17 de Jul de 2026',
-        priceInfo: 'Estrada Linha Verde (BA-099) e AL-101. Carro alugado na LocarX'
+        priceInfo: 'Trajeto de carro: 561 km (aprox. 7h 53min). Rodovia Linha Verde (BA-099) e AL-101. Pedágios: R$ 9,80.'
       },
       {
         flightNumber: 'Carro Alugado (LocarX)',
         airline: 'Fiat Mobi ou similar',
-        from: 'MRG',
-        fromCity: 'Maragogi',
+        from: 'MCZ',
+        fromCity: 'Maceió',
         to: 'AJU',
         toCity: 'Aracaju',
-        depTime: '12:00',
-        arrTime: '16:00',
+        depTime: '17:00',
+        arrTime: '21:00',
         duration: '4h00m',
         dateInfo: 'Domingo, 19 de Jul de 2026',
-        priceInfo: 'Deslocamento sul em direção a Sergipe pela BR-101 e SE-100'
+        priceInfo: 'Deslocamento sul em direção a Sergipe pela AL-101 e SE-100. Aprox. 270 km.'
       },
       {
         flightNumber: 'Carro Alugado (LocarX)',
@@ -519,7 +519,137 @@ const TEMPLATE_ITINERARIES: Record<string, ItineraryData> = {
       { type: 'cabin', label: 'Mala de Cabine 10kg', limit: 'Incluso no voo da Azul', included: true, color: 'text-emerald-600 bg-emerald-500/10' },
       { type: 'checked', label: 'Bagagem no Carro', limit: 'Franquia do porta-malas inclusa', included: true, color: 'text-emerald-600 bg-emerald-500/10' }
     ]
-  },
+  }
+};
+
+const getTerrestrialLegDetails = (tripId: string, tab: string) => {
+  if (tripId === 'am_salvador_julho') {
+    if (tab === 'ida' || tab === 'car_ssa_mcz') {
+      return {
+        type: 'retirada-maceio',
+        title: 'Deslocamento Salvador ➔ Maceió',
+        airline: 'Fiat Mobi ou similar (LocarX)',
+        duration: '7h 53m',
+        depLabel: 'RETIRADA SALVADOR',
+        depTime: '08:00',
+        depCode: 'SSA',
+        depSub: 'Loja de Aluguel de Carros (LocarX)',
+        depDate: '17 de jul. de 2026',
+        arrLabel: 'CHEGADA MACEIÓ',
+        arrTime: '15:53',
+        arrCode: 'MCZ',
+        arrSub: 'Hospedagem em Maceió (Pontas de Jatiúca)',
+        arrDate: '17 de jul. de 2026',
+        route: 'BA-099 (Linha Verde) e AL-101 (Via Litoral)',
+        distance: '561 km',
+        toll: 'R$ 9,80',
+        fuelGas: 'R$ 270,30',
+        fuelEtanol: 'R$ 251,89',
+        gasLiters: '39.2L',
+        etanolLiters: '56.1L'
+      };
+    } else if (tab === 'interno' || tab === 'car_mcz_aju') {
+      return {
+        type: 'deslocamento-aracaju',
+        title: 'Deslocamento Maceió ➔ Aracaju',
+        airline: 'Fiat Mobi ou similar (LocarX)',
+        duration: '4h 00m',
+        depLabel: 'SAÍDA MACEIÓ',
+        depTime: '17:00',
+        depCode: 'MCZ',
+        depSub: 'Hospedagem em Maceió (Check-out)',
+        depDate: '19 de jul. de 2026',
+        arrLabel: 'CHEGADA ARACAJU',
+        arrTime: '21:00',
+        arrCode: 'AJU',
+        arrSub: 'Hospedagem em Aracaju (Orla de Atalaia)',
+        arrDate: '19 de jul. de 2026',
+        route: 'AL-101 e SE-100 (Litoral Sul)',
+        distance: '270 km',
+        toll: 'Isento',
+        fuelGas: 'R$ 130,09',
+        fuelEtanol: 'R$ 121,23',
+        gasLiters: '18.9L',
+        etanolLiters: '27.0L'
+      };
+    } else if (tab === 'volta' || tab === 'car_aju_ssa') {
+      return {
+        type: 'devolucao-salvador',
+        title: 'Deslocamento Aracaju ➔ Salvador',
+        airline: 'Fiat Mobi ou similar (LocarX)',
+        duration: '4h 30m',
+        depLabel: 'SAÍDA ARACAJU',
+        depTime: '08:30',
+        depCode: 'AJU',
+        depSub: 'Hospedagem em Aracaju (Check-out)',
+        depDate: '21 de jul. de 2026',
+        arrLabel: 'DEVOLUÇÃO SALVADOR',
+        arrTime: '13:00',
+        arrCode: 'SSA',
+        arrSub: 'Loja de Aluguel de Carros (LocarX)',
+        arrDate: '21 de jul. de 2026',
+        route: 'BA-099 (Retorno via Linha Verde)',
+        distance: '320 km',
+        toll: 'Isento',
+        fuelGas: 'R$ 154,18',
+        fuelEtanol: 'R$ 143,68',
+        gasLiters: '22.4L',
+        etanolLiters: '32.0L'
+      };
+    }
+    return null;
+  }
+
+  // Fallback para as rotas padrão SSA-AJU
+  if (tab === 'ida') {
+    return {
+      type: 'retirada-aracaju-default',
+      title: 'Deslocamento Salvador ➔ Aracaju',
+      airline: 'Fiat Mobi ou similar (LocarX)',
+      duration: '4h 30m',
+      depLabel: 'RETIRADA SALVADOR',
+      depTime: '08:00',
+      depCode: 'SSA',
+      depSub: 'Loja de Aluguel de Carros (LocarX)',
+      depDate: '14 de jul. de 2026',
+      arrLabel: 'CHEGADA ARACAJU',
+      arrTime: '12:30',
+      arrCode: 'AJU',
+      arrSub: 'Hospedagem em Aracaju (Orla de Atalaia)',
+      arrDate: '14 de jul. de 2026',
+      route: 'Estrada Linha Verde (BA-099)',
+      distance: '320 km',
+      toll: 'R$ 9,80',
+      fuelGas: 'R$ 154,18',
+      fuelEtanol: 'R$ 143,68',
+      gasLiters: '22.4L',
+      etanolLiters: '32.0L'
+    };
+  } else {
+    return {
+      type: 'devolucao-salvador-default',
+      title: 'Deslocamento Aracaju ➔ Salvador',
+      airline: 'Fiat Mobi ou similar (LocarX)',
+      duration: '4h 30m',
+      depLabel: 'SAÍDA ARACAJU',
+      depTime: '13:30',
+      depCode: 'AJU',
+      depSub: 'Hospedagem em Aracaju (Orla de Atalaia)',
+      depDate: '19 de jul. de 2026',
+      arrLabel: 'DEVOLUÇÃO SALVADOR',
+      arrTime: '18:00',
+      arrCode: 'SSA',
+      arrSub: 'Loja de Aluguel de Carros (LocarX)',
+      arrDate: '19 de jul. de 2026',
+      route: 'Estrada Linha Verde (BA-099)',
+      distance: '320 km',
+      toll: 'Isento',
+      fuelGas: 'R$ 154,18',
+      fuelEtanol: 'R$ 143,68',
+      gasLiters: '22.4L',
+      etanolLiters: '32.0L'
+    };
+  }
 };
 
 export interface OverviewProps {
@@ -529,7 +659,9 @@ export interface OverviewProps {
 export const ItineraryVisualOverview: React.FC<OverviewProps> = ({ tripId }) => {
   const [data, setData] = useState<ItineraryData | null>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [activeTimelineTab, setActiveTimelineTab] = useState<'ida' | 'interno' | 'volta'>('ida');
+  const [activeTimelineTab, setActiveTimelineTab] = useState<string>('ida');
+
+  const [isTimelineExpanded, setIsTimelineExpanded] = useState(true);
 
   // Flight Editable Fields State
   const [editedPrice, setEditedPrice] = useState('');
@@ -632,11 +764,22 @@ export const ItineraryVisualOverview: React.FC<OverviewProps> = ({ tripId }) => 
 
   const isCarTrip = !!(data.internalLegs && data.internalLegs[0]?.flightNumber.toLowerCase().includes('carro'));
 
-  const currentLegs = activeTimelineTab === 'ida' 
-    ? data.outboundLegs || [] 
-    : activeTimelineTab === 'interno' && data.internalLegs 
-      ? data.internalLegs 
-      : data.inboundLegs || [];
+  let currentLegs: any[] = [];
+  if (data.id === 'am_salvador_julho') {
+    if (activeTimelineTab === 'voo_ida' || activeTimelineTab === 'ida') {
+      currentLegs = data.outboundLegs || [];
+    } else if (activeTimelineTab === 'voo_volta' || activeTimelineTab === 'volta') {
+      currentLegs = data.inboundLegs || [];
+    } else {
+      currentLegs = []; // No flights for pure car legs
+    }
+  } else {
+    currentLegs = activeTimelineTab === 'ida' 
+      ? data.outboundLegs || [] 
+      : activeTimelineTab === 'interno' && data.internalLegs 
+        ? data.internalLegs 
+        : data.inboundLegs || [];
+  }
   const hasConnections = currentLegs.some(leg => !!leg.layoverAfter);
 
   return (
@@ -686,53 +829,113 @@ export const ItineraryVisualOverview: React.FC<OverviewProps> = ({ tripId }) => 
         <div className="w-full space-y-4">
           
           {/* TAB Switches with custom visual highlights */}
-          <div className={`grid ${data.internalLegs && data.internalLegs.length > 0 ? 'grid-cols-3' : 'grid-cols-2'} gap-3 bg-[#090d16] p-1.5 rounded-2xl border border-slate-900 w-full mb-6`}>
-            <button
-              onClick={() => setActiveTimelineTab('ida')}
-              className={`flex items-center justify-center gap-2.5 py-3 px-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
-                activeTimelineTab === 'ida' 
-                  ? 'bg-[#00c58e] text-black shadow-lg shadow-[#00c58e]/20' 
-                  : 'bg-transparent text-slate-500 hover:text-slate-900 hover:bg-slate-200/50'
-              }`}
-            >
-              <Plane className="w-4 h-4 translate-y-[0.5px]" />
-              Sentido Ida: {data.outboundDate.split(' de ')[0]} {data.outboundDate.split(' de ')[1]?.substring(0, 3)}
-            </button>
-            {data.internalLegs && data.internalLegs.length > 0 && (
+          {data.id === 'am_salvador_julho' ? (
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-3 bg-[#090d16] p-1.5 rounded-2xl border border-slate-900 w-full mb-6">
               <button
-                onClick={() => setActiveTimelineTab('interno')}
-                className={`flex items-center justify-center gap-2.5 py-3 px-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
-                  activeTimelineTab === 'interno' 
+                onClick={() => setActiveTimelineTab('voo_ida')}
+                className={`flex items-center justify-center gap-2 py-3 px-3 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest transition-all ${
+                  activeTimelineTab === 'voo_ida' || activeTimelineTab === 'ida'
+                    ? 'bg-[#00c58e] text-black shadow-lg shadow-[#00c58e]/20' 
+                    : 'bg-transparent text-slate-500 hover:text-slate-900 hover:bg-slate-200/50'
+                }`}
+              >
+                <Plane className="w-4 h-4 shrink-0" />
+                <span className="truncate">Voo Ida (16/07)</span>
+              </button>
+              <button
+                onClick={() => setActiveTimelineTab('car_ssa_mcz')}
+                className={`flex items-center justify-center gap-2 py-3 px-3 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest transition-all ${
+                  activeTimelineTab === 'car_ssa_mcz' 
                     ? 'bg-amber-400 text-black shadow-lg shadow-amber-400/20' 
                     : 'bg-transparent text-slate-500 hover:text-slate-900 hover:bg-slate-200/50'
                 }`}
               >
-                {data.id === 'am_rio_foz_ba' ? (
-                  <Plane className="w-4 h-4" />
-                ) : isCarTrip ? (
-                  <Car className="w-4 h-4 translate-y-[0.5px]" />
-                ) : (
-                  <Car className="w-4 h-4 translate-y-[0.5px]" />
-                )}
-                {data.id === 'am_rio_foz_ba' 
-                  ? 'Voo: Puerto Iguazú ⇄ BA' 
-                  : (data.internalLegs && data.internalLegs[0]) 
-                    ? `Car: ${data.internalLegs[0].from} ➞ ${data.internalLegs[0].to}` 
-                    : 'Car: Foz ➞ Assunção'}
+                <Car className="w-4 h-4 shrink-0" />
+                <span className="truncate">SSA ➔ MCZ (17/07)</span>
               </button>
-            )}
-            <button
-              onClick={() => setActiveTimelineTab('volta')}
-              className={`flex items-center justify-center gap-2.5 py-3 px-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
-                activeTimelineTab === 'volta' 
-                  ? 'bg-[#00c58e] text-black shadow-lg shadow-[#00c58e]/20' 
-                  : 'bg-transparent text-slate-500 hover:text-slate-900 hover:bg-slate-200/50'
-              }`}
-            >
-              <Plane className="w-4 h-4 rotate-180 translate-y-[-0.5px]" />
-              Sentido Volta: {data.returnDate.split(' de ')[0]} {data.returnDate.split(' de ')[1]?.substring(0, 3)}
-            </button>
-          </div>
+              <button
+                onClick={() => setActiveTimelineTab('car_mcz_aju')}
+                className={`flex items-center justify-center gap-2 py-3 px-3 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest transition-all ${
+                  activeTimelineTab === 'car_mcz_aju' || activeTimelineTab === 'interno'
+                    ? 'bg-amber-400 text-black shadow-lg shadow-amber-400/20' 
+                    : 'bg-transparent text-slate-500 hover:text-slate-900 hover:bg-slate-200/50'
+                }`}
+              >
+                <Car className="w-4 h-4 shrink-0" />
+                <span className="truncate">MCZ ➔ AJU (19/07)</span>
+              </button>
+              <button
+                onClick={() => setActiveTimelineTab('car_aju_ssa')}
+                className={`flex items-center justify-center gap-2 py-3 px-3 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest transition-all ${
+                  activeTimelineTab === 'car_aju_ssa' 
+                    ? 'bg-amber-400 text-black shadow-lg shadow-amber-400/20' 
+                    : 'bg-transparent text-slate-500 hover:text-slate-900 hover:bg-slate-200/50'
+                }`}
+              >
+                <Car className="w-4 h-4 shrink-0" />
+                <span className="truncate">AJU ➔ SSA (21/07)</span>
+              </button>
+              <button
+                onClick={() => setActiveTimelineTab('voo_volta')}
+                className={`flex items-center justify-center gap-2 py-3 px-3 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest col-span-2 md:col-span-1 transition-all ${
+                  activeTimelineTab === 'voo_volta' || activeTimelineTab === 'volta'
+                    ? 'bg-[#00c58e] text-black shadow-lg shadow-[#00c58e]/20' 
+                    : 'bg-transparent text-slate-500 hover:text-slate-900 hover:bg-slate-200/50'
+                }`}
+              >
+                <Plane className="w-4 h-4 rotate-180 shrink-0" />
+                <span className="truncate">Voo Volta (23/07)</span>
+              </button>
+            </div>
+          ) : (
+            <div className={`grid ${data.internalLegs && data.internalLegs.length > 0 ? 'grid-cols-3' : 'grid-cols-2'} gap-3 bg-[#090d16] p-1.5 rounded-2xl border border-slate-900 w-full mb-6`}>
+              <button
+                onClick={() => setActiveTimelineTab('ida')}
+                className={`flex items-center justify-center gap-2.5 py-3 px-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
+                  activeTimelineTab === 'ida' 
+                    ? 'bg-[#00c58e] text-black shadow-lg shadow-[#00c58e]/20' 
+                    : 'bg-transparent text-slate-500 hover:text-slate-900 hover:bg-slate-200/50'
+                }`}
+              >
+                <Plane className="w-4 h-4 translate-y-[0.5px]" />
+                Sentido Ida: {data.outboundDate.split(' de ')[0]} {data.outboundDate.split(' de ')[1]?.substring(0, 3)}
+              </button>
+              {data.internalLegs && data.internalLegs.length > 0 && (
+                <button
+                  onClick={() => setActiveTimelineTab('interno')}
+                  className={`flex items-center justify-center gap-2.5 py-3 px-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
+                    activeTimelineTab === 'interno' 
+                      ? 'bg-amber-400 text-black shadow-lg shadow-amber-400/20' 
+                      : 'bg-transparent text-slate-500 hover:text-slate-900 hover:bg-slate-200/50'
+                  }`}
+                >
+                  {data.id === 'am_rio_foz_ba' ? (
+                    <Plane className="w-4 h-4" />
+                  ) : isCarTrip ? (
+                    <Car className="w-4 h-4 translate-y-[0.5px]" />
+                  ) : (
+                    <Car className="w-4 h-4 translate-y-[0.5px]" />
+                  )}
+                  {data.id === 'am_rio_foz_ba' 
+                    ? 'Voo: Puerto Iguazú ⇄ BA' 
+                    : (data.internalLegs && data.internalLegs[0]) 
+                      ? `Car: ${data.internalLegs[0].from} ➞ ${data.internalLegs[0].to}` 
+                      : 'Car: Foz ➞ Assunção'}
+                </button>
+              )}
+              <button
+                onClick={() => setActiveTimelineTab('volta')}
+                className={`flex items-center justify-center gap-2.5 py-3 px-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
+                  activeTimelineTab === 'volta' 
+                    ? 'bg-[#00c58e] text-black shadow-lg shadow-[#00c58e]/20' 
+                    : 'bg-transparent text-slate-500 hover:text-slate-900 hover:bg-slate-200/50'
+                }`}
+              >
+                <Plane className="w-4 h-4 rotate-180 translate-y-[-0.5px]" />
+                Sentido Volta: {data.returnDate.split(' de ')[0]} {data.returnDate.split(' de ')[1]?.substring(0, 3)}
+              </button>
+            </div>
+          )}
 
           {/* Core Timeline Module Panel */}
           <div className="bg-white border border-slate-200 shadow-sm rounded-3xl p-6 relative">
@@ -740,6 +943,12 @@ export const ItineraryVisualOverview: React.FC<OverviewProps> = ({ tripId }) => 
               <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
                 {activeTimelineTab === 'interno' ? 'Linha do Tempo Terrestre' : 'Linha do Tempo de Voos'}
               </span>
+              <button 
+                onClick={() => setIsTimelineExpanded(!isTimelineExpanded)}
+                className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-emerald-600 hover:text-emerald-700"
+              >
+                {isTimelineExpanded ? 'Recolher' : 'Expandir'}
+              </button>
               <div className="flex items-center gap-1.5">
                 <span className={`w-2 h-2 rounded-full ${hasConnections ? 'bg-amber-400 animate-pulse' : 'bg-[#00c58e]'}`}></span>
                 <span className="text-[9px] font-bold uppercase tracking-wider text-slate-600">
@@ -749,7 +958,8 @@ export const ItineraryVisualOverview: React.FC<OverviewProps> = ({ tripId }) => 
             </div>
 
             {/* Custom Visual Timeline Flow */}
-            <div className="space-y-6 relative before:absolute before:left-6 before:top-2 before:bottom-2 before:w-[2px] before:bg-gradient-to-b before:from-emerald-500/20 before:via-white/5 before:to-purple-500/20">
+            {isTimelineExpanded && (
+              <div className="space-y-6 relative before:absolute before:left-6 before:top-2 before:bottom-2 before:w-[2px] before:bg-gradient-to-b before:from-emerald-500/20 before:via-white/5 before:to-purple-500/20">
               
               {currentLegs.length === 0 ? (
                 <div className="text-center py-6 text-slate-500 text-xs italic">Nenhum detalhe de voo disponível para essa rota.</div>
@@ -840,116 +1050,116 @@ export const ItineraryVisualOverview: React.FC<OverviewProps> = ({ tripId }) => 
                   );
                 })
               )}
+            </div>
+          )}
 
-              {/* Optional Terrestrial Connection */}
-              {(data.id === 'am_ssa_aju' || data.id === 'am_sp_ssa_aju' || data.id === 'am_salvador_julho') && (
+          {/* Optional Terrestrial Connection */}
+          {(data.id === 'am_ssa_aju' || data.id === 'am_sp_ssa_aju' || data.id === 'am_salvador_julho') && (
                 <>
                   {isCarTrip ? (
                     <>
-                      {/* Decorative dashed connector */}
-                      <div className="relative pl-14 py-2">
-                        <div className="flex items-center gap-2 bg-[#111827] border border-slate-200 px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest text-emerald-400 shrink-0 font-mono w-fit">
-                          <Car className="w-3.5 h-3.5 text-emerald-400" /> Deslocamento Terrestre de Carro (Carro Alugado)
-                        </div>
-                      </div>
-
-                      {activeTimelineTab === 'ida' ? (
-                        <div className="relative pl-14 group animate-in fade-in duration-300">
-                          {/* Emerald Bullet Marker */}
-                          <div className="absolute left-[17px] top-1.5 w-[18px] h-[18px] rounded-full bg-white border-white border-emerald-400 flex items-center justify-center shadow-md shadow-emerald-500/10 group-hover:scale-110 transition-transform">
-                            <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span>
-                          </div>
-
-                          <div className="flex flex-wrap items-center gap-2 mb-2">
-                            <span className="text-[9px] bg-emerald-600/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-md font-mono tracking-widest uppercase font-black">
-                              CARRO ALUGADO
-                            </span>
-                            <span className="text-[10px] font-extrabold text-slate-600 uppercase">Fiat Mobi ou similar (LocarX)</span>
-                            <span className="text-[9px] ml-auto font-bold opacity-60 text-slate-500 flex items-center gap-1 font-mono">
-                              <Clock className="w-3.5 h-3.5" /> 4h 30m
-                            </span>
-                          </div>
-
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-black/40 rounded-2xl p-4 border border-slate-200">
-                            <div className="flex items-center gap-3">
-                              <div className="text-left">
-                                <span className="text-[9px] font-black text-emerald-400 uppercase tracking-widest block mb-0.5">Retirada Salvador</span>
-                                <div className="flex items-baseline gap-1.5">
-                                  <span className="font-display font-black text-lg">08:00</span>
-                                  <span className="text-[10px] font-black uppercase text-slate-600 tracking-wider bg-white/5 rounded px-1.5 font-mono">SSA</span>
-                                </div>
-                                <p className="text-[11px] font-bold text-slate-500">Loja de Aluguel de Carros (LocarX)</p>
-                                <p className="text-[9px] font-medium text-slate-500 font-mono">14 de jul. de 2026</p>
+                      {(() => {
+                        const leg = getTerrestrialLegDetails(data.id, activeTimelineTab);
+                        if (!leg) return null;
+                        return (
+                          <>
+                            {/* Decorative dashed connector */}
+                            <div className="relative pl-14 py-2">
+                              <div className="flex items-center gap-2 bg-[#111827] border border-slate-200 px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest text-emerald-400 shrink-0 font-mono w-fit">
+                                <Car className="w-3.5 h-3.5 text-emerald-400" /> Deslocamento Terrestre de Carro (Carro Alugado)
                               </div>
                             </div>
 
-                            <div className="flex items-center gap-3 border-t md:border-t-0 md:border-l border-slate-200 pt-3 md:pt-0 md:pl-4">
-                              <div className="text-left">
-                                <span className="text-[9px] font-black text-emerald-400 uppercase tracking-widest block mb-0.5">Chegada Aracaju</span>
-                                <div className="flex items-baseline gap-1.5">
-                                  <span className="font-display font-black text-lg">12:30</span>
-                                  <span className="text-[10px] font-black uppercase text-slate-600 tracking-wider bg-white/5 rounded px-1.5 font-mono">AJU</span>
-                                </div>
-                                <p className="text-[11px] font-bold text-slate-500">Hospedagem em Aracaju (Orla de Atalaia)</p>
-                                <p className="text-[9px] font-medium text-slate-500 font-mono">14 de jul. de 2026</p>
+                            <div className="relative pl-14 group animate-in fade-in duration-300">
+                              {/* Emerald Bullet Marker */}
+                              <div className="absolute left-[17px] top-1.5 w-[18px] h-[18px] rounded-full bg-white border-white border-emerald-400 flex items-center justify-center shadow-md shadow-emerald-500/10 group-hover:scale-110 transition-transform">
+                                <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span>
                               </div>
-                            </div>
-                          </div>
 
-                          <div className="mt-2.5 flex justify-between items-center text-[10px] bg-white/5 rounded-xl p-2.5 px-4 border border-slate-200 flex-wrap gap-2">
-                            <span className="font-bold text-slate-500 font-sans">Rota: <strong className="text-slate-900 font-extrabold uppercase">Estrada Linha Verde (BA-099)</strong></span>
-                            <span className="font-bold text-slate-500 font-sans">Custo: <strong className="text-emerald-600 font-black">Incluso no Aluguel</strong></span>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="relative pl-14 group animate-in fade-in duration-300">
-                          {/* Emerald Bullet Marker */}
-                          <div className="absolute left-[17px] top-1.5 w-[18px] h-[18px] rounded-full bg-white border-white border-emerald-400 flex items-center justify-center shadow-md shadow-emerald-500/10 group-hover:scale-110 transition-transform">
-                            <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span>
-                          </div>
-
-                          <div className="flex flex-wrap items-center gap-2 mb-2">
-                            <span className="text-[9px] bg-emerald-600/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-md font-mono tracking-widest uppercase font-black">
-                              CARRO ALUGADO
-                            </span>
-                            <span className="text-[10px] font-extrabold text-slate-600 uppercase">Fiat Mobi ou similar (LocarX)</span>
-                            <span className="text-[9px] ml-auto font-bold opacity-60 text-emerald-600 flex items-center gap-1 font-mono">
-                              <Clock className="w-3.5 h-3.5" /> 4h 30m
-                            </span>
-                          </div>
-
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-black/40 rounded-2xl p-4 border border-slate-200">
-                            <div className="flex items-center gap-3">
-                              <div className="text-left">
-                                <span className="text-[9px] font-black text-emerald-400 uppercase tracking-widest block mb-0.5">Partida Aracaju</span>
-                                <div className="flex items-baseline gap-1.5">
-                                  <span className="font-display font-black text-lg">13:30</span>
-                                  <span className="text-[10px] font-black uppercase text-slate-600 tracking-wider bg-white/5 rounded px-1.5 font-mono">AJU</span>
-                                </div>
-                                <p className="text-[11px] font-bold text-slate-500">Hospedagem em Aracaju (Orla de Atalaia)</p>
-                                <p className="text-[9px] font-medium text-slate-500 font-mono">19 de jul. de 2026</p>
+                              <div className="flex flex-wrap items-center gap-2 mb-2">
+                                <span className="text-[9px] bg-emerald-600/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-md font-mono tracking-widest uppercase font-black">
+                                  CARRO ALUGADO
+                                </span>
+                                <span className="text-[10px] font-extrabold text-slate-600 uppercase">{leg.airline}</span>
+                                <span className="text-[9px] ml-auto font-bold opacity-60 text-slate-500 flex items-center gap-1 font-mono">
+                                  <Clock className="w-3.5 h-3.5" /> {leg.duration}
+                                </span>
                               </div>
-                            </div>
 
-                            <div className="flex items-center gap-3 border-t md:border-t-0 md:border-l border-slate-200 pt-3 md:pt-0 md:pl-4">
-                              <div className="text-left">
-                                <span className="text-[9px] font-black text-emerald-400 uppercase tracking-widest block mb-0.5">Devolução Salvador</span>
-                                <div className="flex items-baseline gap-1.5">
-                                  <span className="font-display font-black text-lg">18:00</span>
-                                  <span className="text-[10px] font-black uppercase text-slate-600 tracking-wider bg-white/5 rounded px-1.5 font-mono">SSA</span>
+                              {/* Dual Cards representing Retirada vs Chegada with customized color theme tags */}
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                
+                                {/* DEPARTURE (Retirada/Saída) - BLUE/SKY CARD */}
+                                <div className="bg-sky-500/[0.04] rounded-2xl p-4 border border-sky-500/20 hover:border-sky-500/40 transition-colors flex items-center gap-3">
+                                  <div className="text-left w-full">
+                                    <div className="flex items-center justify-between mb-1.5">
+                                      <span className="text-[9px] font-black text-sky-400 uppercase tracking-widest bg-sky-500/10 px-2 py-0.5 rounded-full font-mono">
+                                        {leg.depLabel}
+                                      </span>
+                                      <span className="text-[9.5px] font-bold text-slate-400 font-mono">SAÍDA</span>
+                                    </div>
+                                    <div className="flex items-baseline gap-1.5">
+                                      <span className="font-display font-black text-lg text-slate-900">{leg.depTime}</span>
+                                      <span className="text-[10px] font-black uppercase text-sky-600 bg-sky-500/10 rounded px-1.5 font-mono">{leg.depCode}</span>
+                                    </div>
+                                    <p className="text-[11px] font-bold text-slate-700 mt-1 leading-tight">{leg.depSub}</p>
+                                    <p className="text-[9px] font-medium text-slate-500 font-mono mt-0.5">{leg.depDate}</p>
+                                  </div>
                                 </div>
-                                <p className="text-[11px] font-bold text-slate-500">Loja de Aluguel de Carros (LocarX)</p>
-                                <p className="text-[9px] font-medium text-slate-500 font-mono">19 de jul. de 2026</p>
-                              </div>
-                            </div>
-                          </div>
 
-                          <div className="mt-2.5 flex justify-between items-center text-[10px] bg-white/5 rounded-xl p-2.5 px-4 border border-slate-200 flex-wrap gap-2">
-                            <span className="font-bold text-slate-500 font-sans">Rota: <strong className="text-slate-900 font-extrabold uppercase">Estrada Linha Verde (BA-099)</strong></span>
-                            <span className="font-bold text-slate-500 font-sans">Custo: <strong className="text-emerald-600 font-black">Devolução com Transfer Grátis p/ Aeroporto</strong></span>
-                          </div>
-                        </div>
-                      )}
+                                {/* ARRIVAL (Chegada/Devolução) - EMERALD CARD */}
+                                <div className="bg-emerald-500/[0.04] rounded-2xl p-4 border border-emerald-500/20 hover:border-emerald-500/40 transition-colors flex items-center gap-3">
+                                  <div className="text-left w-full">
+                                    <div className="flex items-center justify-between mb-1.5">
+                                      <span className="text-[9px] font-black text-emerald-400 uppercase tracking-widest bg-emerald-500/10 px-2 py-0.5 rounded-full font-mono">
+                                        {leg.arrLabel}
+                                      </span>
+                                      <span className="text-[9.5px] font-bold text-emerald-500 font-mono">CHEGADA</span>
+                                    </div>
+                                    <div className="flex items-baseline gap-1.5">
+                                      <span className="font-display font-black text-lg text-slate-900">{leg.arrTime}</span>
+                                      <span className="text-[10px] font-black uppercase text-emerald-600 bg-emerald-500/10 rounded px-1.5 font-mono">{leg.arrCode}</span>
+                                    </div>
+                                    <p className="text-[11px] font-bold text-slate-700 mt-1 leading-tight">{leg.arrSub}</p>
+                                    <p className="text-[9px] font-medium text-slate-500 font-mono mt-0.5">{leg.arrDate}</p>
+                                  </div>
+                                </div>
+
+                              </div>
+
+                              {/* Additional Cost, Route and Fuel Consumption Matrix */}
+                              <div className="mt-3 bg-slate-50 rounded-2xl p-4 border border-slate-200">
+                                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
+                                  <div>
+                                    <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest block font-mono mb-0.5">ROTA ATIVA</span>
+                                    <span className="font-extrabold text-slate-900 block leading-tight">{leg.route}</span>
+                                  </div>
+                                  <div className="border-t md:border-t-0 md:border-l border-slate-200 pt-3 md:pt-0 md:pl-4">
+                                    <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest block font-mono mb-0.5">DISTÂNCIA / PEDÁGIO</span>
+                                    <span className="font-extrabold text-slate-900 block">{leg.distance} <span className="text-slate-400 font-normal">|</span> {leg.toll}</span>
+                                  </div>
+                                  <div className="border-t md:border-t-0 md:border-l border-slate-200 col-span-2 pt-3 md:pt-0 md:pl-4">
+                                    <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest block font-mono mb-1">CUSTO ESTIMADO COMBUSTÍVEL</span>
+                                    <div className="flex flex-wrap items-center gap-3">
+                                      <div className="bg-sky-500/10 border border-sky-500/15 rounded-lg px-2.5 py-1 flex items-center gap-1.5">
+                                        <span className="text-[9.5px] font-bold text-slate-500 font-mono">GAS:</span>
+                                        <strong className="text-sky-500 font-black">{leg.fuelGas}</strong>
+                                        <span className="text-[9px] text-slate-400 font-mono">({leg.gasLiters})</span>
+                                      </div>
+                                      <div className="bg-emerald-500/10 border border-emerald-500/15 rounded-lg px-2.5 py-1 flex items-center gap-1.5">
+                                        <span className="text-[9.5px] font-bold text-slate-500 font-mono">ETANOL:</span>
+                                        <strong className="text-emerald-500 font-black">{leg.fuelEtanol}</strong>
+                                        <span className="text-[9px] text-slate-400 font-mono">({leg.etanolLiters})</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+
+                            </div>
+                          </>
+                        );
+                      })()}
                     </>
                   ) : (
                     <>
@@ -1256,8 +1466,6 @@ export const ItineraryVisualOverview: React.FC<OverviewProps> = ({ tripId }) => 
           </div>
 
         </div>
-
-      </div>
 
     </div>
   );

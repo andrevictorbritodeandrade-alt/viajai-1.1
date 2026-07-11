@@ -119,6 +119,30 @@
         "hiddenIds": { "type": "array", "items": { "type": "string" } },
         "lastUpdated": { "type": "string", "format": "date-time" }
       }
+    },
+    "ShoppingList": {
+      "title": "Shopping List",
+      "description": "User's supermarket/shopping checklist items",
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" },
+              "category": { "type": "string" },
+              "approxPrice": { "type": "string" },
+              "reason": { "type": "string" },
+              "checked": { "type": "boolean" },
+              "isAiSuggested": { "type": "boolean" },
+              "savedBy": { "type": "string" }
+            }
+          }
+        },
+        "lastUpdated": { "type": "string", "format": "date-time" }
+      }
     }
   },
   "firestore": {
@@ -145,6 +169,10 @@
     "/packing_list_v5/{userId}": {
       "schema": "PackingList",
       "description": "User packing checklists"
+    },
+    "/shopping_list_v2/{userId}": {
+      "schema": "ShoppingList",
+      "description": "User supermarket list items"
     },
     "/client_config/{configId}": {
       "schema": "ClientConfig",

@@ -26,7 +26,7 @@ export interface Ride {
 }
 
 const UberBoltList: React.FC<{ 
-  selectedTrip?: { id: string; name: string } | null;
+  selectedTrip?: { id: string; name: string; isDomestic?: boolean } | null;
   onBack: () => void;
 }> = ({ selectedTrip, onBack }) => {
   const tripId = selectedTrip?.id || 'default';
@@ -141,7 +141,7 @@ const UberBoltList: React.FC<{
                 <span className="text-4xl font-display font-black tracking-tight text-white">
                     R$ {totalSpentBRL.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </span>
-                {rates && (
+                {rates && !selectedTrip?.isDomestic && (
                   <span className="text-sm font-medium text-slate-400">
                       Equivalente em Rands (ZAR): <span className="text-sa-gold font-black">R {totalSpentZAR.toFixed(0)}</span>
                   </span>
@@ -198,7 +198,7 @@ const UberBoltList: React.FC<{
                >
                  <option value="BRL">Real (R$)</option>
                  <option value="USD">Dólar ($)</option>
-                 <option value="ZAR">Rand (R)</option>
+                 {!selectedTrip?.isDomestic && <option value="ZAR">Rand (R)</option>}
                </select>
             </div>
             <input 

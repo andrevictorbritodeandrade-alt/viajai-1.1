@@ -179,7 +179,7 @@ const ClientApp: React.FC = () => {
       case 'onibus':
           return <BusList onBack={goBack} />;
       case 'uber_bolt':
-          return <UberBoltList onBack={goBack} />;
+          return <UberBoltList selectedTrip={selectedTrip} onBack={goBack} />;
       case 'vacinas':
           return <VaccineCertificate onBack={goBack} />;
       case 'mercado':
@@ -211,11 +211,13 @@ const ClientApp: React.FC = () => {
       );
     }
 
-    // Hide bus card for Salvador, Aracaju, and Maragogi (car-based trips)
+    // Hide bus card for Salvador, Maceió, and Aracaju (car-based trips)
     const isCarBasedTrip = selectedTrip?.id === 'am_salvador_julho' || 
                            selectedTrip?.id === 'am_sp_ssa_aju' || 
                            selectedTrip?.id === 'am_alagoas_maragogi' || 
                            selectedTrip?.name?.toLowerCase().includes('maragogi') || 
+                           selectedTrip?.name?.toLowerCase().includes('maceio') || 
+                           selectedTrip?.name?.toLowerCase().includes('maceió') || 
                            selectedTrip?.name?.toLowerCase().includes('salvador') || 
                            selectedTrip?.name?.toLowerCase().includes('aracaju');
     if (isCarBasedTrip) {
