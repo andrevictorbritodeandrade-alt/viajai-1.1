@@ -62,7 +62,28 @@ const sortItems = (items: Item[]) => {
 };
 
 const INITIAL_DATA: PackingData = {
-  'André': { 'bag23kg': [], 'bag10kg': [], 'pouch5kg': [] },
+  'André': { 
+    'bag23kg': [
+      { id: 'camisa_fla', text: 'Camisa rubro negra do Flamengo 🔴⚫', checked: false, returned: false },
+      { id: 'camisa_bahia_tri', text: 'Camisa tricolor do Bahia 🔵🔴⚪', checked: false, returned: false },
+      { id: 'camisa_bahia_branca', text: 'Camisa branca do Bahia ⚪', checked: false, returned: false },
+      { id: 'camisa_kaizer', text: 'Camisa do Kaizer Chiefs 🟡⚫', checked: false, returned: false },
+      { id: 'pentes_maquina', text: '4 pentes de máquina 💈', checked: false, returned: false },
+      { id: 'tinta_cabelo', text: 'Tinta de cabelo 🎨', checked: false, returned: false },
+      { id: 'agua_oxigenada', text: 'Água oxigenada 🧴', checked: false, returned: false },
+      { id: 'pincel_cabelo', text: 'Pincel para pintar cabelo 🖌️', checked: false, returned: false },
+      { id: 'potinho_cabelo', text: 'Potinho para pintar cabelo 🥣', checked: false, returned: false },
+      { id: 'kit_tesouras', text: 'Kit de tesouras ✂️', checked: false, returned: false },
+      { id: 'navalha', text: 'Navalha 🪒', checked: false, returned: false },
+      { id: 'giletes', text: 'Giletes 🎟️', checked: false, returned: false },
+      { id: 'linha_branca', text: 'Linha branca 🧵', checked: false, returned: false },
+      { id: 'linha_preta', text: 'Linha preta 🧵', checked: false, returned: false },
+      { id: 'bone_bahia', text: 'Boné do Bahia 🧢', checked: false, returned: false },
+      { id: 'extensoes', text: '2 extensões elétricas 🔌🔌', checked: false, returned: false }
+    ], 
+    'bag10kg': [], 
+    'pouch5kg': [] 
+  },
   'Marcelly': { 'bag23kg': [], 'bag10kg': [], 'pouch5kg': [] }
 };
 

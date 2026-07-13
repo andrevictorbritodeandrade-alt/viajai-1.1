@@ -27,6 +27,8 @@ import {
   Ticket,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
+  ChevronUp,
   Sparkles,
   Calendar,
   X,
@@ -621,6 +623,7 @@ const FlightList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const [selectedPassDirection, setSelectedPassDirection] = React.useState<'ida' | 'volta'>('ida');
   const [showEmdReceipt, setShowEmdReceipt] = React.useState(false);
   const [showSeatMap, setShowSeatMap] = React.useState(false);
+  const [isMainCardExpanded, setIsMainCardExpanded] = React.useState(true);
   
   // Seat selection state
   const [chosenSeats, setChosenSeats] = React.useState<Record<string, string>>({
@@ -1513,11 +1516,23 @@ const FlightList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
         <div id="flight_gold_card" className="bg-white border border-slate-200 rounded-[32px] p-6 text-slate-900 shadow-xl shadow-2xl relative overflow-hidden">
           
           {/* Header Layout Grid */}
-          <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-6">
+          <div 
+            onClick={() => setIsMainCardExpanded(!isMainCardExpanded)}
+            className={`flex flex-col md:flex-row justify-between items-start gap-4 cursor-pointer select-none transition-all duration-200 hover:bg-slate-50/70 p-3 sm:p-4 -m-3 sm:-m-4 rounded-2xl sm:rounded-[24px] ${
+              isMainCardExpanded 
+                ? 'mb-6 pb-6 border-b border-slate-100' 
+                : ''
+            }`}
+            title={isMainCardExpanded ? "Clique para recolher as informações" : "Clique para expandir as informações"}
+          >
             <div>
-              <div className="flex items-center gap-1.5 text-emerald-600 text-[10px] font-black uppercase tracking-widest mb-1">
-                <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                ROTEIRO ATIVO DEDICADO
+              <div className="flex items-center flex-wrap gap-2 text-emerald-600 text-[10px] font-black uppercase tracking-widest mb-1">
+                <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>ROTEIRO ATIVO DEDICADO</span>
+                <span className="bg-emerald-500/10 text-emerald-600 text-[8px] sm:text-[9px] px-2 py-0.5 rounded-full font-black flex items-center gap-1 uppercase tracking-wider font-mono">
+                  {isMainCardExpanded ? 'RECOLHER' : 'EXPANDIR'}
+                  {isMainCardExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                </span>
               </div>
               <h2 className="text-2xl font-display font-black text-slate-900 tracking-tight uppercase">
                 {isSPRoute ? 'SÃO PAULO + SALVADOR + ARACAJÚ' : 'SALVADOR + ARACAJÚ'}
@@ -1547,7 +1562,8 @@ const FlightList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
             </div>
           </div>
 
-          {/* Opções de Planejamento de Viagem (Plano A, B, C) */}
+            <div className={`space-y-6 mt-6 animate-in fade-in slide-in-from-top-4 duration-300 ${isMainCardExpanded ? 'block' : 'hidden'}`}>
+              {/* Opções de Planejamento de Viagem (Plano A, B, C) */}
           {isSPRoute && (
             <div className="mb-6 p-4 bg-[#111827] rounded-[24px] border border-slate-200/85">
               <span className="text-[10px] font-black tracking-widest text-emerald-600 uppercase block mb-3 font-mono">
@@ -1845,7 +1861,7 @@ const FlightList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
               <div className="mt-4 bg-slate-50 border border-slate-200 rounded-2xl p-4 flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2 text-slate-500">
                   <Users className="w-4 h-4 text-emerald-600" />
-                  <span>Passageiros: <strong className="text-slate-900">André & Marcelly</strong></span>
+                  <span>Passageiros: <strong className="text-slate-900">André &amp; Marcelly</strong></span>
                 </div>
                 <span className="text-[10px] bg-slate-200 text-slate-600 font-mono px-2 py-0.5 rounded">Voo Confirmado</span>
               </div>
@@ -1872,6 +1888,7 @@ const FlightList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
               </button>
             </div>
           </div>
+            </div>
         </div>
 
         {/* Dynamic price list widget */}

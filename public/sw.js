@@ -1,12 +1,28 @@
 
-const CACHE_NAME = 'checkin-go-v22-svg-icons';
-// FIX: Caminhos relativos para garantir funcionamento em preview e produção
+const CACHE_NAME = 'checkin-go-v23-premium-backgrounds';
+// FIX: Caminhos relativos para garantir funcionamento em preview e produção, pré-carregando backgrounds premium para celular/offline
 const CORE_ASSETS = [
   './',
   './index.html',
   './manifest.json',
   './favicon.svg',
-  './styles.css'
+  './styles.css',
+  './africa_premium.png',
+  './aracaju_capital_premium.png',
+  './ba_ass_foz_premium.png',
+  './colombia_premium.jpg',
+  './colombia_premium.png',
+  './foz_ass_ba_premium.png',
+  './foz_ba_patagonia_premium.png',
+  './foz_ba_premium.jpg',
+  './foz_ba_premium.png',
+  './foz_premium.png',
+  './peru_premium.png',
+  './porto_seguro_premium.png',
+  './salvador_aracaju_maceio.jpg',
+  './salvador_premium.jpg',
+  './sp_ssa_aju_premium.png',
+  './ssa_aju_premium.png'
 ];
 
 self.addEventListener('install', (event) => {
@@ -28,20 +44,23 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
-  // Estratégia Cache-First para navegação, scripts e estilos
+  // Estratégia Cache-First para navegação, scripts, estilos e mídias comuns
   if (event.request.mode === 'navigate' || 
       url.pathname.endsWith('.js') || 
       url.pathname.endsWith('.css') || 
       url.pathname.endsWith('.png') ||
-      url.pathname.endsWith('.svg')) {
+      url.pathname.endsWith('.svg') ||
+      url.pathname.endsWith('.jpg') ||
+      url.pathname.endsWith('.jpeg') ||
+      url.pathname.endsWith('.webp')) {
     event.respondWith(
       caches.match(event.request).then((cachedResponse) => {
         // Retorna o cache IMEDIATAMENTE se existir
         if (cachedResponse) return cachedResponse;
 
-        // Se não estiver no cache, tenta a rede e salva para a próxima
+        // Se não estiver no cache, tenta a rede e salva apenas se for do mesmo domínio (evita problemas de CORS)
         return fetch(event.request).then((networkResponse) => {
-          if (networkResponse.ok) {
+          if (networkResponse.ok && url.origin === self.location.origin) {
             const cacheCopy = networkResponse.clone();
             caches.open(CACHE_NAME).then((cache) => cache.put(event.request, cacheCopy));
           }

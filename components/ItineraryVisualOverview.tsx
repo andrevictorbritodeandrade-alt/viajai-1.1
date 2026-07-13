@@ -20,7 +20,9 @@ import {
   Bus,
   Car,
   ShieldCheck,
-  Luggage
+  Luggage,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 
 interface Stop {
@@ -712,6 +714,7 @@ export const ItineraryVisualOverview: React.FC<OverviewProps> = ({ tripId }) => 
   const [activeTimelineTab, setActiveTimelineTab] = useState<string>('ida');
 
   const [isTimelineExpanded, setIsTimelineExpanded] = useState(true);
+  const [isMainCardExpanded, setIsMainCardExpanded] = useState(true);
 
   // Flight Editable Fields State
   const [editedPrice, setEditedPrice] = useState('');
@@ -833,156 +836,172 @@ export const ItineraryVisualOverview: React.FC<OverviewProps> = ({ tripId }) => 
   const hasConnections = currentLegs.some(leg => !!leg.layoverAfter);
 
   return (
-    <div id="flight_gold_card" className="bg-white border-4 border-slate-100 rounded-[32px] p-6 text-slate-900 shadow-[0_8px_30px_rgb(0,0,0,0.08)] relative overflow-hidden mb-8">
+    <div id="flight_gold_card" className="bg-white border-2 sm:border-4 border-slate-100 rounded-2xl sm:rounded-[32px] p-4 sm:p-6 text-slate-900 shadow-[0_8px_30px_rgb(0,0,0,0.08)] relative overflow-hidden mb-8">
       
       {/* Header Layout Grid */}
-      <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-6 pb-6 border-b border-slate-100">
-        <div>
-          <div className="flex items-center gap-1.5 text-emerald-600 text-[10px] font-black uppercase tracking-widest mb-1">
-            <ShieldCheck className="w-4 h-4 text-emerald-600" />
-            ROTEIRO ATIVO DEDICADO
+      <div 
+        onClick={() => setIsMainCardExpanded(!isMainCardExpanded)}
+        className={`flex flex-col md:flex-row justify-between items-start gap-4 cursor-pointer select-none transition-all duration-200 hover:bg-slate-50/70 p-3 sm:p-4 -m-3 sm:-m-4 rounded-2xl sm:rounded-[24px] ${
+          isMainCardExpanded 
+            ? 'mb-4 sm:mb-6 pb-4 sm:pb-6 border-b border-slate-100' 
+            : ''
+        }`}
+        title={isMainCardExpanded ? "Clique para recolher as informações" : "Clique para expandir as informações"}
+      >
+        <div className="w-full">
+          <div className="flex items-center flex-wrap gap-2 text-emerald-600 text-[10px] font-black uppercase tracking-widest mb-1">
+            <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+            <span>ROTEIRO ATIVO DEDICADO</span>
+            <span className="bg-emerald-500/10 text-emerald-600 text-[8px] sm:text-[9px] px-2 py-0.5 rounded-full font-black flex items-center gap-1 uppercase tracking-wider font-mono">
+              {isMainCardExpanded ? 'RECOLHER' : 'EXPANDIR'}
+              {isMainCardExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+            </span>
           </div>
-          <h2 className="text-2xl font-display font-black text-slate-900 tracking-tight uppercase">
+          <h2 className="text-lg sm:text-xl md:text-2xl font-display font-black text-slate-900 tracking-tight uppercase leading-tight sm:leading-snug">
             {data.tripName}
           </h2>
-          <div className="flex items-center gap-2 mt-1.5">
-            <span className="bg-blue-100 text-blue-700 text-[9.5px] font-black uppercase px-2 py-0.5 rounded tracking-wider">MAPA COORDENADO</span>
-            <span className="text-xs text-slate-500 font-bold tracking-wide">
+          <div className="flex flex-wrap items-center gap-2 mt-1.5 sm:mt-2">
+            <span className="bg-blue-100 text-blue-700 text-[9.5px] font-black uppercase px-2 py-0.5 rounded tracking-wider whitespace-nowrap">MAPA COORDENADO</span>
+            <span className="text-xs text-slate-500 font-bold tracking-wide break-words">
               {data.stops?.map(s => s.airport).join(' ➔ ')}
             </span>
           </div>
         </div>
 
         {/* Passagem Praticada Box */}
-        <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 w-full md:w-auto min-w-[280px]">
+        <div className="bg-slate-50 border border-slate-200 rounded-xl sm:rounded-2xl p-3 sm:p-4 w-full md:w-auto min-w-0 sm:min-w-[280px] shrink-0">
           <div className="flex justify-between items-start gap-3">
             <div>
               <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block font-mono">CUSTO TOTAL (VOOS)</span>
               <div className="flex items-baseline gap-1 mt-0.5">
                 <span className="text-sm font-black text-emerald-600">R$</span>
-                <span className="text-3xl font-display font-black text-slate-900 tracking-tight">{data.price}</span>
+                <span className="text-2xl sm:text-3xl font-display font-black text-slate-900 tracking-tight">{data.price}</span>
               </div>
               <span className="text-[10px] text-slate-500 font-medium">Soma de todos os trechos por pax</span>
             </div>
-            <div className="text-right space-y-1">
-              <span className="inline-block bg-[#10b981]/15 text-emerald-600 text-[9px] font-black uppercase px-2 py-0.5 rounded border border-[#10b981]/15 tracking-wider font-mono">CONSULTADO SUCESSO</span>
-              <p className="text-[9px] text-slate-500 font-bold font-mono">Atualizado: {data.lastResearched}</p>
+            <div className="text-right space-y-1 flex flex-col items-end">
+              <span className="inline-block bg-[#10b981]/15 text-emerald-600 text-[8px] sm:text-[9px] font-black uppercase px-2 py-0.5 rounded border border-[#10b981]/15 tracking-wider font-mono text-center whitespace-nowrap">CONSULTADO SUCESSO</span>
+              <p className="text-[8px] sm:text-[9px] text-slate-500 font-bold font-mono text-right">Atualizado: {data.lastResearched}</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Grid: Timelines & Baggage Visual Card - Expanded to full-width horizontal layout */}
-      <div className="flex flex-col gap-8 w-full items-stretch">
+      {isMainCardExpanded && (
+        <>
+          <div className="flex flex-col gap-6 sm:gap-8 w-full items-stretch animate-in fade-in slide-in-from-top-4 duration-300">
         
         {/* Top Section: Interactive Timeline (Full Width) */}
         <div className="w-full space-y-4">
           
-          {/* TAB Switches with custom visual highlights */}
+          {/* TAB Switches with custom visual highlights - Responsive Wrapping Grid */}
           {data.id === 'am_salvador_julho' ? (
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-3 bg-[#090d16] p-1.5 rounded-2xl border border-slate-900 w-full mb-6">
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 bg-[#090d16] p-1.5 rounded-xl sm:rounded-2xl border border-slate-900 w-full mb-4 sm:mb-6">
               <button
                 onClick={() => setActiveTimelineTab('voo_ida')}
-                className={`flex items-center justify-center gap-2 py-3 px-3 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest transition-all ${
+                className={`col-span-1 flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 px-2 rounded-lg sm:rounded-xl text-[9px] sm:text-[10px] md:text-xs font-black uppercase tracking-widest transition-all ${
                   activeTimelineTab === 'voo_ida' || activeTimelineTab === 'ida'
                     ? 'bg-[#00c58e] text-black shadow-lg shadow-[#00c58e]/20' 
                     : 'bg-transparent text-slate-500 hover:text-slate-900 hover:bg-slate-200/50'
                 }`}
               >
-                <Plane className="w-4 h-4 shrink-0" />
+                <Plane className="w-3 h-3 sm:w-4 sm:h-4 shrink-0" />
                 <span className="truncate">Voo Ida (16/07)</span>
               </button>
               <button
                 onClick={() => setActiveTimelineTab('car_ssa_mcz')}
-                className={`flex items-center justify-center gap-2 py-3 px-3 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest transition-all ${
+                className={`col-span-1 flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 px-2 rounded-lg sm:rounded-xl text-[9px] sm:text-[10px] md:text-xs font-black uppercase tracking-widest transition-all ${
                   activeTimelineTab === 'car_ssa_mcz' 
                     ? 'bg-amber-400 text-black shadow-lg shadow-amber-400/20' 
                     : 'bg-transparent text-slate-500 hover:text-slate-900 hover:bg-slate-200/50'
                 }`}
               >
-                <Car className="w-4 h-4 shrink-0" />
+                <Car className="w-3 h-3 sm:w-4 sm:h-4 shrink-0" />
                 <span className="truncate">SSA ➔ MCZ (17/07)</span>
               </button>
               <button
                 onClick={() => setActiveTimelineTab('car_mcz_aju')}
-                className={`flex items-center justify-center gap-2 py-3 px-3 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest transition-all ${
+                className={`col-span-1 flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 px-2 rounded-lg sm:rounded-xl text-[9px] sm:text-[10px] md:text-xs font-black uppercase tracking-widest transition-all ${
                   activeTimelineTab === 'car_mcz_aju' || activeTimelineTab === 'interno'
                     ? 'bg-amber-400 text-black shadow-lg shadow-amber-400/20' 
                     : 'bg-transparent text-slate-500 hover:text-slate-900 hover:bg-slate-200/50'
                 }`}
               >
-                <Car className="w-4 h-4 shrink-0" />
+                <Car className="w-3 h-3 sm:w-4 sm:h-4 shrink-0" />
                 <span className="truncate">MCZ ➔ AJU (19/07)</span>
               </button>
               <button
                 onClick={() => setActiveTimelineTab('car_aju_ssa')}
-                className={`flex items-center justify-center gap-2 py-3 px-3 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest transition-all ${
+                className={`col-span-1 flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 px-2 rounded-lg sm:rounded-xl text-[9px] sm:text-[10px] md:text-xs font-black uppercase tracking-widest transition-all ${
                   activeTimelineTab === 'car_aju_ssa' 
                     ? 'bg-amber-400 text-black shadow-lg shadow-amber-400/20' 
                     : 'bg-transparent text-slate-500 hover:text-slate-900 hover:bg-slate-200/50'
                 }`}
               >
-                <Car className="w-4 h-4 shrink-0" />
+                <Car className="w-3 h-3 sm:w-4 sm:h-4 shrink-0" />
                 <span className="truncate">AJU ➔ SSA (21/07)</span>
               </button>
               <button
                 onClick={() => setActiveTimelineTab('voo_volta')}
-                className={`flex items-center justify-center gap-2 py-3 px-3 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest col-span-2 md:col-span-1 transition-all ${
+                className={`col-span-2 sm:col-span-1 flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 px-2 rounded-lg sm:rounded-xl text-[9px] sm:text-[10px] md:text-xs font-black uppercase tracking-widest transition-all ${
                   activeTimelineTab === 'voo_volta' || activeTimelineTab === 'volta'
                     ? 'bg-[#00c58e] text-black shadow-lg shadow-[#00c58e]/20' 
                     : 'bg-transparent text-slate-500 hover:text-slate-900 hover:bg-slate-200/50'
                 }`}
               >
-                <Plane className="w-4 h-4 rotate-180 shrink-0" />
+                <Plane className="w-3 h-3 sm:w-4 sm:h-4 rotate-180 shrink-0" />
                 <span className="truncate">Voo Volta (23/07)</span>
               </button>
             </div>
           ) : (
-            <div className={`grid ${data.internalLegs && data.internalLegs.length > 0 ? 'grid-cols-3' : 'grid-cols-2'} gap-3 bg-[#090d16] p-1.5 rounded-2xl border border-slate-900 w-full mb-6`}>
+            <div className={`grid ${data.internalLegs && data.internalLegs.length > 0 ? 'grid-cols-2 sm:grid-cols-3' : 'grid-cols-2'} gap-2 bg-[#090d16] p-1.5 rounded-xl sm:rounded-2xl border border-slate-900 w-full mb-4 sm:mb-6`}>
               <button
                 onClick={() => setActiveTimelineTab('ida')}
-                className={`flex items-center justify-center gap-2.5 py-3 px-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
+                className={`col-span-1 flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-lg sm:rounded-xl text-[9px] sm:text-[10px] md:text-xs font-black uppercase tracking-widest transition-all ${
                   activeTimelineTab === 'ida' 
                     ? 'bg-[#00c58e] text-black shadow-lg shadow-[#00c58e]/20' 
                     : 'bg-transparent text-slate-500 hover:text-slate-900 hover:bg-slate-200/50'
                 }`}
               >
-                <Plane className="w-4 h-4 translate-y-[0.5px]" />
-                Sentido Ida: {data.outboundDate.split(' de ')[0]} {data.outboundDate.split(' de ')[1]?.substring(0, 3)}
+                <Plane className="w-3 h-3 sm:w-4 sm:h-4 translate-y-[0.5px]" />
+                <span className="truncate">Ida: {data.outboundDate.split(' de ')[0]} {data.outboundDate.split(' de ')[1]?.substring(0, 3)}</span>
               </button>
               {data.internalLegs && data.internalLegs.length > 0 && (
                 <button
                   onClick={() => setActiveTimelineTab('interno')}
-                  className={`flex items-center justify-center gap-2.5 py-3 px-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
+                  className={`col-span-1 flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-lg sm:rounded-xl text-[9px] sm:text-[10px] md:text-xs font-black uppercase tracking-widest transition-all ${
                     activeTimelineTab === 'interno' 
                       ? 'bg-amber-400 text-black shadow-lg shadow-amber-400/20' 
                       : 'bg-transparent text-slate-500 hover:text-slate-900 hover:bg-slate-200/50'
                   }`}
                 >
                   {data.id === 'am_rio_foz_ba' ? (
-                    <Plane className="w-4 h-4" />
+                    <Plane className="w-3 h-3 sm:w-4 sm:h-4" />
                   ) : isCarTrip ? (
-                    <Car className="w-4 h-4 translate-y-[0.5px]" />
+                    <Car className="w-3 h-3 sm:w-4 sm:h-4 translate-y-[0.5px]" />
                   ) : (
-                    <Car className="w-4 h-4 translate-y-[0.5px]" />
+                    <Car className="w-3 h-3 sm:w-4 sm:h-4 translate-y-[0.5px]" />
                   )}
-                  {data.id === 'am_rio_foz_ba' 
-                    ? 'Voo: Puerto Iguazú ⇄ BA' 
-                    : (data.internalLegs && data.internalLegs[0]) 
-                      ? `Car: ${data.internalLegs[0].from} ➞ ${data.internalLegs[0].to}` 
-                      : 'Car: Foz ➞ Assunção'}
+                  <span className="truncate">
+                    {data.id === 'am_rio_foz_ba' 
+                      ? ' Puerto Iguazú ⇄ BA' 
+                      : (data.internalLegs && data.internalLegs[0]) 
+                        ? ` ${data.internalLegs[0].from} ➞ ${data.internalLegs[0].to}` 
+                        : ' Foz ➔ Assunção'}
+                  </span>
                 </button>
               )}
               <button
                 onClick={() => setActiveTimelineTab('volta')}
-                className={`flex items-center justify-center gap-2.5 py-3 px-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
+                className={`col-span-2 sm:col-span-1 flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-lg sm:rounded-xl text-[9px] sm:text-[10px] md:text-xs font-black uppercase tracking-widest transition-all ${
                   activeTimelineTab === 'volta' 
                     ? 'bg-[#00c58e] text-black shadow-lg shadow-[#00c58e]/20' 
                     : 'bg-transparent text-slate-500 hover:text-slate-900 hover:bg-slate-200/50'
                 }`}
               >
-                <Plane className="w-4 h-4 rotate-180 translate-y-[-0.5px]" />
-                Sentido Volta: {data.returnDate.split(' de ')[0]} {data.returnDate.split(' de ')[1]?.substring(0, 3)}
+                <Plane className="w-3 h-3 sm:w-4 sm:h-4 rotate-180 translate-y-[-0.5px]" />
+                <span className="truncate">Volta: {data.returnDate.split(' de ')[0]} {data.returnDate.split(' de ')[1]?.substring(0, 3)}</span>
               </button>
             </div>
           )}
@@ -1009,7 +1028,7 @@ export const ItineraryVisualOverview: React.FC<OverviewProps> = ({ tripId }) => 
 
             {/* Custom Visual Timeline Flow */}
             {isTimelineExpanded && (
-              <div className="space-y-6 relative before:absolute before:left-6 before:top-2 before:bottom-2 before:w-[2px] before:bg-gradient-to-b before:from-emerald-500/20 before:via-white/5 before:to-purple-500/20">
+              <div className="space-y-6 relative before:absolute before:left-2 sm:before:left-6 before:top-2 before:bottom-2 before:w-[2px] before:bg-gradient-to-b before:from-emerald-500/20 before:via-white/5 before:to-purple-500/20">
               
               {currentLegs.length === 0 ? (
                 <div className="text-center py-6 text-slate-500 text-xs italic">Nenhum detalhe de voo disponível para essa rota.</div>
@@ -1021,10 +1040,10 @@ export const ItineraryVisualOverview: React.FC<OverviewProps> = ({ tripId }) => 
                     <div key={leg.flightNumber + '-' + index} className="space-y-4">
                       
                       {/* Timeline Segment Block */}
-                      <div className="relative pl-14 group">
+                      <div className="relative pl-5 sm:pl-14 group">
                         
                         {/* Bullet Marker dot representing Geodesic Departure point */}
-                        <div className="absolute left-[17px] top-1.5 w-4.5 h-4.5 rounded-full bg-white border-white border-emerald-400 flex items-center justify-center shadow-md shadow-emerald-500/10 group-hover:scale-110 transition-transform">
+                        <div className="absolute left-[1px] sm:left-[17px] top-1.5 w-4.5 h-4.5 rounded-full bg-white border-white border-emerald-400 flex items-center justify-center shadow-md shadow-emerald-500/10 group-hover:scale-110 transition-transform">
                           <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span>
                         </div>
 
@@ -1039,40 +1058,46 @@ export const ItineraryVisualOverview: React.FC<OverviewProps> = ({ tripId }) => 
                           </span>
                         </div>
 
-                        {/* Departure and Arrival Layout */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-black/20 rounded-2xl p-4 border border-slate-200">
+                        {/* Departure and Arrival Layout - side-by-side horizontal */}
+                        <div className="flex flex-row items-center justify-between gap-3 sm:gap-4 bg-slate-50 rounded-2xl p-3 sm:p-4 border border-slate-200">
                           
                           {/* Departure Node detail */}
-                          <div className="flex items-center gap-3">
-                            <div className="text-left">
-                              <span className="text-[9px] font-black text-emerald-600 uppercase tracking-widest block mb-0.5">Partida</span>
-                              <div className="flex items-baseline gap-1.5">
-                                <span className="font-display font-black text-lg">{leg.depTime}</span>
-                                <span className="text-[10px] font-black uppercase text-slate-600 tracking-wider bg-white/5 rounded px-1.5">{leg.from}</span>
-                              </div>
-                              <p className="text-[11px] font-bold text-slate-500 group-hover:text-slate-800 transition-colors">{leg.fromCity}</p>
+                          <div className="text-left flex-1 min-w-0">
+                            <span className="text-[8px] sm:text-[9px] font-black text-emerald-600 uppercase tracking-widest block mb-0.5">Partida</span>
+                            <div className="flex items-baseline gap-1">
+                              <span className="font-display font-black text-base sm:text-xl text-slate-900">{leg.depTime}</span>
+                              <span className="text-[8px] sm:text-[10px] font-black uppercase text-slate-600 tracking-wider bg-slate-200/50 rounded px-1 sm:px-1.5">{leg.from}</span>
                             </div>
+                            <p className="text-[10px] sm:text-[11px] font-bold text-slate-500 mt-0.5 truncate">{leg.fromCity}</p>
+                          </div>
+
+                          {/* Connection flight line decorator */}
+                          <div className="flex flex-col items-center justify-center px-1 sm:px-3 flex-shrink-0">
+                            <div className="h-[1px] w-6 sm:w-16 bg-slate-300 relative">
+                              <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 text-slate-400">
+                                <Plane className="w-3 h-3 rotate-90" />
+                              </div>
+                            </div>
+                            <span className="text-[8px] font-mono font-bold text-slate-400 mt-0.5 whitespace-nowrap">{leg.duration}</span>
                           </div>
 
                           {/* Arrival Node detail */}
-                          <div className="flex items-center gap-3 border-t md:border-t-0 md:border-l border-slate-200 pt-3 md:pt-0 md:pl-4">
-                            <div className="text-left">
-                              <span className="text-[9px] font-black text-purple-600 uppercase tracking-widest block mb-0.5">Chegada</span>
-                              <div className="flex items-baseline gap-1.5">
-                                <span className="font-display font-black text-lg">{leg.arrTime}</span>
-                                <span className="text-[10px] font-black uppercase text-slate-600 tracking-wider bg-white/5 rounded px-1.5">{leg.to}</span>
-                              </div>
-                              <p className="text-[11px] font-bold text-slate-500 group-hover:text-slate-800 transition-colors">{leg.toCity}</p>
+                          <div className="text-right flex-1 min-w-0">
+                            <span className="text-[8px] sm:text-[9px] font-black text-purple-600 uppercase tracking-widest block mb-0.5">Chegada</span>
+                            <div className="flex items-baseline justify-end gap-1">
+                              <span className="font-display font-black text-base sm:text-xl text-slate-900">{leg.arrTime}</span>
+                              <span className="text-[8px] sm:text-[10px] font-black uppercase text-slate-600 tracking-wider bg-slate-200/50 rounded px-1 sm:px-1.5">{leg.to}</span>
                             </div>
+                            <p className="text-[10px] sm:text-[11px] font-bold text-slate-500 mt-0.5 truncate">{leg.toCity}</p>
                           </div>
 
                         </div>
 
                         {/* Leg Info Footer */}
                         {(leg.dateInfo || leg.priceInfo) && (
-                          <div className="mt-2.5 flex flex-wrap justify-between items-center text-[10px] bg-white/5 rounded-xl p-2.5 px-4 border border-slate-200 gap-2">
+                          <div className="mt-2.5 flex flex-wrap justify-between items-center text-[10px] bg-slate-50 rounded-xl p-2.5 px-4 border border-slate-200 gap-2">
                             {leg.dateInfo && <span className="font-bold text-slate-500 font-mono tracking-wide">{leg.dateInfo}</span>}
-                            {leg.priceInfo && <span className="font-bold text-slate-500 tracking-wider">{(leg.airline.includes('Transporte') || leg.airline.includes('Viação')) ? 'RODOVIÁRIO:' : 'AÉREO:'} <strong className="text-emerald-600 whitespace-nowrap">{leg.priceInfo}</strong></span>}
+                            {leg.priceInfo && <span className="font-bold text-slate-500 tracking-wider">{(leg.airline.includes('Transporte') || leg.airline.includes('Viação') || leg.airline.includes('Localiza') || leg.airline.includes('Foco') || leg.airline.includes('Movida') || leg.airline.includes('Aluguel')) ? 'DESLOCAMENTO:' : 'AÉREO:'} <strong className="text-emerald-600 whitespace-nowrap">{leg.priceInfo}</strong></span>}
                           </div>
                         )}
 
@@ -1080,8 +1105,8 @@ export const ItineraryVisualOverview: React.FC<OverviewProps> = ({ tripId }) => 
 
                       {/* Connection / Layover warning alert block */}
                       {leg.layoverAfter && (
-                        <div className="relative pl-14 py-1.5">
-                          <div className="absolute left-4.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 flex items-center justify-center">
+                        <div className="relative pl-5 sm:pl-14 py-1.5">
+                          <div className="absolute left-[3px] sm:left-4.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 flex items-center justify-center">
                             <AlertCircle className="w-4 h-4 text-amber-600 animate-pulse shrink-0" />
                           </div>
                           <div className="bg-amber-500/10 border border-amber-500/20 text-amber-700 rounded-2xl px-4 py-3 text-xs md:text-[11px] font-bold flex flex-col md:flex-row md:items-center justify-between gap-2.5 shadow-md">
@@ -1114,15 +1139,15 @@ export const ItineraryVisualOverview: React.FC<OverviewProps> = ({ tripId }) => 
                         return (
                           <>
                             {/* Decorative dashed connector */}
-                            <div className="relative pl-14 py-2">
+                            <div className="relative pl-5 sm:pl-14 py-2">
                               <div className="flex items-center gap-2 bg-[#111827] border border-slate-200 px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest text-emerald-400 shrink-0 font-mono w-fit">
                                 <Car className="w-3.5 h-3.5 text-emerald-400" /> Deslocamento Terrestre de Carro (Carro Alugado)
                               </div>
                             </div>
 
-                            <div className="relative pl-14 group animate-in fade-in duration-300">
+                            <div className="relative pl-5 sm:pl-14 group animate-in fade-in duration-300">
                               {/* Emerald Bullet Marker */}
-                              <div className="absolute left-[17px] top-1.5 w-[18px] h-[18px] rounded-full bg-white border-white border-emerald-400 flex items-center justify-center shadow-md shadow-emerald-500/10 group-hover:scale-110 transition-transform">
+                              <div className="absolute left-[1px] sm:left-[17px] top-1.5 w-[18px] h-[18px] rounded-full bg-white border-white border-emerald-400 flex items-center justify-center shadow-md shadow-emerald-500/10 group-hover:scale-110 transition-transform">
                                 <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span>
                               </div>
 
@@ -1137,69 +1162,67 @@ export const ItineraryVisualOverview: React.FC<OverviewProps> = ({ tripId }) => 
                               </div>
 
                               {/* Dual Cards representing Retirada vs Chegada with customized color theme tags */}
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div className="flex flex-row items-stretch gap-2 sm:gap-4 w-full">
                                 
                                 {/* DEPARTURE (Retirada/Saída) - BLUE/SKY CARD */}
-                                <div className="bg-sky-500/[0.04] rounded-2xl p-4 border border-sky-500/20 hover:border-sky-500/40 transition-colors flex items-center gap-3">
+                                <div className="flex-1 min-w-0 bg-sky-500/[0.04] rounded-2xl p-3 sm:p-4 border border-sky-500/20 hover:border-sky-500/40 transition-colors flex flex-col justify-between">
                                   <div className="text-left w-full">
-                                    <div className="flex items-center justify-between mb-1.5">
-                                      <span className="text-[9px] font-black text-sky-400 uppercase tracking-widest bg-sky-500/10 px-2 py-0.5 rounded-full font-mono">
+                                    <div className="flex items-center justify-between mb-1 sm:mb-1.5">
+                                      <span className="text-[8px] sm:text-[9px] font-black text-sky-400 uppercase tracking-widest bg-sky-500/10 px-1.5 sm:px-2 py-0.5 rounded-full font-mono">
                                         {leg.depLabel}
                                       </span>
-                                      <span className="text-[9.5px] font-bold text-slate-400 font-mono">SAÍDA</span>
+                                      <span className="text-[8px] sm:text-[9.5px] font-bold text-slate-400 font-mono">SAÍDA</span>
                                     </div>
-                                    <div className="flex items-baseline gap-1.5">
-                                      <span className="font-display font-black text-lg text-slate-900">{leg.depTime}</span>
-                                      <span className="text-[10px] font-black uppercase text-sky-600 bg-sky-500/10 rounded px-1.5 font-mono">{leg.depCode}</span>
+                                    <div className="flex items-baseline gap-1">
+                                      <span className="font-display font-black text-base sm:text-lg text-slate-900">{leg.depTime}</span>
+                                      <span className="text-[8px] sm:text-[10px] font-black uppercase text-sky-600 bg-sky-500/10 rounded px-1 sm:px-1.5 font-mono">{leg.depCode}</span>
                                     </div>
-                                    <p className="text-[11px] font-bold text-slate-700 mt-1 leading-tight">{leg.depSub}</p>
-                                    <p className="text-[9px] font-medium text-slate-500 font-mono mt-0.5">{leg.depDate}</p>
+                                    <p className="text-[10px] sm:text-[11px] font-bold text-slate-700 mt-1 leading-tight truncate">{leg.depSub}</p>
+                                    <p className="text-[8px] sm:text-[9px] font-medium text-slate-500 font-mono mt-0.5">{leg.depDate}</p>
                                   </div>
                                 </div>
 
                                 {/* ARRIVAL (Chegada/Devolução) - EMERALD CARD */}
-                                <div className="bg-emerald-500/[0.04] rounded-2xl p-4 border border-emerald-500/20 hover:border-emerald-500/40 transition-colors flex items-center gap-3">
+                                <div className="flex-1 min-w-0 bg-emerald-500/[0.04] rounded-2xl p-3 sm:p-4 border border-emerald-500/20 hover:border-emerald-500/40 transition-colors flex flex-col justify-between">
                                   <div className="text-left w-full">
-                                    <div className="flex items-center justify-between mb-1.5">
-                                      <span className="text-[9px] font-black text-emerald-400 uppercase tracking-widest bg-emerald-500/10 px-2 py-0.5 rounded-full font-mono">
+                                    <div className="flex items-center justify-between mb-1 sm:mb-1.5">
+                                      <span className="text-[8px] sm:text-[9px] font-black text-emerald-400 uppercase tracking-widest bg-emerald-500/10 px-1.5 sm:px-2 py-0.5 rounded-full font-mono">
                                         {leg.arrLabel}
                                       </span>
-                                      <span className="text-[9.5px] font-bold text-emerald-500 font-mono">CHEGADA</span>
+                                      <span className="text-[8px] sm:text-[9.5px] font-bold text-emerald-500 font-mono">CHEGADA</span>
                                     </div>
-                                    <div className="flex items-baseline gap-1.5">
-                                      <span className="font-display font-black text-lg text-slate-900">{leg.arrTime}</span>
-                                      <span className="text-[10px] font-black uppercase text-emerald-600 bg-emerald-500/10 rounded px-1.5 font-mono">{leg.arrCode}</span>
+                                    <div className="flex items-baseline gap-1">
+                                      <span className="font-display font-black text-base sm:text-lg text-slate-900">{leg.arrTime}</span>
+                                      <span className="text-[8px] sm:text-[10px] font-black uppercase text-emerald-600 bg-emerald-500/10 rounded px-1 sm:px-1.5 font-mono">{leg.arrCode}</span>
                                     </div>
-                                    <p className="text-[11px] font-bold text-slate-700 mt-1 leading-tight">{leg.arrSub}</p>
-                                    <p className="text-[9px] font-medium text-slate-500 font-mono mt-0.5">{leg.arrDate}</p>
+                                    <p className="text-[10px] sm:text-[11px] font-bold text-slate-700 mt-1 leading-tight truncate">{leg.arrSub}</p>
+                                    <p className="text-[8px] sm:text-[9px] font-medium text-slate-500 font-mono mt-0.5">{leg.arrDate}</p>
                                   </div>
                                 </div>
 
                               </div>
 
-                              {/* Additional Cost, Route and Fuel Consumption Matrix */}
-                              <div className="mt-3 bg-slate-50 rounded-2xl p-4 border border-slate-200">
-                                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
-                                  <div>
-                                    <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest block font-mono mb-0.5">ROTA ATIVA</span>
-                                    <span className="font-extrabold text-slate-900 block leading-tight">{leg.route}</span>
+                              {/* Additional Route and Fuel Matrix */}
+                              <div className="mt-3 bg-slate-50 rounded-2xl p-3 sm:p-4 border border-slate-200">
+                                <div className="grid grid-cols-3 gap-2 sm:gap-4 text-xs">
+                                  <div className="col-span-1">
+                                    <span className="text-[8px] sm:text-[9px] font-black text-slate-500 uppercase tracking-widest block font-mono mb-0.5">ROTA ATIVA</span>
+                                    <span className="font-extrabold text-[9px] sm:text-xs text-slate-900 block leading-tight">{leg.route}</span>
                                   </div>
-                                  <div className="border-t md:border-t-0 md:border-l border-slate-200 pt-3 md:pt-0 md:pl-4">
-                                    <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest block font-mono mb-0.5">DISTÂNCIA / PEDÁGIO</span>
-                                    <span className="font-extrabold text-slate-900 block">{leg.distance} <span className="text-slate-400 font-normal">|</span> {leg.toll}</span>
+                                  <div className="border-l border-slate-200 pl-2 sm:pl-4 col-span-1">
+                                    <span className="text-[8px] sm:text-[9px] font-black text-slate-500 uppercase tracking-widest block font-mono mb-0.5">DISTÂNCIA / PEDÁGIO</span>
+                                    <span className="font-extrabold text-[9px] sm:text-xs text-slate-900 block leading-tight">{leg.distance} <span className="text-slate-400 font-normal">|</span> {leg.toll}</span>
                                   </div>
-                                  <div className="border-t md:border-t-0 md:border-l border-slate-200 col-span-2 pt-3 md:pt-0 md:pl-4">
-                                    <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest block font-mono mb-1">CUSTO ESTIMADO COMBUSTÍVEL</span>
-                                    <div className="flex flex-wrap items-center gap-3">
-                                      <div className="bg-sky-500/10 border border-sky-500/15 rounded-lg px-2.5 py-1 flex items-center gap-1.5">
-                                        <span className="text-[9.5px] font-bold text-slate-500 font-mono">GAS:</span>
-                                        <strong className="text-sky-500 font-black">{leg.fuelGas}</strong>
-                                        <span className="text-[9px] text-slate-400 font-mono">({leg.gasLiters})</span>
+                                  <div className="border-l border-slate-200 pl-2 sm:pl-4 col-span-1">
+                                    <span className="text-[8px] sm:text-[9px] font-black text-slate-500 uppercase tracking-widest block font-mono mb-1">COMBUSTÍVEL</span>
+                                    <div className="flex flex-col gap-1">
+                                      <div className="bg-sky-500/5 border border-sky-500/10 rounded px-1 sm:px-1.5 py-0.5 flex items-center justify-between gap-1">
+                                        <span className="text-[7px] sm:text-[8px] font-bold text-slate-500 font-mono">GAS:</span>
+                                        <strong className="text-sky-600 text-[8px] sm:text-[10px] font-black">{leg.fuelGas}</strong>
                                       </div>
-                                      <div className="bg-emerald-500/10 border border-emerald-500/15 rounded-lg px-2.5 py-1 flex items-center gap-1.5">
-                                        <span className="text-[9.5px] font-bold text-slate-500 font-mono">ETANOL:</span>
-                                        <strong className="text-emerald-500 font-black">{leg.fuelEtanol}</strong>
-                                        <span className="text-[9px] text-slate-400 font-mono">({leg.etanolLiters})</span>
+                                      <div className="bg-emerald-500/5 border border-emerald-500/10 rounded px-1 sm:px-1.5 py-0.5 flex items-center justify-between gap-1">
+                                        <span className="text-[7px] sm:text-[8px] font-bold text-slate-500 font-mono">ETA:</span>
+                                        <strong className="text-emerald-600 text-[8px] sm:text-[10px] font-black">{leg.fuelEtanol}</strong>
                                       </div>
                                     </div>
                                   </div>
@@ -1214,16 +1237,16 @@ export const ItineraryVisualOverview: React.FC<OverviewProps> = ({ tripId }) => 
                   ) : (
                     <>
                       {/* Decorative dashed connector */}
-                      <div className="relative pl-14 py-2">
+                      <div className="relative pl-5 sm:pl-14 py-2">
                         <div className="flex items-center gap-2 bg-[#111827] border border-slate-200 px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest text-orange-400 shrink-0 font-mono w-fit">
                           <Bus className="w-3.5 h-3.5 text-orange-400" /> Conexão Terrestre Rodoviária (Viação Águia Branca)
                         </div>
                       </div>
 
                       {activeTimelineTab === 'ida' ? (
-                        <div className="relative pl-14 group animate-in fade-in duration-300">
+                        <div className="relative pl-5 sm:pl-14 group animate-in fade-in duration-300">
                           {/* Orange Bullet Marker */}
-                          <div className="absolute left-[17px] top-1.5 w-[18px] h-[18px] rounded-full bg-white border-white border-orange-400 flex items-center justify-center shadow-md shadow-orange-500/10 group-hover:scale-110 transition-transform">
+                          <div className="absolute left-[1px] sm:left-[17px] top-1.5 w-[18px] h-[18px] rounded-full bg-white border-white border-orange-400 flex items-center justify-center shadow-md shadow-orange-500/10 group-hover:scale-110 transition-transform">
                             <span className="w-1.5 h-1.5 bg-orange-400 rounded-full"></span>
                           </div>
 
@@ -1237,30 +1260,41 @@ export const ItineraryVisualOverview: React.FC<OverviewProps> = ({ tripId }) => 
                             </span>
                           </div>
 
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-black/40 rounded-2xl p-4 border border-slate-200">
-                            <div className="flex items-center gap-3">
-                              <div className="text-left">
-                                <span className="text-[9px] font-black text-orange-400 uppercase tracking-widest block mb-0.5">Embarque Salvador</span>
-                                <div className="flex items-baseline gap-1.5">
-                                  <span className="font-display font-black text-lg">06:40</span>
-                                  <span className="text-[10px] font-black uppercase text-slate-600 tracking-wider bg-white/5 rounded px-1.5 font-mono">SSA</span>
-                                </div>
-                                <p className="text-[11px] font-bold text-slate-500">Terminal Rodoviário de Salvador</p>
-                                <p className="text-[9px] font-medium text-slate-500 font-mono">14 de jul. de 2026 (Terça-feira)</p>
+                          {/* Side-by-side horizontal flex row */}
+                          <div className="flex flex-row items-center justify-between gap-3 sm:gap-4 bg-black/40 rounded-2xl p-3 sm:p-4 border border-slate-200">
+                            
+                            {/* Departure Node detail */}
+                            <div className="text-left flex-1 min-w-0">
+                              <span className="text-[8px] sm:text-[9px] font-black text-orange-400 uppercase tracking-widest block mb-0.5">Embarque Salvador</span>
+                              <div className="flex items-baseline gap-1">
+                                <span className="font-display font-black text-base sm:text-xl text-white">06:40</span>
+                                <span className="text-[8px] sm:text-[10px] font-black uppercase text-slate-400 tracking-wider bg-white/5 rounded px-1 sm:px-1.5 font-mono">SSA</span>
                               </div>
+                              <p className="text-[10px] sm:text-[11px] font-bold text-slate-400 mt-0.5 truncate">Terminal Rodoviário de Salvador</p>
+                              <p className="text-[8px] sm:text-[9px] font-medium text-slate-500 font-mono mt-0.5">14 de jul. de 2026</p>
                             </div>
 
-                            <div className="flex items-center gap-3 border-t md:border-t-0 md:border-l border-slate-200 pt-3 md:pt-0 md:pl-4">
-                              <div className="text-left">
-                                <span className="text-[9px] font-black text-emerald-600 uppercase tracking-widest block mb-0.5">Desembarque Aracaju</span>
-                                <div className="flex items-baseline gap-1.5">
-                                  <span className="font-display font-black text-lg">12:05</span>
-                                  <span className="text-[10px] font-black uppercase text-slate-600 tracking-wider bg-white/5 rounded px-1.5 font-mono">AJU</span>
+                            {/* Connecting Bus Line decorator */}
+                            <div className="flex flex-col items-center justify-center px-1 sm:px-3 flex-shrink-0">
+                              <div className="h-[1px] w-6 sm:w-16 bg-slate-700 relative">
+                                <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 text-orange-400">
+                                  <Bus className="w-3 h-3" />
                                 </div>
-                                <p className="text-[11px] font-bold text-slate-500">Terminal Rodoviário de Aracaju</p>
-                                <p className="text-[9px] font-medium text-slate-500 font-mono">14 de jul. de 2026 (Terça-feira)</p>
                               </div>
+                              <span className="text-[8px] font-mono font-bold text-slate-400 mt-0.5 whitespace-nowrap">5h 25m</span>
                             </div>
+
+                            {/* Arrival Node detail */}
+                            <div className="text-right flex-1 min-w-0">
+                              <span className="text-[8px] sm:text-[9px] font-black text-emerald-400 uppercase tracking-widest block mb-0.5">Desembarque Aracaju</span>
+                              <div className="flex items-baseline justify-end gap-1">
+                                <span className="font-display font-black text-base sm:text-xl text-white">12:05</span>
+                                <span className="text-[8px] sm:text-[10px] font-black uppercase text-slate-400 tracking-wider bg-white/5 rounded px-1 sm:px-1.5 font-mono">AJU</span>
+                              </div>
+                              <p className="text-[10px] sm:text-[11px] font-bold text-slate-400 mt-0.5 truncate">Terminal Rodoviário de Aracaju</p>
+                              <p className="text-[8px] sm:text-[9px] font-medium text-slate-500 font-mono mt-0.5">14 de jul. de 2026</p>
+                            </div>
+
                           </div>
 
                           <div className="mt-2.5 flex justify-between items-center text-[10px] bg-white/5 rounded-xl p-2.5 px-4 border border-slate-200 flex-wrap gap-2">
@@ -1269,9 +1303,9 @@ export const ItineraryVisualOverview: React.FC<OverviewProps> = ({ tripId }) => 
                           </div>
                         </div>
                       ) : (
-                        <div className="relative pl-14 group animate-in fade-in duration-300">
+                        <div className="relative pl-5 sm:pl-14 group animate-in fade-in duration-300">
                           {/* Orange Bullet Marker */}
-                          <div className="absolute left-[17px] top-1.5 w-[18px] h-[18px] rounded-full bg-white border-white border-orange-400 flex items-center justify-center shadow-md shadow-orange-500/10 group-hover:scale-110 transition-transform">
+                          <div className="absolute left-[1px] sm:left-[17px] top-1.5 w-[18px] h-[18px] rounded-full bg-white border-white border-orange-400 flex items-center justify-center shadow-md shadow-orange-500/10 group-hover:scale-110 transition-transform">
                             <span className="w-1.5 h-1.5 bg-orange-400 rounded-full"></span>
                           </div>
 
@@ -1285,30 +1319,41 @@ export const ItineraryVisualOverview: React.FC<OverviewProps> = ({ tripId }) => 
                             </span>
                           </div>
 
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-black/40 rounded-2xl p-4 border border-slate-200">
-                            <div className="flex items-center gap-3">
-                              <div className="text-left">
-                                <span className="text-[9px] font-black text-orange-400 uppercase tracking-widest block mb-0.5">Embarque Aracaju</span>
-                                <div className="flex items-baseline gap-1.5">
-                                  <span className="font-display font-black text-lg">07:00</span>
-                                  <span className="text-[10px] font-black uppercase text-slate-600 tracking-wider bg-white/5 rounded px-1.5 font-mono">AJU</span>
-                                </div>
-                                <p className="text-[11px] font-bold text-slate-500">Terminal Rodoviário de Aracaju</p>
-                                <p className="text-[9px] font-medium text-slate-500 font-mono">21 de jul. de 2026 (Terça-feira)</p>
+                          {/* Side-by-side horizontal flex row */}
+                          <div className="flex flex-row items-center justify-between gap-3 sm:gap-4 bg-black/40 rounded-2xl p-3 sm:p-4 border border-slate-200">
+                            
+                            {/* Departure Node detail */}
+                            <div className="text-left flex-1 min-w-0">
+                              <span className="text-[8px] sm:text-[9px] font-black text-orange-400 uppercase tracking-widest block mb-0.5">Embarque Aracaju</span>
+                              <div className="flex items-baseline gap-1">
+                                <span className="font-display font-black text-base sm:text-xl text-white">07:00</span>
+                                <span className="text-[8px] sm:text-[10px] font-black uppercase text-slate-400 tracking-wider bg-white/5 rounded px-1 sm:px-1.5 font-mono">AJU</span>
                               </div>
+                              <p className="text-[10px] sm:text-[11px] font-bold text-slate-400 mt-0.5 truncate">Terminal Rodoviário de Aracaju</p>
+                              <p className="text-[8px] sm:text-[9px] font-medium text-slate-500 font-mono mt-0.5">21 de jul. de 2026</p>
                             </div>
 
-                            <div className="flex items-center gap-3 border-t md:border-t-0 md:border-l border-slate-200 pt-3 md:pt-0 md:pl-4">
-                              <div className="text-left">
-                                <span className="text-[9px] font-black text-emerald-600 uppercase tracking-widest block mb-0.5">Desembarque Salvador</span>
-                                <div className="flex items-baseline gap-1.5">
-                                  <span className="font-display font-black text-lg">12:25</span>
-                                  <span className="text-[10px] font-black uppercase text-slate-600 tracking-wider bg-white/5 rounded px-1.5 font-mono">SSA</span>
+                            {/* Connecting Bus Line decorator */}
+                            <div className="flex flex-col items-center justify-center px-1 sm:px-3 flex-shrink-0">
+                              <div className="h-[1px] w-6 sm:w-16 bg-slate-700 relative">
+                                <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 text-orange-400">
+                                  <Bus className="w-3 h-3" />
                                 </div>
-                                <p className="text-[11px] font-bold text-slate-500">Terminal Rodoviário de Salvador</p>
-                                <p className="text-[9px] font-medium text-slate-500 font-mono">21 de jul. de 2026 (Terça-feira)</p>
                               </div>
+                              <span className="text-[8px] font-mono font-bold text-slate-400 mt-0.5 whitespace-nowrap">5h 25m</span>
                             </div>
+
+                            {/* Arrival Node detail */}
+                            <div className="text-right flex-1 min-w-0">
+                              <span className="text-[8px] sm:text-[9px] font-black text-emerald-400 uppercase tracking-widest block mb-0.5">Desembarque Salvador</span>
+                              <div className="flex items-baseline justify-end gap-1">
+                                <span className="font-display font-black text-base sm:text-xl text-white">12:25</span>
+                                <span className="text-[8px] sm:text-[10px] font-black uppercase text-slate-400 tracking-wider bg-white/5 rounded px-1 sm:px-1.5 font-mono">SSA</span>
+                              </div>
+                              <p className="text-[10px] sm:text-[11px] font-bold text-slate-400 mt-0.5 truncate">Terminal Rodoviário de Salvador</p>
+                              <p className="text-[8px] sm:text-[9px] font-medium text-slate-500 font-mono mt-0.5">21 de jul. de 2026</p>
+                            </div>
+
                           </div>
 
                           <div className="mt-2.5 flex justify-between items-center text-[10px] bg-white/5 rounded-xl p-2.5 px-4 border border-slate-200 flex-wrap gap-2">
@@ -1516,6 +1561,8 @@ export const ItineraryVisualOverview: React.FC<OverviewProps> = ({ tripId }) => 
           </div>
 
         </div>
+        </>
+      )}
 
     </div>
   );

@@ -242,7 +242,7 @@ const ClientApp: React.FC = () => {
         {visibleMenuItems.some(item => ['checklist', 'financeiro', 'gastos', 'cambio', 'mercado'].includes(item.id)) && (
           <div className="space-y-4">
             <h3 className="text-[#0369a1] font-display font-black uppercase text-xs tracking-widest pl-2">Planejamento & Dinheiro</h3>
-            <div className="grid grid-cols-3 md:grid-cols-5 gap-3 relative z-[100]">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 relative z-[100]">
               {visibleMenuItems.filter(item => ['checklist', 'financeiro', 'gastos', 'cambio', 'mercado'].includes(item.id)).map(item => (
                 <MenuCard key={item.id} {...item} bgColor="#0ea5e9" onClick={() => navigateTo(item.id)} />
               ))}
@@ -254,7 +254,7 @@ const ClientApp: React.FC = () => {
         {visibleMenuItems.some(item => ['voos', 'hospedagem', 'reservas', 'uber_bolt', 'onibus', 'abastecimento'].includes(item.id)) && (
           <div className="space-y-4 pt-2">
             <h3 className="text-[#6d28d9] font-display font-black uppercase text-xs tracking-widest pl-2">Transporte & Local</h3>
-            <div className="grid grid-cols-3 md:grid-cols-5 gap-3 relative z-[100]">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 relative z-[100]">
               {visibleMenuItems.filter(item => ['voos', 'hospedagem', 'reservas', 'uber_bolt', 'onibus', 'abastecimento'].includes(item.id)).map(item => (
                 <MenuCard key={item.id} {...item} bgColor="#8b5cf6" onClick={() => navigateTo(item.id)} />
               ))}
@@ -266,7 +266,7 @@ const ClientApp: React.FC = () => {
         {visibleMenuItems.some(item => ['guias', 'melhores_destinos', 'tradutor', 'vacinas', 'ia_assistant'].includes(item.id)) && (
           <div className="space-y-4 pt-2">
             <h3 className="text-[#047857] font-display font-black uppercase text-xs tracking-widest pl-2">Roteiro & Ferramentas</h3>
-            <div className="grid grid-cols-3 md:grid-cols-5 gap-3 relative z-[100]">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 relative z-[100]">
               {visibleMenuItems.filter(item => ['guias', 'melhores_destinos', 'tradutor', 'vacinas', 'ia_assistant'].includes(item.id)).map(item => (
                 <MenuCard key={item.id} {...item} bgColor="#10b981" onClick={() => navigateTo(item.id)} />
               ))}

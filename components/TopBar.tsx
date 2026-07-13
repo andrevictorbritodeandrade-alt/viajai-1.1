@@ -59,24 +59,24 @@ const TopBar: React.FC<TopBarProps> = ({ variant = 'home' }) => {
 
   return (
     <>
-      <div className="fixed top-2 right-2 z-[70] flex gap-2 pointer-events-none items-center">
+      <div className="fixed top-2.5 right-2.5 z-[70] flex flex-row flex-nowrap gap-1.5 pointer-events-none items-center">
         
         {/* Status Indicator */}
-        <div className={`pointer-events-auto flex items-center gap-1.5 px-3 py-1.5 rounded-full backdrop-blur-md border shadow-2xl transition-all duration-500 ${
+        <div className={`pointer-events-auto flex items-center gap-1 px-2.5 py-1.5 sm:px-3 sm:py-1.5 rounded-full backdrop-blur-md border shadow-2xl transition-all duration-500 ${
           !isOnline ? 'bg-red-600 text-white border-red-400' :
           syncStatus === 'saving' ? 'bg-sa-green text-white border-white animate-pulse' :
           syncStatus === 'error' ? 'bg-amber-600 text-white border-amber-400' :
           'bg-black/40 border-white/20 text-white'
         }`}>
             {!isOnline ? (
-                <WifiOff className="w-3.5 h-3.5" />
+                <WifiOff className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
             ) : syncStatus === 'saving' ? (
-                <CloudUpload className="w-3.5 h-3.5 animate-bounce" />
+                <CloudUpload className="w-3 h-3 sm:w-3.5 sm:h-3.5 animate-bounce" />
             ) : syncStatus === 'error' ? (
-                <CloudAlert className="w-3.5 h-3.5" />
+                <CloudAlert className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
             ) : (
-                <div className="flex items-center gap-1">
-                    <Wifi className="w-3.5 h-3.5 text-sa-green" />
+                <div className="flex items-center">
+                    <Wifi className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-sa-green" />
                 </div>
             )}
         </div>
@@ -84,15 +84,15 @@ const TopBar: React.FC<TopBarProps> = ({ variant = 'home' }) => {
         {/* Notifications Bell */}
         <button 
           onClick={() => setIsAlertsOpen(true)}
-          className={`pointer-events-auto p-2 rounded-full backdrop-blur-md border shadow-lg transition-all relative ${
+          className={`pointer-events-auto p-1.5 sm:p-2 rounded-full backdrop-blur-md border shadow-lg transition-all relative ${
             activeAlerts.length > 0 
               ? 'bg-sa-gold text-sa-black border-white animate-bounce' 
               : 'bg-black/40 border-white/20 text-white'
           }`}
         >
-          <Bell className="w-4 h-4" />
+          <Bell className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           {activeAlerts.length > 0 && (
-            <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-600 text-white text-[9px] font-black rounded-full flex items-center justify-center border border-white">
+            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 sm:w-3 sm:h-3 bg-red-600 text-white text-[7px] sm:text-[9px] font-black rounded-full flex items-center justify-center border border-white">
               {activeAlerts.length}
             </span>
           )}
@@ -101,9 +101,9 @@ const TopBar: React.FC<TopBarProps> = ({ variant = 'home' }) => {
         {/* Logout Button (Discreet) */}
         <button 
           onClick={handleLogout}
-          className="pointer-events-auto p-2 rounded-full backdrop-blur-md border border-white/20 bg-black/40 text-white shadow-lg"
+          className="pointer-events-auto p-1.5 sm:p-2 rounded-full backdrop-blur-md border border-white/20 bg-black/40 text-white shadow-lg transition-all"
         >
-          <LogOut className="w-4 h-4 opacity-70" />
+          <LogOut className="w-3.5 h-3.5 sm:w-4 sm:h-4 opacity-70" />
         </button>
       </div>
 

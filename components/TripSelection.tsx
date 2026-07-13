@@ -361,9 +361,9 @@ const TripSelection: React.FC<TripSelectionProps> = ({ onSelect, userName }) => 
           <img 
             src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?q=80&w=2074&auto=format&fit=crop" 
             alt="Nature Landscape Destination" 
-            className="w-full h-full object-cover opacity-20"
+            className="w-full h-full object-cover opacity-40"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0B0F19]/60 to-[#0B0F19]"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0B0F19]/40 to-[#0B0F19]"></div>
         </div>
 
         {/* Ambient Glows */}

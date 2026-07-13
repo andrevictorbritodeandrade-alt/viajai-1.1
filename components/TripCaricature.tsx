@@ -30,7 +30,7 @@ export const TripCaricature: React.FC<TripCaricatureProps> = ({ name, id, size =
   // 1. PORTO SEGURO (Beach + Caravela)
   if (normName.includes("porto seguro") || normName.includes("beaches")) {
     bgGradient = "from-sky-950 via-slate-900 to-sky-950";
-    customImageUrl = "/porto_seguro_premium.png";
+    customImageUrl = "./porto_seguro_premium.png";
   }
 
   // 2. SÃO PAULO + SALVADOR + ARACAJÚ (+ CATAIS) (MASP, Bonfim facade, Lighthouse, Big Crab)
@@ -40,25 +40,25 @@ export const TripCaricature: React.FC<TripCaricatureProps> = ({ name, id, size =
     normName.includes("aracaju")
   ) {
     bgGradient = "from-slate-950 via-slate-900 to-slate-950";
-    customImageUrl = "/sp_ssa_aju_premium.png";
+    customImageUrl = "./sp_ssa_aju_premium.png";
   }
 
   // 2.5 SALVADOR (Férias de Julho)
   else if (normName.includes("salvador") && !normName.includes("aracaju")) {
     bgGradient = "from-slate-950 via-slate-900 to-slate-950";
-    customImageUrl = "/salvador_premium.jpg";
+    customImageUrl = "./salvador_premium.jpg";
   }
 
   // 3. SALVADOR + ARACAJÚ (Pelourinho colonial houses, Barra Lighthouse, Big Crab on beach)
   else if (normName.includes("salvador") && normName.includes("aracaju")) {
     bgGradient = "from-slate-950 via-slate-900 to-slate-950";
-    customImageUrl = "/ssa_aju_premium.png";
+    customImageUrl = "./ssa_aju_premium.png";
   }
 
   // 4. ÁFRICA DO SUL (Serengeti Savanna Sunset + Safari animals + Table Mountain & Penguin)
   else if (normName.includes("africa")) {
     bgGradient = "from-slate-950 via-slate-900 to-slate-950";
-    customImageUrl = "/africa_premium.png";
+    customImageUrl = "./africa_premium.png";
   }
 
   // 5. BUENOS AIRES + ASSUNÇÃO + FOZ DO IGUAÇU (Waterfalls, Obelisco & Palacio de los López)
@@ -68,7 +68,7 @@ export const TripCaricature: React.FC<TripCaricatureProps> = ({ name, id, size =
     normName.includes("buenos")
   ) {
     bgGradient = "from-slate-950 via-slate-900 to-slate-950";
-    customImageUrl = "/ba_ass_foz_premium.png";
+    customImageUrl = "./ba_ass_foz_premium.png";
   }
 
   // 6. FOZ DO IGUAÇU + BUENOS AIRES + PATAGÔNIA (Waterfalls, Obelisco, Mount Fitz Roy & Glacier)
@@ -78,7 +78,7 @@ export const TripCaricature: React.FC<TripCaricatureProps> = ({ name, id, size =
     normName.includes("patagonia")
   ) {
     bgGradient = "from-slate-950 via-slate-900 to-slate-950";
-    customImageUrl = "/foz_ba_patagonia_premium.png";
+    customImageUrl = "./foz_ba_patagonia_premium.png";
   }
 
   // 7. FOZ DO IGUAÇU + BUENOS AIRES (Waterfalls + Obelisco + Tango Dancer)
@@ -87,25 +87,25 @@ export const TripCaricature: React.FC<TripCaricatureProps> = ({ name, id, size =
     (normName.includes("buenos") || normName.includes("aires") || normName.includes("ba"))
   ) {
     bgGradient = "from-slate-950 via-slate-900 to-slate-950";
-    customImageUrl = "/foz_ba_premium.jpg";
+    customImageUrl = "./foz_ba_premium.jpg";
   }
 
   // 8. FOZ DO IGUAÇU (Lush jungle canopy + Cascade waterfalls)
   else if (normName.includes("foz") || normName.includes("iguacu") || normName.includes("cataratas")) {
     bgGradient = "from-slate-950 via-slate-900 to-slate-950";
-    customImageUrl = "/foz_premium.png";
+    customImageUrl = "./foz_premium.png";
   }
 
   // 9. COLÔMBIA (Colonial Cartagena yellow wall, pink floral balcony, coffee beans)
   else if (normName.includes("colombia") || normName.includes("san andres")) {
     bgGradient = "from-slate-950 via-slate-900 to-slate-950";
-    customImageUrl = "/colombia_premium.jpg";
+    customImageUrl = "./colombia_premium.jpg";
   }
 
   // 10. PERU (Machu Picchu green ridges + Terraces + Super Cute Llama with collar)
   else if (normName.includes("peru")) {
     bgGradient = "from-slate-950 via-slate-900 to-slate-950";
-    customImageUrl = "/peru_premium.png";
+    customImageUrl = "./peru_premium.png";
   }
 
   // 11. GENERAL WORLD EXPLORER CHEERFUL FALLBACK (For any other custom destination added)

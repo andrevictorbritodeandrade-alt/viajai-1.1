@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ArrowLeft, Sparkles, AlertCircle, ShieldCheck, HelpCircle, Calendar, List, Table } from 'lucide-react';
 import { getSessionUser } from '../services/session';
+import CategoryHeader from './CategoryHeader';
 
 export const GUIDE_STORAGE_KEY = 'viajai_guide_v1';
 
@@ -118,44 +119,44 @@ const ITINERARY_DATABASE: Record<string, TripItineraryConfig> = {
     ],
     manha: [
       { time: "06:00", activity: "Adiantar voo (App da GOL)", details: "Entrar no app da GOL precisamente às 06:00 para tentar adiantar o voo gratuitamente. Malas prontas!\n• Plano A (Conseguiu): Ir correndo para o Galeão (GIG) pegar voo matutino.\n• Plano B (Não conseguiu): Manter plano padrão e trabalhar/descansar durante o dia.", costType: "gratuito", costLabel: "Sem Gastos" },
-      { time: "06:30", activity: "Saída para Maceió", details: "Check-out no Airbnb em Salvador e saída às 06h30. Viagem de carro com distância de 561 km até o Airbnb in Maceió (Luciano). A estimativa de viagem é de aproximadamente 7h 53min de estrada, curtindo o trajeto pela BA-099.", costType: "pago", costLabel: "💳 Gasto: Aluguel Carro + Combustível" },
-      { time: "06:00", activity: "Saída para Maragogi (Caribe Brasileiro) - Combo Dia 1", details: "Embarque por volta das 06:00. Incluso transporte de ida e volta de Maceió para a paradisíaca Maragogi.", costType: "pago", costLabel: "💳 Combo 2 Dias: R$ 190,00" },
-      { time: "07:00", activity: "Saída para Praia do Gunga (Roteiro Completo) - Combo Dia 2", details: "Embarque por volta das 07:00. O roteiro inclui Parada para Fotos, Parada na Praia do Francês, Parada no Mirante do Gunga e Parada na Barra de São Miguel.", costType: "pago", costLabel: "Incluso no Combo" },
-      { time: "08:30", activity: "Crooa do Goré / Namorados", details: "Passeio relaxante de barco ou catamarã até a belíssima Crooa do Goré e Ilha dos Namorados. Aproveitar as redes flutuantes na água morna.", costType: "pago", costLabel: "💳 Gasto: Passeio Catamarã R$ 90/px" },
-      { time: "09:00", activity: "Checkout & Retorno Salvador", details: "Realizar checkout no Airbnb de Aracaju. Pegar a estrada de volta para a Bahia pela deslumbrante Rodovia Linha Verde (BA-099).", costType: "pago", costLabel: "💳 Gasto: Combustível" },
-      { time: "09:30", activity: "Centro Histórico Salvador", details: "Caminhar pelo Pelourinho, descer o Elevador Lacerda, comprar fitinhas e fazer pedidos na Igreja do Bonfim.", costType: "gratuito", costLabel: "💸 Gratuito" },
-      { time: "05:50", activity: "Voo de volta para o GIG", details: "Acordar cedo. Checkout no Airbnb de Caminho das Árvores, Salvador. Devolução do carro alugado na LocarX e embarque no voo de volta G3 1865.", costType: "pago", costLabel: "💳 Gasto: Combustível Devolução" }
+      { time: "Manhã", activity: "Descanso / Preparação", details: "Foco total no jogo do Bahia. Manhã livre para descansar no Airbnb em Salvador e recarregar as energias.", costType: "gratuito", costLabel: "-" },
+      { time: "04:00", activity: "Saída para Maceió", details: "Saída de Salvador pegando a estrada (BR-101/BA-099) rumo a Alagoas. É uma viagem de aproximadamente 600 km (cerca de 8 horas de duração).", costType: "pago", costLabel: "💳 Gasto: Aluguel Carro + Combustível" },
+      { time: "06:00", activity: "Saída para Maragogi (Catamarã)", details: "Saída para Maragogi (Passeio fechado com agência). A viagem dura cerca de 2h a 2h30. Aproveitar o pacote já incluso (Transporte + Passeio de Catamarã às piscinas naturais).", costType: "pago", costLabel: "💳 Combo 2 Dias" },
+      { time: "07:00", activity: "Praia do Gunga", details: "Saída para a Praia do Gunga (roteiro completo com a agência). A praia fica a cerca de 1 hora de Maceió. O roteiro inclui Parada para Fotos e Mirante.", costType: "pago", costLabel: "Incluso no Combo" },
+      { time: "Manhã", activity: "Museu da Gente Sergipana", details: "Visita ao Museu da Gente Sergipana. É um museu interativo espetacular que narra a formação cultural, geográfica e histórica do povo sergipano de forma muito imersiva.", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "06:00", activity: "Saída de Aracaju & Tambaquis", details: "06h00: Saída de Aracaju pegando a rodovia sentido sul.\n07h00: Parada na Lagoa dos Tambaquis (Estância - SE). Tempo para conhecer, tirar fotos e aproveitar o local.\n09h00: Seguir viagem direto para Salvador (cerca de 280 km, em torno de 4 horas de estrada).", costType: "pago", costLabel: "💳 Entrada R$ 20/px + Combustível" },
+      { time: "02:00", activity: "Acordar e Aeroporto (SSA)", details: "02h00: Acordar e solicitar o Uber. Devolução do carro se aplicável.\n02h30-03h00: Chegada ao Aeroporto de Salvador (SSA) para despachar bagagem e raio-x com calma.\n05h50: Decolagem do voo G3 1865 de volta para o Rio de Janeiro.", costType: "pago", costLabel: "💳 Gasto: Uber/Devolução" }
     ],
     tarde: [
       { time: "Tarde", activity: "Plano A: SSA / Plano B: Trabalho", details: "• Plano A: Chegada cedo em Salvador. Fazer check-in no Airbnb Caminho das Árvores e curtir tarde de sol na Praia do Porto da Barra.\n• Plano B: Dia de trabalho ou descanso em casa no Rio, malas fechadas aguardando a noite.", costType: "gratuito", costLabel: "Sem Gastos" },
-      { time: "15:30", activity: "Chegada em Maceió & Praias", details: "Estimativa de chegada no meio da tarde em Maceió (AL). Após check-in no aconchegante Airbnb de Luciano, visite a Praia de Ponta Verde, famosa por seus coqueirais e excelente infraestrutura de lazer.", costType: "gratuito", costLabel: "Sem Custos" },
-      { time: "12:00", activity: "Catamarã, Piscinas Naturais & Caminho de Moisés", details: "Passeio de Catamarã para as incríveis Piscinas Naturais de Maragogi e caminhada no deslumbrante banco de areia 'Caminho de Moisés'. Retorno por volta das 15:00.", costType: "pago", costLabel: "Incluso no Combo" },
-      { time: "12:00", activity: "Tarde na Praia do Gunga & Saída p/ Aracaju", details: "Aproveite o dia inteiro na espetacular Praia do Gunga. Retorno do passeio por volta das 15:30. Atividades opcionais locais: Buggy pelas falésias, Quadriciclo, Helicóptero, Lancha, Paramotor, Tirolesa ou Jetski.\n\nApós o retorno, fazer o check-out no Airbnb de Luciano em Maceió e pegar a estrada rumo a Aracaju (aprox. 270 km, 4h de viagem).", costType: "pago", costLabel: "💳 Opcionais + Combustível" },
-      { time: "14:00", activity: "Lagoa dos Tambaquis", details: "Visitar a lagoa e entrar na água doce super agradável para alimentar na mão os tambaquis gigantes. Experiência incrível.", costType: "pago", costLabel: "💳 Gasto: Entrada R$ 20/px" },
-      { time: "14:00", activity: "Terreiro da Casa Branca & Museus", details: "Após check-in no Airbnb Caminho das Árvores, visita ao bairro da Federação para conhecer o Terreiro da Casa Branca (Ilê Axé Iyá Nassô Oká), o templo de Candomblé de matriz iorubá mais antigo do Brasil. Em seguida, explore o MAB (Museu de Arte da Bahia) no Corredor da Vitória e o MAM (Museu de Arte Moderna) no Solar do Unhão para um lindo pôr do sol, sem focar tanto no Pelourinho.", costType: "gratuito", costLabel: "💸 Entrada Gratuita" },
-      { time: "14:00", activity: "MUNCAB (Pelourinho)", details: "Visita imperdível à exposição 'Padê Onã' no MUNCAB. Quarta-feira a entrada é totalmente gratuita! Explore o Pelourinho e Mercado Modelo.", costType: "gratuito", costLabel: "💸 Gratuito às Quartas", links: [{ title: 'Exposição Padê Onã', url: 'https://www.salvadordabahia.com/eventos/exposicao-caso-pade-ona-encontrar-caminhos/' }] },
-      { time: "-", activity: "Retorno ao Rio", details: "Chegada previsto no Aeroporto Galeão (GIG) às 07:55. Retorno para casa finalizando as férias.", costType: "gratuito", costLabel: "-" }
+      { time: "Tarde", activity: "Pré-Jogo e Almoço", details: "Almoço e preparação para o jogo do Bahia na Arena Fonte Nova. Curtir o clima pré-jogo.", costType: "pago", costLabel: "💳 Gasto: Almoço" },
+      { time: "12:00", activity: "Chegada em Maceió & Orla", details: "Chegada prevista em Maceió. Realizar o check-in no aconchegante apartamento alugado (Airbnb de Luciano). Tarde: Almoço, visita à orla urbana (Praia da Ponta Verde e Praia de Pajuçara) e passeio pela Feira de Artesanato de Pajuçara. Retorno ao apartamento para descansar da viagem.", costType: "gratuito", costLabel: "Sem Custos" },
+      { time: "Tarde", activity: "Maragogi e Retorno", details: "Continuar aproveitando as belezas das piscinas naturais de Maragogi. Fim da tarde: Retorno para Maceió.", costType: "gratuito", costLabel: "-" },
+      { time: "15:30", activity: "Fim do Passeio e Viagem p/ Aracaju", details: "Fim do passeio no Gunga e partida imediata rumo a Aracaju. A viagem tem cerca de 270 km e dura em média 4h30.", costType: "pago", costLabel: "💳 Gasto: Combustível" },
+      { time: "Tarde", activity: "Passeio pela Cidade", details: "Passeio por outros pontos da cidade de Aracaju (como os Mercados Centrais ou a própria extensão da Orla de Atalaia).", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "13:00", activity: "Imersão Histórica em Salvador", details: "13h00: Chegada em Salvador. Almoço no Restaurante do SESC (Pelourinho). Visita ao MUNCAB (Museu Nacional da Cultura Afro-Brasileira), acervo fundamental. Visita ao Terreiro da Casa Branca (Ilê Axé Iyá Nassô Oká), o terreiro de candomblé mais antigo do Brasil e de grande importância sociológica.", costType: "pago", costLabel: "💳 Gasto: Almoço" },
+      { time: "-", activity: "Chegada no Rio", details: "Chegada previsto no Aeroporto Galeão (GIG). Retorno seguro à residência no RJ finalizando as férias.", costType: "gratuito", costLabel: "-" }
     ],
     noite: [
       { time: "Noite", activity: "Plano A: Jantar / Plano B: Voo", details: "• Plano A: Jantar romântico e curtir a noite boêmia de Salvador no Rio Vermelho. Dormir no Airbnb Caminho das Árvores.\n• Plano B: Embarque no GIG às 23:20 (voo G3 1898) rumo a SSA. Chegada na madrugada de sexta-feira (01:30), retirar carro na LocarX e ir direto dormir no Airbnb.", costType: "misto", costLabel: "Passagem já paga" },
-      { time: "19:00", activity: "Jantar na Orla de Ponta Verde", details: "Aproveite a noite nos famosos quiosques de praia Lopana ou Kanoa, curtindo boa gastronomia, drinks artesanais e música ao vivo à beira-mar.", costType: "pago", costLabel: "💳 Gasto: Jantar" },
-      { time: "19:00", activity: "Noite em Maceió / Jantar na Orla", details: "Jantar na bela orla de Ponta Verde ou Pajuçara (Lopana ou Kanoa) para repor as energias após o passeio espetacular em Maragogi.", costType: "pago", costLabel: "💳 Gasto: Jantar" },
-      { time: "19:30", activity: "Chegada em AJU & Jantar na Passarela do Caranguejo", details: "Chegada em Aracaju. Check-in no Airbnb Premium na Orla de Atalaia. Jantar saboroso na famosa Passarela do Caranguejo (restaurante Cariri) com música ao vivo (forró).", costType: "pago", costLabel: "💳 Gasto: Jantar de Boas-Vindas" },
-      { time: "19:00", activity: "Noite na Atalaia", details: "Passear pela bela Feira do Turista da Atalaia, comprar artesanatos sergipanos e curtir música ao vivo em bar local.", costType: "pago", costLabel: "💳 Gasto: Alimentação" },
-      { time: "19:00", activity: "Noite no Largo da Mariquita", details: "Curtir a fantástica boemia de Salvador no Rio Vermelho. Saborear o acarajé de Cira ou Dinha e aproveitar o clima baiano.", costType: "pago", costLabel: "💳 Gasto: Consumos" },
-      { time: "19:00", activity: "Jantar Especial de Despedida", details: "Jantar inesquecível no charmoso Santo Antônio Além do Carmo com vista deslumbrante para a Baía de Todos-os-Santos.", costType: "pago", costLabel: "💳 Gasto: Jantar de Despedida" },
+      { time: "Noite", activity: "Jogo do Bahia & Descanso", details: "Assistir ao jogo do Bahia na Fonte Nova. A prioridade máxima após o jogo é garantir o descanso na noite para aguentar a viagem longa de amanhã cedo.", costType: "pago", costLabel: "💳 Ingressos" },
+      { time: "19:00", activity: "Jantar na Orla de Maceió", details: "Jantar relaxante na orla de Maceió (Lopana ou Kanoa) para repor as energias da longa viagem de carro.", costType: "pago", costLabel: "💳 Gasto: Jantar" },
+      { time: "19:00", activity: "Descanso e Jantar na Orla", details: "Início da noite: Chegar no apartamento e dormir/descansar do passeio intenso de Maragogi. Mais tarde: Sair para jantar na orla.", costType: "pago", costLabel: "💳 Gasto: Jantar" },
+      { time: "20:00", activity: "Chegada em AJU & Passarela do Caranguejo", details: "Chegada prevista em Aracaju (20h00). Check-in na hospedagem Premium na Orla de Atalaia. Jantar na famosa Passarela do Caranguejo (excelente local para provar a culinária local).", costType: "pago", costLabel: "💳 Gasto: Jantar de Boas-Vindas" },
+      { time: "19:00", activity: "Feira do Turista", details: "Visita à bela Feira do Turista da Atalaia para comer, ver o artesanato local e aproveitar o forró tradicional sergipano.", costType: "pago", costLabel: "💳 Gasto: Alimentação" },
+      { time: "18:00", activity: "Descanso Estratégico", details: "Fim da tarde / Início da Noite: Ir para o local de pernoite, arrumar as malas e dormir cedo para garantir algumas horas de sono antes do voo de madrugada.", costType: "gratuito", costLabel: "Sem Gastos" },
       { time: "-", activity: "Descanso", details: "Descanso bem merecido em casa no Rio de Janeiro.", costType: "gratuito", costLabel: "-" }
     ],
     culturalTitle: "🏺 Cultura, Mar e Tradições Nordestinas",
     culturalTips: [
       "Voucher LocarX: Guarde o voucher (código QHKJDZC) no celular. Ao desembarcar, suba até a praça de alimentação no 1º andar e vá em frente à lanchonete Tabuleiro para pegar o transfer gratuito da locadora.",
-      "App GOL às 6h: Abra o app da GOL logo cedo no dia 16/07 para tentar o adiantamento gratuito do voo. Se conseguir adiantar, você ganha um dia inteiro em Salvador (Plano A)!",
-      "Tábua de Marés em Maceió: Programe os passeios de jangada até as piscinas de Pajuçara exatamente na hora da maré baixa diária (<0.3)."
+      "Museu da Gente Sergipana e MUNCAB: Aproveite as imersões históricas fundamentais e super imersivas.",
+      "Terreiro da Casa Branca: Marco sociológico e de resistência, o terreiro de Candomblé mais antigo do Brasil em Salvador."
     ],
-    logisticsTitle: "🚗 Logística e Lógica de Estrada (Linha Verde)",
+    logisticsTitle: "🚗 Logística de Estrada e Otimização",
     logisticsTips: [
-      "Rodovia BA-099 / AL-101 / BR-101: O percurso entre os três estados é lindo e bem pavimentado. Mantenha atenção aos limites de velocidade ao passar pelas vilas.",
-      "Devolução às 02:00 AM / Madrugada: Lembre de abastecer antes de devolver o Mobi na LocarX para cumprir a política 'mesmo nível'. O transfer grátis funciona 24h sob demanda."
+      "O planejamento da descida parando na Praia do Gunga e a ida passando pela Lagoa dos Tambaquis é muito inteligente, pois otimiza o tempo sem desvios cansativos.",
+      "Rodovia BR-101 e BA-099: O percurso entre os três estados tem trechos belíssimos. Lembre-se de sair às 04h00 de Salvador no dia 18 para chegar ao meio-dia em Maceió."
     ]
   },
 
@@ -406,60 +407,60 @@ const ITINERARY_DATABASE: Record<string, TripItineraryConfig> = {
   // 4. Caribe Colombiano - Plano B (Medellín + San Andrés)
   'am_bh_med_san': {
     id: 'am_bh_med_san',
-    title: 'Roteiro - Caribe Colombiano',
-    date: '14 de Janeiro a 27 de Janeiro de 2027',
-    base: 'Base: El Poblado & San Andrés',
-    mode: 'Modo Descoberta e Praia',
-    flagType: 'colombia',
+    title: 'Roteiro - Plano B Detalhado (Salvador, Maceió, Aracaju)',
+    date: '16 de Julho a 23 de Julho de 2026',
+    base: 'Base: Salvador, Maceió & Aracaju',
+    mode: 'Modo Road Trip • Detalhado',
+    flagType: 'bahia_serg_alagoas',
     dias: [
-      { data: '14/01 (Qui)', label: 'Quinta' },
-      { data: '15/01 (Sex)', label: 'Sexta' },
-      { data: '16/01 (Sáb)', label: 'Sábado' },
-      { data: '17/01 (Dom)', label: 'Domingo' },
-      { data: '18/01 (Seg)', label: 'Segunda' },
-      { data: '19/01 (Ter)', label: 'Terça' },
-      { data: '20/01 (Qua)', label: 'Quarta' },
-      { data: '21/01 (Qui)', label: 'Quinta' }
+      { data: '16/07 (Qui)', label: 'Quinta (Salvador)' },
+      { data: '17/07 (Sex)', label: 'Sexta (Salvador)' },
+      { data: '18/07 (Sáb)', label: 'Sábado (Salvador p/ Maceió)' },
+      { data: '19/07 (Dom)', label: 'Domingo (Maceió/Maragogi)' },
+      { data: '20/07 (Seg)', label: 'Segunda (Maceió p/ Aracaju)' },
+      { data: '21/07 (Ter)', label: 'Terça (Aracaju)' },
+      { data: '22/07 (Qua)', label: 'Quarta (Aracaju p/ Salvador)' },
+      { data: '23/07 (Qui)', label: 'Quinta (Retorno ao Rio)' }
     ],
     manha: [
-      { time: "19:10", activity: "Voo para Colômbia", details: "Embarque no GIG rumo a Medellín com conexão.", costType: "pago", costLabel: "💳 Gasto: Passagem já paga" },
-      { time: "09:00", activity: "Chegada em Medellín", details: "Uber para o hotel em El Poblado, câmbio de pesos.", costType: "pago", costLabel: "💳 Gasto: Uber + Pesos" },
-      { time: "08:30", activity: "Piedra del Peñol", details: "Bate-volta a Guatapé. Subir os 740 degraus com vista épica.", costType: "pago", costLabel: "💳 Gasto: Ingresso + Ônibus" },
-      { time: "09:30", activity: "Voo para San Andrés", details: "Embarque no aeroporto de Rionegro (MDE) rumo ao Caribe.", costType: "pago", costLabel: "💳 Passagem interna" },
-      { time: "09:00", activity: "Aluguel de Carrinho", details: "Alugar carrinho de golfe para contornar a ilha inteira.", costType: "pago", costLabel: "💳 Gasto: Aluguel de Carrinho" },
-      { time: "09:00", activity: "Praia Peatonal", details: "Relaxar sob o sol na praia central de águas azuis.", costType: "gratuito", costLabel: "Sem Gastos" },
-      { time: "08:30", activity: "Lancha Johnny Cay", details: "Tour de lancha rápida para a paradisíaca Johnny Cay.", costType: "pago", costLabel: "💳 Gasto: Passeio de Lancha" },
-      { time: "06:00", activity: "Retorno ao Brasil", details: "Uber para o aeroporto e embarque de volta para o Rio.", costType: "pago", costLabel: "💳 Gasto: Uber" }
+      { time: "Manhã", activity: "Chegada em Salvador", details: "Check-in e preparação para o jogo do Bahia.", costType: "gratuito", costLabel: "-" },
+      { time: "Manhã", activity: "Descanso", details: "Recarregar energias para o jogo.", costType: "gratuito", costLabel: "-" },
+      { time: "04:00", activity: "Saída p/ Maceió", details: "Saída de Salvador (BR-101) rumo a Maceió (600km).", costType: "pago", costLabel: "💳 Combustível" },
+      { time: "06:00", activity: "Passeio Maragogi", details: "Saída para Maragogi (pacote agência).", costType: "pago", costLabel: "💳 Incluso no pacote" },
+      { time: "07:00", activity: "Praia do Gunga", details: "Passeio para Praia do Gunga (agência).", costType: "pago", costLabel: "💳 Incluso no pacote" },
+      { time: "Manhã", activity: "Museu da Gente Sergipana", details: "Imersão na cultura sergipana.", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "06:00", activity: "Saída p/ Salvador", details: "Viagem Aracaju rumo Salvador (280km).", costType: "pago", costLabel: "💳 Combustível" },
+      { time: "02:00", activity: "Saída p/ Aeroporto", details: "Uber p/ Aeroporto de Salvador (SSA).", costType: "pago", costLabel: "💳 Uber" }
     ],
     tarde: [
-      { time: "Tarde", activity: "Descanso no RJ", details: "Organizar as últimas malas para os voos da noite.", costType: "gratuito", costLabel: "Sem Gastos" },
-      { time: "14:00", activity: "Comuna 13 Tour", details: "Visita histórica com guia local, grafites e escadas rolantes.", costType: "misto", costLabel: "⚖️ Misto: Gorjeta do Guia" },
-      { time: "14:00", activity: "Guatapé Colorida", details: "Caminhar e tirar fotos nas ruas cheias de zócalos coloridos.", costType: "gratuito", costLabel: "💸 Gratuito" },
-      { time: "14:30", activity: "Mergulho West View", details: "Nadar de snorkel com centenas de peixinhos coloridos.", costType: "pago", costLabel: "💳 Gasto: Entrada" },
-      { time: "14:00", activity: "Praia de San Luis", details: "Almoçar peixe frito com patacones e arroz de coco.", costType: "pago", costLabel: "💳 Gasto: Almoço" },
-      { time: "14:30", activity: "Duty Free Compras", details: "Compras isentas de impostos no centro de San Andrés.", costType: "pago", costLabel: "💳 Gasto: Compras" },
-      { time: "13:00", activity: "Aquário Natural", details: "Caminhar com água na cintura vendo arraias e corais.", costType: "pago", costLabel: "💳 Gasto: Entrada" },
-      { time: "-", activity: "Chegada no Rio", details: "Fim das férias incríveis no Caribe Colombiano.", costType: "gratuito", costLabel: "-" }
+      { time: "Tarde", activity: "Descanso", details: "Descanso em Salvador.", costType: "gratuito", costLabel: "-" },
+      { time: "Tarde", activity: "Preparação p/ Jogo", details: "Foco no jogo do Bahia na Fonte Nova.", costType: "gratuito", costLabel: "-" },
+      { time: "12:00", activity: "Chegada em Maceió", details: "Check-in no apartamento alugado.", costType: "gratuito", costLabel: "-" },
+      { time: "Tarde", activity: "Passeio Catamarã", details: "Piscinas naturais de Maragogi.", costType: "pago", costLabel: "💳 Incluso no pacote" },
+      { time: "15:30", activity: "Saída p/ Aracaju", details: "Viagem Maceió p/ Aracaju (270km).", costType: "pago", costLabel: "💳 Combustível" },
+      { time: "Tarde", activity: "Pontos da Cidade", details: "Mercados Centrais, Orla de Atalaia.", costType: "gratuito", costLabel: "💸 Gratuito" },
+      { time: "13:00", activity: "Chegada Salvador", details: "Almoço Sesc Pelourinho, MUNCAB, Terreiro Casa Branca.", costType: "pago", costLabel: "💳 Almoço" },
+      { time: "-", activity: "Voo de volta", details: "Chegada no Galeão (GIG).", costType: "gratuito", costLabel: "-" }
     ],
     noite: [
-      { time: "21:00", activity: "Em voo internacional", details: "Desfrutar do serviço de bordo em voo noturno.", costType: "gratuito", costLabel: "Sem Gastos" },
-      { time: "19:30", activity: "Jantar em El Poblado", details: "Deliciar-se nos melhores restaurantes da região moderna.", costType: "pago", costLabel: "💳 Gasto: Jantar" },
-      { time: "19:00", activity: "Cozinhar em casa", details: "Retorno de Guatapé, descanso total.", costType: "gratuito", costLabel: "💸 Gratuito" },
-      { time: "19:30", activity: "Pôr do Sol clássico", details: "Ver o sol cair na água em La Piscinita.", costType: "gratuito", costLabel: "💸 Gratuito" },
-      { time: "19:30", activity: "Jantar no Centro", details: "Restaurantes típicos de peixe na orla caribenha.", costType: "pago", costLabel: "💳 Gasto: Alimentação" },
-      { time: "19:00", activity: "Drinks na areia", details: "Aproveitar coquetéis tropicais com música local.", costType: "pago", costLabel: "💳 Gasto: Bebida" },
-      { time: "18:00", activity: "Organizar Malas", details: "Guardar souvenirs colombianos e organizar voo de volta.", costType: "gratuito", costLabel: "Sem Gastos" },
-      { time: "-", activity: "Descanso no RJ", details: "Dormir na própria cama com excelentes memórias.", costType: "gratuito", costLabel: "-" }
+      { time: "Noite", activity: "Descanso / Jogo", details: "Descanso e foco no jogo do Bahia na Fonte Nova.", costType: "pago", costLabel: "💳 Ingressos/Alimentação" },
+      { time: "Noite", activity: "Descanso na Hospedagem", details: "Prioridade para descansar bem antes da longa viagem de amanhã.", costType: "gratuito", costLabel: "Sem Gastos" },
+      { time: "19:00", activity: "Jantar na Orla de Maceió", details: "Jantar relaxante na orla para recuperar as energias da viagem.", costType: "pago", costLabel: "💳 Jantar" },
+      { time: "19:30", activity: "Jantar após Passeio", details: "Jantar na orla após chegar cansado do bate-volta a Maragogi.", costType: "pago", costLabel: "💳 Jantar" },
+      { time: "20:30", activity: "Passarela do Caranguejo", details: "Jantar na Orla de Atalaia, provando a culinária local de Aracaju.", costType: "pago", costLabel: "💳 Alimentação" },
+      { time: "19:00", activity: "Feira do Turista", details: "Comer, ver artesanato e aproveitar o forró tradicional sergipano.", costType: "pago", costLabel: "💳 Gastos Locais" },
+      { time: "19:00", activity: "Organizar Malas", details: "Arrumar tudo e dormir muito cedo para o voo de madrugada.", costType: "gratuito", costLabel: "Sem Gastos" },
+      { time: "-", activity: "Já no Rio", details: "Descansar da viagem.", costType: "gratuito", costLabel: "-" }
     ],
-    culturalTitle: "🌴 Mar de Sete Cores & Ancestralidade",
+    culturalTitle: "🏛️ Imersão Nordestina: Bahia, Alagoas e Sergipe",
     culturalTips: [
-      "Cartão de Turismo Caribenho: San Andrés exige o pagamento de uma taxa obrigatória de turismo (aprox. R$ 170) na conexão aérea colombiana.",
-      "Guatapé e Escadarias: Leve calçado esportivo antiderrapante e beba bastante água para subir o mirante do Peñol."
+      "Museu da Gente Sergipana: Um dos mais interativos do Brasil, imperdível para entender a cultura local.",
+      "Terreiro Casa Branca: Marco sociológico e de resistência, o terreiro de Candomblé mais antigo do Brasil em Salvador."
     ],
-    logisticsTitle: "🚗 Locomoção Local & Segurança",
+    logisticsTitle: "🚗 Logística de Road Trip",
     logisticsTips: [
-      "Carrinhos de Golfe: São a melhor maneira de explorar as praias isoladas. Teste os freios antes de sair da locadora.",
-      "Segurança: El Poblado é uma zona nobre e segura de Medellín, porém evite mexer no celular exposto em ruas escuras."
+      "Longos trechos na BR-101: Saia sempre nos horários recomendados para evitar viajar à noite e garantir que chegará a tempo para passeios ou check-in.",
+      "Otimização de rotas: A descida parando na Praia do Gunga e a subida parando na Lagoa dos Tambaquis evitam desvios desnecessários."
     ]
   },
   'am_rio_san': {
@@ -693,6 +694,14 @@ const GuideList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const [selectedTrip, setSelectedTrip] = useState<any>(null);
   const [viewMode, setViewMode] = useState<'days' | 'full' | 'table'>('days');
   const [activeDayIndex, setActiveDayIndex] = useState(0);
+  const [completedCells, setCompletedCells] = useState<Record<string, boolean>>(() => {
+    try {
+      const saved = localStorage.getItem('viajai_completed_activities');
+      return saved ? JSON.parse(saved) : {};
+    } catch (e) {
+      return {};
+    }
+  });
 
   // Load selected trip from localStorage
   useEffect(() => {
@@ -708,6 +717,38 @@ const GuideList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
 
   // Determine active itinerary configuration based on active trip id
   const activeConfig = selectedTrip ? (ITINERARY_DATABASE[selectedTrip.id] || DEFAULT_ITINERARY) : DEFAULT_ITINERARY;
+
+  const getProgress = () => {
+    let total = 0;
+    let completed = 0;
+    const periods = ['manha', 'tarde', 'noite'] as const;
+    activeConfig.dias.forEach((_, dayIndex) => {
+      periods.forEach(period => {
+        const item = activeConfig[period][dayIndex];
+        if (item && (item.activity || item.details)) {
+          total++;
+          if (completedCells[`${activeConfig.id}_${dayIndex}_${period}`]) {
+            completed++;
+          }
+        }
+      });
+    });
+    return total === 0 ? 0 : Math.round((completed / total) * 100);
+  };
+  const progress = getProgress();
+
+  const toggleCellCompleted = (dayIndex: number, period: 'manha' | 'tarde' | 'noite') => {
+    const slot = activeConfig[period][dayIndex];
+    if (!slot || (!slot.activity && !slot.details)) {
+      return; // Do not complete empty slots
+    }
+    const key = `${activeConfig.id}_${dayIndex}_${period}`;
+    setCompletedCells(prev => {
+      const updated = { ...prev, [key]: !prev[key] };
+      localStorage.setItem('viajai_completed_activities', JSON.stringify(updated));
+      return updated;
+    });
+  };
 
   // Redraw canvas whenever selected trip changes or configuration loads
   useEffect(() => {
@@ -802,7 +843,7 @@ const GuideList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     }
   }, [activeConfig]);
 
-  const renderCardContent = (item: ScheduleCell | undefined) => {
+  const renderCardContent = (item: ScheduleCell | undefined, dayIndex: number, period: 'manha' | 'tarde' | 'noite') => {
     if (!item || (!item.activity && !item.details)) {
       return (
         <div className="flex items-center justify-center h-28 bg-slate-50/50 rounded-xl border border-dashed border-slate-200 text-slate-400 text-xs italic p-4 text-center w-full">
@@ -811,21 +852,56 @@ const GuideList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       );
     }
 
+    const key = `${activeConfig.id}_${dayIndex}_${period}`;
+    const isCompleted = completedCells[key] || false;
+
     return (
-      <div className="flex flex-col flex-1 justify-between gap-4 w-full">
+      <div 
+        className="flex flex-col flex-1 justify-between gap-4 w-full select-none group/item"
+      >
         <div>
-          {item.time && item.time !== "-" && (
-            <span className="font-black text-[11px] text-slate-800 bg-yellow-300 px-2 py-0.5 rounded shadow-sm inline-flex items-center gap-1 mb-2 select-none">
-              ⏱️ {item.time}
-            </span>
-          )}
+          <div className="flex items-center justify-between gap-2 mb-2">
+            {item.time && item.time !== "-" && (
+              <span className={`font-black text-[11px] px-2 py-0.5 rounded shadow-sm inline-flex items-center gap-1 select-none ${
+                period === 'manha' ? 'bg-sky-200 text-sky-900 font-extrabold' :
+                period === 'tarde' ? 'bg-amber-200 text-amber-900 font-extrabold' :
+                'bg-indigo-900/80 text-indigo-100 border border-indigo-700/50 font-extrabold'
+              }`}>
+                ⏱️ {item.time}
+              </span>
+            )}
+            
+            {/* Elegant Check Box Indicator */}
+            <div className={`w-5 h-5 rounded-md flex items-center justify-center border-2 transition-all ${
+              isCompleted 
+                ? 'bg-emerald-500 border-emerald-500 text-white scale-110 shadow-sm' 
+                : period === 'noite'
+                  ? 'border-slate-500 hover:border-emerald-500 text-transparent'
+                  : 'border-slate-300 hover:border-emerald-500 text-transparent'
+            }`}>
+              <svg className="w-3.5 h-3.5 stroke-[3] fill-none stroke-current" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+              </svg>
+            </div>
+          </div>
           
-          <h4 className="font-extrabold text-slate-900 text-sm md:text-base leading-snug mb-2">
+          <h4 className={`font-extrabold text-sm md:text-base leading-snug mb-2 transition-all ${
+            isCompleted 
+              ? 'line-through text-slate-400 dark:text-slate-500 opacity-60' 
+              : period === 'noite' ? 'text-white' : 'text-slate-900'
+          }`}>
             {item.activity}
           </h4>
           
           {item.details && item.details.split('\n').map((line, i) => (
-            <p key={i} className="text-slate-600 text-xs md:text-sm leading-relaxed mb-1.5">
+            <p 
+              key={i} 
+              className={`text-xs md:text-sm leading-relaxed mb-1.5 transition-all ${
+                isCompleted 
+                  ? 'line-through text-slate-400/85 dark:text-slate-500/85 opacity-50' 
+                  : period === 'noite' ? 'text-slate-300' : 'text-slate-600'
+              }`}
+            >
               {line}
             </p>
           ))}
@@ -838,7 +914,14 @@ const GuideList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                   href={link.url} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0038a8] hover:text-blue-700 bg-blue-50/50 hover:bg-blue-50 px-2 py-1.5 rounded-md border border-blue-100 transition-colors"
+                  onClick={(e) => {
+                    e.stopPropagation(); // prevent toggling completion on link click
+                  }}
+                  className={`inline-flex items-center gap-1.5 text-xs font-bold px-2 py-1.5 rounded-md border transition-colors ${
+                    period === 'noite'
+                      ? 'text-sky-300 hover:text-sky-200 bg-sky-950/40 hover:bg-sky-950/80 border-sky-900/50'
+                      : 'text-[#0038a8] hover:text-blue-700 bg-blue-50/50 hover:bg-blue-50 border-blue-100'
+                  }`}
                 >
                   <span className="shrink-0">🔗</span>
                   <span className="underline decoration-blue-200 underline-offset-2">{link.title}</span>
@@ -848,21 +931,30 @@ const GuideList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
           )}
         </div>
         
-        {item.costLabel && item.costLabel !== "-" && (
-          <div className={`inline-block px-2.5 py-1 text-xs font-black rounded-lg border shadow-sm text-center self-start shrink-0 ${
-            item.costType === 'gratuito' ? 'bg-emerald-50 border-emerald-300 text-emerald-800' :
-            item.costType === 'pago' ? 'bg-rose-50 border-rose-300 text-rose-800' :
-            'bg-amber-50 border-amber-300 text-amber-800'
-          }`}>
-            {item.costLabel}
-          </div>
-        )}
+        <div className="flex items-center justify-between gap-2 mt-2">
+          {item.costLabel && item.costLabel !== "-" && (
+            <div className={`inline-block px-2.5 py-1 text-xs font-black rounded-lg border shadow-sm text-center self-start shrink-0 ${
+              isCompleted 
+                ? 'bg-slate-100 border-slate-200 text-slate-400 line-through opacity-50'
+                : item.costType === 'gratuito' ? 'bg-emerald-50 border-emerald-300 text-emerald-800' :
+                  item.costType === 'pago' ? 'bg-rose-50 border-rose-300 text-rose-800' :
+                  'bg-amber-50 border-amber-300 text-amber-800'
+            }`}>
+              {item.costLabel}
+            </div>
+          )}
+          {isCompleted && (
+            <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 select-none">
+              ✓ Concluído
+            </span>
+          )}
+        </div>
       </div>
     );
   };
 
-  const renderCell = (item: ScheduleCell, idx: number) => {
-    if (!item) {
+  const renderCell = (item: ScheduleCell | undefined, idx: number, period: 'manha' | 'tarde' | 'noite') => {
+    if (!item || (!item.activity && !item.details)) {
       return (
         <td key={idx} className="p-4 border-b border-r border-gray-200 bg-gray-50/50 text-gray-400 text-center text-xs italic">
           -
@@ -870,32 +962,86 @@ const GuideList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       );
     }
 
+    const key = `${activeConfig.id}_${idx}_${period}`;
+    const isCompleted = completedCells[key] || false;
+
+    // Table view cells styling based on period & completion
+    let bgClasses = '';
+    if (isCompleted) {
+      bgClasses = 'bg-emerald-50/60 border-emerald-200';
+    } else {
+      switch (period) {
+        case 'manha':
+          bgClasses = 'bg-[#f0f9ff] hover:bg-[#e0f2fe] text-slate-900 border-sky-100';
+          break;
+        case 'tarde':
+          bgClasses = 'bg-[#fffbeb] hover:bg-[#fef3c7] text-slate-900 border-amber-100';
+          break;
+        case 'noite':
+          bgClasses = 'bg-[#0B1528] text-white hover:bg-[#0f203d] border-indigo-950';
+          break;
+      }
+    }
+
     return (
       <td 
         key={idx} 
-        className="p-4 border-b border-r border-gray-200 hover:bg-blue-50/70 transition-colors align-top text-sm group-hover:border-blue-200 min-w-[240px] max-w-[280px]"
+        onClick={() => toggleCellCompleted(idx, period)}
+        className={`p-4 border-b border-r border-gray-200 transition-all align-top text-sm cursor-pointer select-none min-w-[240px] max-w-[280px] hover:shadow-inner ${bgClasses}`}
       >
-        {item.time && item.time !== "-" && (
-          <span className="font-black text-xs text-black bg-yellow-300 px-2 py-0.5 rounded-sm mr-2 shadow-sm inline-block mb-2 select-none">
-            ⏱️ {item.time}
-          </span>
-        )}
+        <div className="flex items-center justify-between gap-2 mb-2">
+          {item.time && item.time !== "-" && (
+            <span className={`font-black text-xs px-2 py-0.5 rounded shadow-sm inline-block select-none ${
+              isCompleted
+                ? 'bg-slate-200 text-slate-500'
+                : period === 'manha' ? 'bg-sky-200 text-sky-900' :
+                  period === 'tarde' ? 'bg-amber-200 text-amber-900' :
+                  'bg-indigo-900/80 text-indigo-100 border border-indigo-700/50'
+            }`}>
+              ⏱️ {item.time}
+            </span>
+          )}
+          
+          {/* Checkbox */}
+          <div className={`w-4 h-4 rounded flex items-center justify-center border transition-all shrink-0 ${
+            isCompleted 
+              ? 'bg-emerald-500 border-emerald-500 text-white' 
+              : period === 'noite' ? 'border-slate-500' : 'border-slate-300'
+          }`}>
+            <svg className="w-3 h-3 stroke-[3] fill-none stroke-current" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+          </div>
+        </div>
         
-        <span className="font-bold text-gray-900 block mb-1 text-sm md:text-base leading-tight">
+        <span className={`font-extrabold block mb-1 text-sm md:text-base leading-tight transition-all ${
+          isCompleted 
+            ? 'line-through text-slate-400 opacity-60' 
+            : period === 'noite' ? 'text-white' : 'text-slate-900'
+        }`}>
           {item.activity}
         </span>
         
         {item.details && item.details.split('\n').map((line, i) => (
-          <span key={i} className="block mb-2 text-gray-700 text-xs md:text-sm leading-relaxed">
+          <span 
+            key={i} 
+            className={`block mb-2 text-xs md:text-sm leading-relaxed transition-all ${
+              isCompleted 
+                ? 'line-through text-slate-400/70 opacity-50' 
+                : period === 'noite' ? 'text-slate-300' : 'text-slate-700'
+            }`}
+          >
             {line}
           </span>
         ))}
         
         {item.costLabel && item.costLabel !== "-" && (
           <div className={`mt-3 inline-block px-2 py-1 text-xs font-black rounded-md border shadow-sm w-full text-center ${
-            item.costType === 'gratuito' ? 'bg-emerald-50 border-emerald-300 text-emerald-800' :
-            item.costType === 'pago' ? 'bg-rose-50 border-rose-300 text-rose-800' :
-            'bg-amber-50 border-amber-300 text-amber-800'
+            isCompleted
+              ? 'bg-slate-100 border-slate-200 text-slate-400'
+              : item.costType === 'gratuito' ? 'bg-emerald-50 border-emerald-300 text-emerald-800' :
+                item.costType === 'pago' ? 'bg-rose-50 border-rose-300 text-rose-800' :
+                'bg-amber-50 border-amber-300 text-amber-800'
           }`}>
             {item.costLabel}
           </div>
@@ -908,17 +1054,18 @@ const GuideList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     <div className="min-h-screen bg-slate-50 py-4 md:py-6 font-sans">
       <div className="max-w-7xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border-2 border-slate-200/80">
         
-        {/* Top Floating Back Button */}
-        <div className="px-6 pt-6 flex items-center justify-between">
-          <button 
-            onClick={onBack}
-            className="flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs uppercase tracking-wider rounded-xl border border-slate-200 shadow-sm transition-all active:scale-95"
-          >
-            <ArrowLeft className="w-4 h-4" /> Voltar ao Painel
-          </button>
-          
-          <div className="flex items-center gap-1.5 px-3 py-1 bg-blue-50 text-[#0038a8] border border-blue-200 rounded-full text-[10px] font-black uppercase tracking-wider">
-            <Sparkles className="w-3.5 h-3.5 text-[#0038a8]" /> Modo Interativo
+        <CategoryHeader title="Roteiro de Viagem" onBack={onBack} id="guias" />
+
+        <div className="px-6 pt-4">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Progresso da Viagem</span>
+            <span className="text-xs font-black text-slate-900">{progress}%</span>
+          </div>
+          <div className="h-2 w-full bg-slate-200 rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-emerald-500 transition-all duration-500" 
+              style={{ width: `${progress}%` }} 
+            />
           </div>
         </div>
 
@@ -997,112 +1144,166 @@ const GuideList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
 
         {/* Content Area Based on View Mode */}
         <div className="p-4 md:p-8 bg-slate-50/50 border-b border-slate-100">
-          {viewMode === 'days' && (
-            <div className="space-y-6">
-              {/* Day Selector Buttons Grid */}
-              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-8 gap-2">
-                {activeConfig.dias.map((dia, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setActiveDayIndex(idx)}
-                    className={`p-3 rounded-xl border-2 text-center transition-all cursor-pointer ${
-                      activeDayIndex === idx
-                        ? 'bg-[#0038a8] border-[#0038a8] text-white shadow-md scale-[1.02]'
-                        : 'bg-white border-slate-200 text-slate-700 hover:border-blue-300 hover:bg-slate-50'
+          {viewMode === 'days' && (() => {
+            const isManhaCompleted = completedCells[`${activeConfig.id}_${activeDayIndex}_manha`] || false;
+            const isTardeCompleted = completedCells[`${activeConfig.id}_${activeDayIndex}_tarde`] || false;
+            const isNoiteCompleted = completedCells[`${activeConfig.id}_${activeDayIndex}_noite`] || false;
+
+            return (
+              <div className="space-y-6">
+                {/* Day Selector Buttons Grid */}
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-8 gap-2">
+                  {activeConfig.dias.map((dia, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setActiveDayIndex(idx)}
+                      className={`p-3 rounded-xl border-2 text-center transition-all cursor-pointer ${
+                        activeDayIndex === idx
+                          ? 'bg-[#0038a8] border-[#0038a8] text-white shadow-md scale-[1.02]'
+                          : 'bg-white border-slate-200 text-slate-700 hover:border-blue-300 hover:bg-slate-50'
+                      }`}
+                    >
+                      <div className="font-extrabold text-sm">{dia.label}</div>
+                      <div className={`text-[11px] font-bold mt-1 ${activeDayIndex === idx ? 'text-white/85' : 'text-slate-400'}`}>
+                        {dia.data}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+
+                {/* Day's Activities Card Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {/* Morning */}
+                  <div 
+                    onClick={() => toggleCellCompleted(activeDayIndex, 'manha')}
+                    className={`rounded-2xl border-2 p-5 shadow-sm transition-all hover:shadow-md duration-300 flex flex-col justify-between min-h-[220px] cursor-pointer ${
+                      isManhaCompleted 
+                        ? 'bg-emerald-50/60 border-emerald-400 ring-2 ring-emerald-500/10' 
+                        : 'bg-[#f0f9ff] border-sky-200/80 hover:border-sky-300'
                     }`}
                   >
-                    <div className="font-extrabold text-sm">{dia.label}</div>
-                    <div className={`text-[11px] font-bold mt-1 ${activeDayIndex === idx ? 'text-white/85' : 'text-slate-400'}`}>
-                      {dia.data}
+                    <div className="flex items-center gap-2 pb-3 mb-4 border-b border-sky-100/40 w-full shrink-0">
+                      <span className="text-2xl" role="img" aria-label="Manhã">☀️</span>
+                      <div>
+                        <h4 className="font-black text-slate-900 text-base uppercase tracking-wider font-extrabold">MANHÃ</h4>
+                        <p className="text-[11px] text-slate-500 font-bold uppercase">Começo do Dia</p>
+                      </div>
                     </div>
-                  </button>
-                ))}
+                    {renderCardContent(activeConfig.manha[activeDayIndex], activeDayIndex, 'manha')}
+                  </div>
+
+                  {/* Afternoon */}
+                  <div 
+                    onClick={() => toggleCellCompleted(activeDayIndex, 'tarde')}
+                    className={`rounded-2xl border-2 p-5 shadow-sm transition-all hover:shadow-md duration-300 flex flex-col justify-between min-h-[220px] cursor-pointer ${
+                      isTardeCompleted 
+                        ? 'bg-emerald-50/60 border-emerald-400 ring-2 ring-emerald-500/10' 
+                        : 'bg-[#fffbeb] border-amber-200/80 hover:border-amber-300'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2 pb-3 mb-4 border-b border-amber-100/40 w-full shrink-0">
+                      <span className="text-2xl" role="img" aria-label="Tarde">🌤️</span>
+                      <div>
+                        <h4 className="font-black text-slate-900 text-base uppercase tracking-wider font-extrabold">TARDE</h4>
+                        <p className="text-[11px] text-slate-500 font-bold uppercase">Meio do Dia</p>
+                      </div>
+                    </div>
+                    {renderCardContent(activeConfig.tarde[activeDayIndex], activeDayIndex, 'tarde')}
+                  </div>
+
+                  {/* Night */}
+                  <div 
+                    onClick={() => toggleCellCompleted(activeDayIndex, 'noite')}
+                    className={`rounded-2xl border-2 p-5 shadow-sm transition-all hover:shadow-md duration-300 flex flex-col justify-between min-h-[220px] cursor-pointer ${
+                      isNoiteCompleted 
+                        ? 'bg-[#0B1528] border-emerald-500 ring-2 ring-emerald-500/30 text-white' 
+                        : 'bg-[#0B1528] border-indigo-950/80 hover:border-indigo-800 text-white'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2 pb-3 mb-4 border-b border-indigo-900/30 w-full shrink-0">
+                      <span className="text-2xl" role="img" aria-label="Noite">🌙</span>
+                      <div>
+                        <h4 className="font-black text-white text-base uppercase tracking-wider font-extrabold">NOITE</h4>
+                        <p className="text-[11px] text-slate-400 font-bold uppercase">Encerramento</p>
+                      </div>
+                    </div>
+                    {renderCardContent(activeConfig.noite[activeDayIndex], activeDayIndex, 'noite')}
+                  </div>
+                </div>
               </div>
-
-              {/* Day's Activities Card Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Morning */}
-                <div className="bg-white rounded-2xl border-2 border-slate-200/60 p-5 shadow-sm hover:border-amber-200 transition-colors flex flex-col justify-between min-h-[220px]">
-                  <div className="flex items-center gap-2 pb-3 mb-4 border-b border-slate-100 w-full shrink-0">
-                    <span className="text-2xl" role="img" aria-label="Manhã">☀️</span>
-                    <div>
-                      <h4 className="font-black text-slate-800 text-base uppercase tracking-wider">Manhã</h4>
-                      <p className="text-[11px] text-slate-400 font-bold uppercase">Começo do Dia</p>
-                    </div>
-                  </div>
-                  {renderCardContent(activeConfig.manha[activeDayIndex])}
-                </div>
-
-                {/* Afternoon */}
-                <div className="bg-white rounded-2xl border-2 border-slate-200/60 p-5 shadow-sm hover:border-orange-200 transition-colors flex flex-col justify-between min-h-[220px]">
-                  <div className="flex items-center gap-2 pb-3 mb-4 border-b border-slate-100 w-full shrink-0">
-                    <span className="text-2xl" role="img" aria-label="Tarde">🌤️</span>
-                    <div>
-                      <h4 className="font-black text-slate-800 text-base uppercase tracking-wider">Tarde</h4>
-                      <p className="text-[11px] text-slate-400 font-bold uppercase">Meio do Dia</p>
-                    </div>
-                  </div>
-                  {renderCardContent(activeConfig.tarde[activeDayIndex])}
-                </div>
-
-                {/* Night */}
-                <div className="bg-white rounded-2xl border-2 border-slate-200/60 p-5 shadow-sm hover:border-indigo-200 transition-colors flex flex-col justify-between min-h-[220px]">
-                  <div className="flex items-center gap-2 pb-3 mb-4 border-b border-slate-100 w-full shrink-0">
-                    <span className="text-2xl" role="img" aria-label="Noite">🌙</span>
-                    <div>
-                      <h4 className="font-black text-slate-800 text-base uppercase tracking-wider">Noite</h4>
-                      <p className="text-[11px] text-slate-400 font-bold uppercase">Encerramento</p>
-                    </div>
-                  </div>
-                  {renderCardContent(activeConfig.noite[activeDayIndex])}
-                </div>
-              </div>
-            </div>
-          )}
+            );
+          })()}
 
           {viewMode === 'full' && (
             <div className="space-y-6">
-              {activeConfig.dias.map((dia, idx) => (
-                <div key={idx} className="bg-white rounded-2xl border-2 border-slate-200/60 overflow-hidden shadow-sm hover:border-blue-300 transition-colors">
-                  <div className="bg-slate-50 px-5 py-4 border-b border-slate-200 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-[#0038a8] text-white flex items-center justify-center font-black text-sm shadow-sm select-none">
-                        {idx + 1}
+              {activeConfig.dias.map((dia, idx) => {
+                const isManhaCompleted = completedCells[`${activeConfig.id}_${idx}_manha`] || false;
+                const isTardeCompleted = completedCells[`${activeConfig.id}_${idx}_tarde`] || false;
+                const isNoiteCompleted = completedCells[`${activeConfig.id}_${idx}_noite`] || false;
+
+                return (
+                  <div key={idx} className="bg-white rounded-2xl border-2 border-slate-200/60 overflow-hidden shadow-sm hover:border-blue-300 transition-colors">
+                    <div className="bg-slate-50 px-5 py-4 border-b border-slate-200 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-[#0038a8] text-white flex items-center justify-center font-black text-sm shadow-sm select-none">
+                          {idx + 1}
+                        </div>
+                        <div>
+                          <h3 className="font-black text-[#0038a8] text-sm md:text-base uppercase tracking-tight">{dia.label}</h3>
+                          <p className="text-[11px] text-slate-400 font-bold uppercase tracking-wide">{dia.data}</p>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="font-black text-[#0038a8] text-sm md:text-base uppercase tracking-tight">{dia.label}</h3>
-                        <p className="text-[11px] text-slate-400 font-bold uppercase tracking-wide">{dia.data}</p>
+                    </div>
+
+                    <div className="p-5 grid grid-cols-1 md:grid-cols-3 gap-5">
+                      {/* Manhã */}
+                      <div 
+                        onClick={() => toggleCellCompleted(idx, 'manha')}
+                        className={`p-4 rounded-xl border flex flex-col justify-between cursor-pointer transition-all hover:shadow ${
+                          isManhaCompleted 
+                            ? 'bg-emerald-50/60 border-emerald-400 ring-2 ring-emerald-500/10' 
+                            : 'bg-[#f0f9ff] border-sky-100 hover:border-sky-200'
+                        }`}
+                      >
+                        <div className="flex items-center gap-1.5 mb-3 text-xs font-black text-slate-900 uppercase tracking-wider font-extrabold">
+                          <span>☀️</span> MANHÃ
+                        </div>
+                        {renderCardContent(activeConfig.manha[idx], idx, 'manha')}
+                      </div>
+
+                      {/* Tarde */}
+                      <div 
+                        onClick={() => toggleCellCompleted(idx, 'tarde')}
+                        className={`p-4 rounded-xl border flex flex-col justify-between cursor-pointer transition-all hover:shadow ${
+                          isTardeCompleted 
+                            ? 'bg-emerald-50/60 border-emerald-400 ring-2 ring-emerald-500/10' 
+                            : 'bg-[#fffbeb] border-amber-100 hover:border-amber-200'
+                        }`}
+                      >
+                        <div className="flex items-center gap-1.5 mb-3 text-xs font-black text-slate-900 uppercase tracking-wider font-extrabold">
+                          <span>🌤️</span> TARDE
+                        </div>
+                        {renderCardContent(activeConfig.tarde[idx], idx, 'tarde')}
+                      </div>
+
+                      {/* Noite */}
+                      <div 
+                        onClick={() => toggleCellCompleted(idx, 'noite')}
+                        className={`p-4 rounded-xl border flex flex-col justify-between cursor-pointer transition-all hover:shadow ${
+                          isNoiteCompleted 
+                            ? 'bg-[#0B1528] border-emerald-500 ring-2 ring-emerald-500/30 text-white' 
+                            : 'bg-[#0B1528] border-indigo-950/80 hover:border-indigo-800 text-white'
+                        }`}
+                      >
+                        <div className="flex items-center gap-1.5 mb-3 text-xs font-black text-white uppercase tracking-wider font-extrabold">
+                          <span>🌙</span> NOITE
+                        </div>
+                        {renderCardContent(activeConfig.noite[idx], idx, 'noite')}
                       </div>
                     </div>
                   </div>
-
-                  <div className="p-5 grid grid-cols-1 md:grid-cols-3 gap-5">
-                    {/* Manhã */}
-                    <div className="p-4 bg-slate-50/50 rounded-xl border border-slate-200/60 flex flex-col justify-between">
-                      <div className="flex items-center gap-1.5 mb-3 text-xs font-black text-slate-500 uppercase tracking-wider">
-                        <span>☀️</span> Manhã
-                      </div>
-                      {renderCardContent(activeConfig.manha[idx])}
-                    </div>
-
-                    {/* Tarde */}
-                    <div className="p-4 bg-slate-50/50 rounded-xl border border-slate-200/60 flex flex-col justify-between">
-                      <div className="flex items-center gap-1.5 mb-3 text-xs font-black text-slate-500 uppercase tracking-wider">
-                        <span>🌤️</span> Tarde
-                      </div>
-                      {renderCardContent(activeConfig.tarde[idx])}
-                    </div>
-
-                    {/* Noite */}
-                    <div className="p-4 bg-slate-50/50 rounded-xl border border-slate-200/60 flex flex-col justify-between">
-                      <div className="flex items-center gap-1.5 mb-3 text-xs font-black text-slate-500 uppercase tracking-wider">
-                        <span>🌙</span> Noite
-                      </div>
-                      {renderCardContent(activeConfig.noite[idx])}
-                    </div>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
 
@@ -1130,30 +1331,30 @@ const GuideList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                     <td className="p-4 bg-slate-100 border-b border-r border-slate-200 font-bold text-slate-800 align-middle text-center sticky left-0 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
                       <div className="flex flex-col items-center justify-center py-2 select-none">
                         <span className="text-2xl mb-1.5" role="img" aria-label="Manhã">☀️</span>
-                        <span className="uppercase tracking-widest text-xs font-black text-slate-500">Manhã</span>
+                        <span className="uppercase tracking-widest text-xs font-black text-slate-900 font-extrabold">MANHÃ</span>
                       </div>
                     </td>
-                    {activeConfig.dias.map((_, idx) => renderCell(activeConfig.manha[idx], idx))}
+                    {activeConfig.dias.map((_, idx) => renderCell(activeConfig.manha[idx], idx, 'manha'))}
                   </tr>
                   
                   <tr className="group">
                     <td className="p-4 bg-slate-100 border-b border-r border-slate-200 font-bold text-slate-800 align-middle text-center sticky left-0 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
                       <div className="flex flex-col items-center justify-center py-2 select-none">
                         <span className="text-2xl mb-1.5" role="img" aria-label="Tarde">🌤️</span>
-                        <span className="uppercase tracking-widest text-xs font-black text-slate-500">Tarde</span>
+                        <span className="uppercase tracking-widest text-xs font-black text-slate-900 font-extrabold">TARDE</span>
                       </div>
                     </td>
-                    {activeConfig.dias.map((_, idx) => renderCell(activeConfig.tarde[idx], idx))}
+                    {activeConfig.dias.map((_, idx) => renderCell(activeConfig.tarde[idx], idx, 'tarde'))}
                   </tr>
 
                   <tr className="group">
                     <td className="p-4 bg-slate-100 border-r border-slate-200 font-bold text-slate-800 align-middle text-center sticky left-0 z-10 rounded-bl-2xl shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
                       <div className="flex flex-col items-center justify-center py-2 select-none">
                         <span className="text-2xl mb-1.5" role="img" aria-label="Noite">🌙</span>
-                        <span className="uppercase tracking-widest text-xs font-black text-slate-500">Noite</span>
+                        <span className="uppercase tracking-widest text-xs font-black text-slate-900 font-extrabold">NOITE</span>
                       </div>
                     </td>
-                    {activeConfig.dias.map((_, idx) => renderCell(activeConfig.noite[idx], idx))}
+                    {activeConfig.dias.map((_, idx) => renderCell(activeConfig.noite[idx], idx, 'noite'))}
                   </tr>
                 </tbody>
               </table>

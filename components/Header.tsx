@@ -171,6 +171,7 @@ const getTripBgImage = (id: string) => {
     'am_foz_ass_ba': '/ba_ass_foz_premium.png',
     'am_rio_foz_ba': '/foz_ba_premium.jpg',
     'am_salvador_julho': '/salvador_aracaju_maceio.jpg',
+    'am_aracaju_planob': '/aracaju_capital_premium.png',
     'am_rio_san': '/colombia_premium.jpg',
     'am_bh_med_san': '/colombia_premium.png'
   };
@@ -392,73 +393,74 @@ const Header: React.FC<HeaderProps> = ({ tripName, lat, lon, onBack, tripId, use
         <img 
           src={getTripBgImage(tripId || '')} 
           alt="Nature Landscape Destination" 
-          className="w-full h-full object-cover opacity-15"
+          referrerPolicy="no-referrer"
+          className="w-full h-full object-cover opacity-40"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0B0F19]/60 to-[#0B0F19]"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0B0F19]/40 to-[#0B0F19]"></div>
       </div>
 
       {/* Main Container */}
       <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center gap-6">
         
         {/* TOP HEADER - USER INFO */}
-        <div className="w-full flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-          {/* Left side */}
-          <div className="flex items-start gap-4">
+        <div className="w-full flex flex-row items-start justify-between gap-4 pb-2 sm:pb-0">
+          {/* Left side with pr-28 on mobile to avoid overlap with floating TopBar widgets */}
+          <div className="flex items-start gap-3 sm:gap-4 flex-1 min-w-0 pr-28 sm:pr-0">
             {onBack && (
               <button
                 onClick={onBack}
-                className="mt-1 p-2.5 bg-white/5 hover:bg-white/10 active:scale-95 text-slate-300 hover:text-white rounded-full border border-white/10 shadow transition-all flex items-center justify-center group pointer-events-auto backdrop-blur-md"
+                className="mt-1 p-2 sm:p-2.5 shrink-0 bg-white/5 hover:bg-white/10 active:scale-95 text-slate-300 hover:text-white rounded-full border border-white/10 shadow transition-all flex items-center justify-center group pointer-events-auto backdrop-blur-md"
                 title="Trocar Viagem"
               >
                 <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
               </button>
             )}
-            <div className="flex flex-col">
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-normal text-white tracking-tight">
-                BEM-VINDO AO SEU PERFIL, <span className="font-bold">{userName || 'ANDRÉ BRITO'}</span>
+            
+            {/* Circular green avatar "A" next to profile headers, always visible */}
+            <div className="mt-1 w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden border border-emerald-500/50 bg-emerald-950 flex items-center justify-center shrink-0">
+              <span className="text-emerald-400 font-bold text-sm sm:text-lg">{userName ? userName.charAt(0).toUpperCase() : 'A'}</span>
+            </div>
+
+            <div className="flex flex-col flex-1 min-w-0">
+              <h1 className="text-lg sm:text-2xl lg:text-3xl font-normal text-white tracking-tight leading-snug">
+                BEM-VINDO AO SEU PERFIL, <br className="sm:hidden" /><span className="font-bold">{userName || 'ANDRÉ BRITO'}</span>
               </h1>
-              <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl">
+              <p className="text-[10px] sm:text-xs md:text-sm text-slate-300 mt-1 max-w-2xl leading-relaxed">
                 Tudo pronto para você explorar o melhor de Salvador, Aracaju e Maceió. Deixe os detalhes com a gente.
               </p>
               
               {/* Progress bar */}
-              <div className="flex items-center gap-1 mt-4">
+              <div className="flex items-center gap-1 mt-3 sm:mt-4">
                 <div className="h-1 w-8 sm:w-12 bg-white rounded-full"></div>
                 <div className="h-1 w-8 sm:w-12 bg-white/20 rounded-full"></div>
                 <div className="h-1 w-8 sm:w-12 bg-white/20 rounded-full"></div>
               </div>
             </div>
           </div>
-          
-          {/* Right side */}
-          <div className="flex items-center gap-3 pointer-events-auto self-start sm:self-auto">
-            <div className="w-10 h-10 rounded-full overflow-hidden border border-emerald-500/50 bg-emerald-950 flex items-center justify-center">
-              <span className="text-emerald-400 font-bold text-lg">{userName ? userName.charAt(0).toUpperCase() : 'A'}</span>
-            </div>
-            <button className="p-2 bg-white/5 hover:bg-white/10 rounded-full border border-white/10 transition-colors">
-              <Bell className="w-4 h-4 text-slate-300" />
-            </button>
-            <button className="p-2 bg-white/5 hover:bg-white/10 rounded-full border border-white/10 transition-colors">
-              <LogOut className="w-4 h-4 text-slate-300" />
-            </button>
-          </div>
+        </div>
+
+        {/* SUBTITULO MOVED HERE FOR MOBILE TO AVOID OVERLAP */}
+        <div className="w-full flex items-center justify-center lg:hidden mt-2">
+           <p className="text-[9px] sm:text-[10px] text-slate-400 font-bold tracking-[0.15em] uppercase text-center px-2">
+             EXECUTIVO : {tripName ? tripName.toUpperCase() : "PLANO 8: FÉRIAS EM SALVADOR"}
+           </p>
         </div>
 
         {/* CONTENEDOR DE WIDGETS LADO A LADO */}
-        <div className="flex flex-col lg:flex-row items-stretch justify-center gap-4 w-full max-w-7xl relative">
+        <div className="flex flex-col lg:flex-row items-stretch justify-center gap-6 lg:gap-4 w-full max-w-7xl relative mt-4 lg:mt-6">
           
           {/* BUDGET ESTIMATOR WIDGET (ABAIXO, À ESQUERDA) */}
-          <div className="w-full lg:w-2/3 bg-slate-950/40 backdrop-blur-md border border-white/10 rounded-3xl p-4 sm:p-5 shadow-2xl flex flex-col justify-between text-white hover:border-emerald-500/30 hover:shadow-[0_20px_50px_rgba(0,0,0,0.4)] transition-all duration-300">
+          <div className="w-full lg:w-2/3 bg-slate-950/40 backdrop-blur-md border border-white/10 rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-2xl flex flex-col justify-between text-white hover:border-emerald-500/30 hover:shadow-[0_20px_50px_rgba(0,0,0,0.4)] transition-all duration-300 relative">
             
             {/* TAG FLUTUANTE (ROTEIRO INTELIGENTE) */}
-            <div className="absolute -top-3 left-1/2 lg:left-1/3 -translate-x-1/2 inline-flex items-center gap-2 px-4 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 backdrop-blur-md shadow-sm z-20">
+            <div className="absolute -top-3 left-1/2 lg:left-1/3 -translate-x-1/2 inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 backdrop-blur-md shadow-sm z-20">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span className="text-[10px] font-black tracking-[0.2em] text-emerald-400 uppercase">ROTEIRO INTELIGENTE</span>
+              <span className="text-[8px] sm:text-[10px] font-black tracking-[0.2em] text-emerald-400 uppercase whitespace-nowrap">ROTEIRO INTELIGENTE</span>
             </div>
             
-            {/* SUBTITULO FLUTUANTE */}
-            <div className="absolute -top-10 left-1/2 lg:left-1/3 -translate-x-1/2 w-max z-20">
-              <p className="text-[10px] sm:text-xs text-slate-300 font-bold tracking-[0.15em] uppercase shadow-sm">
+            {/* SUBTITULO FLUTUANTE - ONLY DESKTOP NOW */}
+            <div className="absolute -top-10 left-1/3 -translate-x-1/2 w-max z-20 hidden lg:block">
+              <p className="text-xs text-slate-300 font-bold tracking-[0.15em] uppercase shadow-sm">
                 EXECUTIVO : {tripName ? tripName.toUpperCase() : "PLANO 8: FÉRIAS EM SALVADOR"}
               </p>
             </div>            
@@ -610,22 +612,48 @@ const Header: React.FC<HeaderProps> = ({ tripName, lat, lon, onBack, tripId, use
             <div className="flex flex-col gap-3.5 flex-1 w-full justify-between">
               
               {/* Header section with Day / Sunset / Night mode switches */}
-              <div className="flex items-center justify-between border-b border-white/10 pb-2.5 shrink-0 gap-2">
-                <div className="flex items-center gap-1.5 min-w-0 flex-1">
-                  <MapPin className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                  <span className="text-sm font-extrabold tracking-wider uppercase truncate text-slate-200">
-                    {locationName}
-                  </span>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-white/10 pb-2.5 shrink-0 gap-2">
+                <div className="flex items-center justify-between w-full sm:w-auto gap-2">
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <MapPin className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                    <span className="text-sm font-extrabold tracking-wider uppercase truncate text-slate-200">
+                      {locationName}
+                    </span>
+                  </div>
+                  {/* Day phase controller for mobile next to location */}
+                  <div className="flex sm:hidden items-center gap-1 bg-white/5 border border-white/10 p-0.5 rounded-xl shrink-0">
+                    <button 
+                      onClick={() => setWeatherPeriod('dia')}
+                      className={`p-1 rounded-lg transition-all ${weatherPeriod === 'dia' ? 'bg-sky-500 text-slate-950 shadow-[0_0_8px_rgba(56,189,248,0.4)]' : 'hover:bg-white/5 text-slate-400'}`}
+                      title="Dia ☀️"
+                    >
+                      <Sun className="w-2.5 h-2.5" />
+                    </button>
+                    <button 
+                      onClick={() => setWeatherPeriod('tarde')}
+                      className={`p-1 rounded-lg transition-all ${weatherPeriod === 'tarde' ? 'bg-amber-500 text-slate-950 shadow-[0_0_8px_rgba(245,158,11,0.4)]' : 'hover:bg-white/5 text-slate-400'}`}
+                      title="Tarde 🌅"
+                    >
+                      <Sunset className="w-2.5 h-2.5" />
+                    </button>
+                    <button 
+                      onClick={() => setWeatherPeriod('noite')}
+                      className={`p-1 rounded-lg transition-all ${weatherPeriod === 'noite' ? 'bg-indigo-500 text-white shadow-[0_0_8px_rgba(99,102,241,0.4)]' : 'hover:bg-white/5 text-slate-400'}`}
+                      title="Noite 🌙"
+                    >
+                      <Moon className="w-2.5 h-2.5" />
+                    </button>
+                  </div>
                 </div>
 
-                {/* Clock: Always showing current date and time */}
-                <div className="flex items-center gap-1.5 text-center font-mono text-[11px] font-black text-emerald-400 bg-emerald-500/10 border border-emerald-500/15 px-2.5 py-1 rounded-xl shrink-0">
+                {/* Clock: Full width on mobile, auto width on desktop */}
+                <div className="flex items-center justify-center gap-1.5 text-center font-mono text-[10px] sm:text-[11px] font-black text-emerald-400 bg-emerald-500/10 border border-emerald-500/15 px-2.5 py-1 rounded-xl w-full sm:w-auto shrink-0">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
                   {currentTime.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }).toUpperCase()} • {currentTime.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                 </div>
 
-                {/* Day phase controller */}
-                <div className="flex items-center gap-1 bg-white/5 border border-white/10 p-0.5 rounded-xl shrink-0">
+                {/* Day phase controller for desktop only */}
+                <div className="hidden sm:flex items-center gap-1 bg-white/5 border border-white/10 p-0.5 rounded-xl shrink-0">
                   <button 
                     onClick={() => setWeatherPeriod('dia')}
                     className={`p-1 rounded-lg transition-all ${weatherPeriod === 'dia' ? 'bg-sky-500 text-slate-950 shadow-[0_0_8px_rgba(56,189,248,0.4)]' : 'hover:bg-white/5 text-slate-400'}`}
