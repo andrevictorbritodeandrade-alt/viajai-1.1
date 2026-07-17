@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Map, Marker } from 'pigeon-maps';
-import { Car, Footprints, MapPin } from 'lucide-react';
+import { Car, Footprints, MapPin, CheckCircle2, Circle } from 'lucide-react';
 
 const routePoints = [
   { id: 1, name: "Estacionamento Praça da Sé", desc: "Deixe o carro aqui", lat: -12.9734, lon: -38.5114, walkToNext: "1 min (50m)", carToNext: "Desnecessário" },
@@ -13,8 +13,35 @@ const routePoints = [
   { id: 8, name: "Terreiro Casa Branca", desc: "Bairro Federação", lat: -13.0041, lon: -38.5066, walkToNext: null, carToNext: null },
 ];
 
+const ROUTE_CHECKS_KEY = 'viajai_pelourinho_checks_v1';
+
 export default function PelourinhoRouteMap() {
   const [activePoint, setActivePoint] = useState<number | null>(null);
+  const [checkedPoints, setCheckedPoints] = useState<number[]>([]);
+
+  useEffect(() => {
+    const saved = localStorage.getItem(ROUTE_CHECKS_KEY);
+    if (saved) {
+      try {
+        setCheckedPoints(JSON.parse(saved));
+      } catch (e) {
+        console.error(e);
+      }
+    } else {
+      // Pré-preencher com Casa do Carnaval (4), Cravinho (5), Museu da Misericórdia (2)
+      const initialChecks = [2, 4, 5];
+      setCheckedPoints(initialChecks);
+      localStorage.setItem(ROUTE_CHECKS_KEY, JSON.stringify(initialChecks));
+    }
+  }, []);
+
+  const toggleCheck = (id: number) => {
+    setCheckedPoints(prev => {
+      const newChecks = prev.includes(id) ? prev.filter(p => p !== id) : [...prev, id];
+      localStorage.setItem(ROUTE_CHECKS_KEY, JSON.stringify(newChecks));
+      return newChecks;
+    });
+  };
 
   return (
     <div className="w-full bg-slate-900 rounded-xl overflow-hidden border border-slate-700 mt-4 mb-2">
@@ -39,7 +66,7 @@ export default function PelourinhoRouteMap() {
                 key={pt.id} 
                 width={35}
                 anchor={[pt.lat, pt.lon]} 
-                color={activePoint === pt.id ? '#00c58e' : '#334155'}
+                color={checkedPoints.includes(pt.id) ? '#10b981' : (activePoint === pt.id ? '#00c58e' : '#334155')}
                 onClick={() => setActivePoint(pt.id)}
               />
             ))}
@@ -60,24 +87,37 @@ export default function PelourinhoRouteMap() {
           <div className="relative border-l-2 border-slate-700 ml-3 py-2 space-y-6">
             {routePoints.map((pt, idx) => {
               const isLast = idx === routePoints.length - 1;
+              const isChecked = checkedPoints.includes(pt.id);
               return (
                 <div 
                   key={pt.id} 
-                  className={`relative pl-6 transition-opacity duration-200 cursor-pointer ${activePoint === pt.id ? 'opacity-100' : 'opacity-70 hover:opacity-100'}`}
+                  className={`relative pl-6 transition-opacity duration-200 cursor-pointer ${activePoint === pt.id ? 'opacity-100' : (isChecked ? 'opacity-50 hover:opacity-80' : 'opacity-80 hover:opacity-100')}`}
                   onMouseEnter={() => setActivePoint(pt.id)}
                   onMouseLeave={() => setActivePoint(null)}
                 >
                   {/* Number Badge (Delivery Style) */}
-                  <div className={`absolute -left-[13px] top-0 w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black border-2 ${activePoint === pt.id || pt.id === 1 ? 'bg-emerald-500 border-slate-900 text-white' : 'bg-slate-800 border-slate-700 text-slate-400'}`}>
-                    {pt.id}
+                  <div className={`absolute -left-[13px] top-0 w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black border-2 ${isChecked ? 'bg-emerald-500 border-emerald-400 text-white' : (activePoint === pt.id || pt.id === 1 ? 'bg-emerald-500 border-slate-900 text-white' : 'bg-slate-800 border-slate-700 text-slate-400')}`}>
+                    {isChecked ? <CheckCircle2 className="w-3.5 h-3.5 text-white" /> : pt.id}
                   </div>
                   
                   <div className="pt-0.5">
-                    <h5 className={`text-xs font-bold ${activePoint === pt.id ? 'text-emerald-400' : 'text-white'}`}>{pt.name}</h5>
-                    <p className="text-[10px] text-slate-400 mb-2">{pt.desc}</p>
+                    <div className="flex items-center gap-2">
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); toggleCheck(pt.id); }}
+                        className="text-slate-400 hover:text-emerald-400 transition-colors focus:outline-none"
+                      >
+                        {isChecked ? (
+                          <CheckCircle2 className="w-4 h-4 text-emerald-500 fill-emerald-500/20" />
+                        ) : (
+                          <Circle className="w-4 h-4" />
+                        )}
+                      </button>
+                      <h5 className={`text-xs font-bold ${activePoint === pt.id ? 'text-emerald-400' : 'text-white'} ${isChecked ? 'line-through opacity-70' : ''}`}>{pt.name}</h5>
+                    </div>
+                    <p className={`text-[10px] text-slate-400 mb-2 mt-0.5 ml-6 ${isChecked ? 'line-through opacity-70' : ''}`}>{pt.desc}</p>
                     
                     {!isLast && pt.walkToNext && (
-                      <div className="flex flex-col gap-1.5 mt-2 mb-1">
+                      <div className="flex flex-col gap-1.5 mt-2 mb-1 ml-6">
                         <div className="flex items-center gap-1.5 bg-emerald-500/10 text-emerald-400 text-[10px] font-bold px-2 py-1 rounded-md w-fit">
                           <Footprints className="w-3 h-3" />
                           Até ponto {pt.id + 1}: {pt.walkToNext}
