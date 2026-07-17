@@ -23,7 +23,9 @@ import {
   CloudLightning,
   Cloud,
   Bell,
-  LogOut
+  LogOut,
+  ChevronUp,
+  ChevronDown
 } from 'lucide-react';
 import { getWeather } from '../services/weatherService';
 
@@ -208,6 +210,7 @@ const Header: React.FC<HeaderProps> = ({ tripName, lat, lon, onBack, tripId, use
   const [includeBus, setIncludeBus] = useState(true);
   const [includeAccommodation, setIncludeAccommodation] = useState(true);
   const [includeUber, setIncludeUber] = useState(true);
+  const [isCostsExpanded, setIsCostsExpanded] = useState(false);
 
   // Set initial period based on actual local hours
   useEffect(() => {
@@ -466,141 +469,160 @@ const Header: React.FC<HeaderProps> = ({ tripName, lat, lon, onBack, tripId, use
             </div>            
             <div className="flex flex-col gap-3 flex-1 w-full justify-between">
               <div>
-                <div className="flex items-center justify-between border-b border-white/10 pb-2">
-                  <div className="flex items-center gap-2">
+                <div 
+                  onClick={() => setIsCostsExpanded(!isCostsExpanded)}
+                  className="flex items-center justify-between border-b border-white/10 pb-2 cursor-pointer select-none group/btn transition-all duration-200"
+                  title={isCostsExpanded ? "Clique para recolher as informações de custos" : "Clique para expandir as informações de custos"}
+                >
+                  <div className="flex flex-wrap items-center gap-2 min-w-0">
                     <Wallet className="w-4 h-4 text-emerald-400" />
-                    <span className="text-sm font-black tracking-wider uppercase text-slate-200">
+                    <span className="text-sm font-black tracking-wider uppercase text-slate-200 group-hover/btn:text-emerald-400 transition-colors">
                       Resumo de Custos
                     </span>
+                    <span className="bg-emerald-500/10 text-emerald-400 text-[8px] sm:text-[9px] px-2 py-0.5 rounded-full font-black flex items-center gap-1 uppercase tracking-wider font-mono">
+                      {isCostsExpanded ? 'RECOLHER' : 'EXPANDIR'}
+                      {isCostsExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                    </span>
+                    
+                    {/* Compact preview when collapsed */}
+                    {!isCostsExpanded && (
+                      <span className="text-[10px] font-black text-[#81E6D9] tracking-wider uppercase font-mono bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full animate-in fade-in duration-200">
+                        R$ {totalEstimated.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} / pess.
+                      </span>
+                    )}
                   </div>
-                  <span className="text-[10px] font-black text-emerald-400 tracking-widest uppercase font-mono bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
+                  <span className="text-[10px] font-black text-emerald-400 tracking-widest uppercase font-mono bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full shrink-0">
                     Tempo Real
                   </span>
                 </div>
 
-                <div className="flex flex-col items-center justify-center py-4 text-center">
-                  <div className="flex flex-col items-center gap-1">
-                    <span className="text-3xl sm:text-4xl font-black text-[#81E6D9] tracking-tight leading-none font-mono">
-                      R$ {totalEstimated.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                    </span>
-                    <span className="text-[10px] font-black uppercase text-emerald-400 tracking-widest leading-none mt-1.5">
-                      VALOR CALCULADO POR PESSOA
-                    </span>
-                  </div>
-
-                  <div className="w-2/3 my-2 border-t border-white/10"></div>
-
-                  <div className="flex flex-col items-center gap-0.5">
-                    <span className="text-2xl sm:text-3xl font-black text-emerald-300 tracking-tight leading-none font-mono">
-                      R$ {totalEstimatedForTwo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                    </span>
-                    <span className="text-[9px] font-black uppercase text-cyan-400 tracking-widest leading-none mt-1">
-                      VALOR TOTAL PARA 2 PESSOAS
-                    </span>
-                  </div>
-                  
-                  <span className="text-[9px] font-black uppercase text-slate-500 tracking-widest leading-none mt-3.5">
-                    TODAS AS TAXAS E DIÁRIAS INCLUÍDAS
-                  </span>
-                </div>
-              </div>
-
-              {/* Interactive Checkbox List in Grid of Equal Sized Cards */}
-              <div className={`grid grid-cols-1 ${costItems.length === 2 ? 'sm:grid-cols-2' : costItems.length >= 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-1'} gap-2.5 mt-2 items-stretch w-full`}>
-                {costItems.map((item) => {
-                  const IconComponent = item.icon;
-                  return (
-                    <div 
-                      key={item.id}
-                      onClick={item.onToggle}
-                      className={`col-span-1 flex flex-col justify-between p-3.5 rounded-2xl border text-left cursor-pointer transition-all duration-300 h-full ${
-                        item.included 
-                          ? 'bg-white/5 border-white/15 text-white hover:bg-white/10 shadow-[0_4px_20px_rgba(0,0,0,0.15)] hover:border-emerald-500/20' 
-                          : 'bg-white/0 border-white/5 text-slate-500 hover:bg-white/5'
-                      }`}
-                    >
-                      {/* Top Header of Card */}
-                      <div className="flex items-center justify-between w-full pb-1.5 border-b border-white/5">
-                        <div className="flex items-center gap-1.5 min-w-0">
-                          <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-all ${
-                            item.included 
-                              ? item.colorTheme === 'emerald' 
-                                ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400' 
-                                : 'bg-cyan-500/10 border border-cyan-500/20 text-cyan-400'
-                              : 'bg-white/5 text-slate-500'
-                          }`}>
-                            <IconComponent className="w-3.5 h-3.5" />
-                          </div>
-                          <span className={`text-[10px] font-black uppercase tracking-wider truncate leading-none ${
-                            item.included ? 'text-slate-100' : 'text-slate-500'
-                          }`}>
-                            {item.title}
-                          </span>
-                        </div>
-                        <div className={`w-3.5 h-3.5 rounded-md border flex items-center justify-center shrink-0 transition-all ${
-                          item.included 
-                            ? 'bg-emerald-500 border-emerald-400 text-slate-950' 
-                            : 'border-white/20'
-                        }`}>
-                          {item.included && <Check className="w-2.5 h-2.5 stroke-[3]" />}
-                        </div>
+                {isCostsExpanded && (
+                  <div className="animate-in fade-in slide-in-from-top-4 duration-300">
+                    <div className="flex flex-col items-center justify-center py-4 text-center">
+                      <div className="flex flex-col items-center gap-1">
+                        <span className="text-3xl sm:text-4xl font-black text-[#81E6D9] tracking-tight leading-none font-mono">
+                          R$ {totalEstimated.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                        </span>
+                        <span className="text-[10px] font-black uppercase text-emerald-400 tracking-widest leading-none mt-1.5">
+                          VALOR CALCULADO POR PESSOA
+                        </span>
                       </div>
 
-                      {/* Content Area */}
-                      <div className="flex-1 pt-2 flex flex-col justify-between gap-2">
-                        {/* Main Price Numbers */}
-                        <div className="space-y-1">
-                          <div className="flex items-baseline justify-between gap-1">
-                            <span className={`text-[13px] sm:text-[14px] font-black font-mono leading-none ${
-                              item.included ? 'text-[#81E6D9]' : 'text-slate-500'
-                            }`}>
-                              R$ {item.valuePerPerson.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                            </span>
-                            <span className="text-[7.5px] font-bold uppercase tracking-wider text-slate-400 opacity-80 shrink-0">
-                              / Pessoa
-                            </span>
-                          </div>
-                          
-                          <div className="flex items-baseline justify-between gap-1 pt-1 border-t border-white/5">
-                            <span className={`text-[11px] sm:text-[12px] font-bold font-mono leading-none ${
-                              item.included ? 'text-emerald-400' : 'text-slate-500'
-                            }`}>
-                              R$ {item.valueTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                            </span>
-                            <span className="text-[7px] font-semibold uppercase tracking-wider text-slate-400 opacity-70 shrink-0">
-                              / 2 Pessoas
-                            </span>
-                          </div>
-                        </div>
+                      <div className="w-2/3 my-2 border-t border-white/10"></div>
 
-                        {/* Detailed Breakdown for Accommodation */}
-                        {item.breakdown && (
-                          <div className="mt-2 pt-1.5 border-t border-white/10 space-y-1 text-[8px] font-mono leading-tight">
-                            {item.breakdown.map((b, i) => (
-                              <div key={i} className="flex flex-col justify-start">
-                                <span className={`${item.included ? 'text-slate-400 font-medium' : 'text-slate-500'} truncate`}>
-                                  {b.label}
-                                </span>
-                                <span className={`font-bold text-right ${item.included ? 'text-slate-200' : 'text-slate-500'}`}>
-                                  R$ {b.value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      <div className="flex flex-col items-center gap-0.5">
+                        <span className="text-2xl sm:text-3xl font-black text-emerald-300 tracking-tight leading-none font-mono">
+                          R$ {totalEstimatedForTwo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                        </span>
+                        <span className="text-[9px] font-black uppercase text-cyan-400 tracking-widest leading-none mt-1">
+                          VALOR TOTAL PARA 2 PESSOAS
+                        </span>
+                      </div>
+                      
+                      <span className="text-[9px] font-black uppercase text-slate-500 tracking-widest leading-none mt-3.5">
+                        TODAS AS TAXAS E DIÁRIAS INCLUÍDAS
+                      </span>
+                    </div>
+
+                    {/* Interactive Checkbox List in Grid of Equal Sized Cards */}
+                    <div className={`grid grid-cols-1 ${costItems.length === 2 ? 'sm:grid-cols-2' : costItems.length >= 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-1'} gap-2.5 mt-2 items-stretch w-full`}>
+                      {costItems.map((item) => {
+                        const IconComponent = item.icon;
+                        return (
+                          <div 
+                            key={item.id}
+                            onClick={item.onToggle}
+                            className={`col-span-1 flex flex-col justify-between p-3.5 rounded-2xl border text-left cursor-pointer transition-all duration-300 h-full ${
+                              item.included 
+                                ? 'bg-white/5 border-white/15 text-white hover:bg-white/10 shadow-[0_4px_20px_rgba(0,0,0,0.15)] hover:border-emerald-500/20' 
+                                : 'bg-white/0 border-white/5 text-slate-500 hover:bg-white/5'
+                            }`}
+                          >
+                            {/* Top Header of Card */}
+                            <div className="flex items-center justify-between w-full pb-1.5 border-b border-white/5">
+                              <div className="flex items-center gap-1.5 min-w-0">
+                                <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-all ${
+                                  item.included 
+                                    ? item.colorTheme === 'emerald' 
+                                      ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400' 
+                                      : 'bg-cyan-500/10 border border-cyan-500/20 text-cyan-400'
+                                    : 'bg-white/5 text-slate-500'
+                                }`}>
+                                  <IconComponent className="w-3.5 h-3.5" />
+                                </div>
+                                <span className={`text-[10px] font-black uppercase tracking-wider truncate leading-none ${
+                                  item.included ? 'text-slate-100' : 'text-slate-500'
+                                }`}>
+                                  {item.title}
                                 </span>
                               </div>
-                            ))}
-                          </div>
-                        )}
+                              <div className={`w-3.5 h-3.5 rounded-md border flex items-center justify-center shrink-0 transition-all ${
+                                item.included 
+                                  ? 'bg-emerald-500 border-emerald-400 text-slate-950' 
+                                  : 'border-white/20'
+                              }`}>
+                                {item.included && <Check className="w-2.5 h-2.5 stroke-[3]" />}
+                              </div>
+                            </div>
 
-                        {/* Simple Description for non-breakdown items */}
-                        {!item.breakdown && (
-                          <p className={`text-[9px] font-medium leading-normal mt-1.5 ${
-                            item.included ? 'text-slate-300' : 'text-slate-500'
-                          }`}>
-                            {item.description}
-                          </p>
-                        )}
-                      </div>
+                            {/* Content Area */}
+                            <div className="flex-1 pt-2 flex flex-col justify-between gap-2">
+                              {/* Main Price Numbers */}
+                              <div className="space-y-1">
+                                <div className="flex items-baseline justify-between gap-1">
+                                  <span className={`text-[13px] sm:text-[14px] font-black font-mono leading-none ${
+                                    item.included ? 'text-[#81E6D9]' : 'text-slate-500'
+                                  }`}>
+                                    R$ {item.valuePerPerson.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                  </span>
+                                  <span className="text-[7.5px] font-bold uppercase tracking-wider text-slate-400 opacity-80 shrink-0">
+                                    / Pessoa
+                                  </span>
+                                </div>
+                                
+                                <div className="flex items-baseline justify-between gap-1 pt-1 border-t border-white/5">
+                                  <span className={`text-[11px] sm:text-[12px] font-bold font-mono leading-none ${
+                                    item.included ? 'text-emerald-400' : 'text-slate-500'
+                                  }`}>
+                                    R$ {item.valueTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                  </span>
+                                  <span className="text-[7px] font-semibold uppercase tracking-wider text-slate-400 opacity-70 shrink-0">
+                                    / 2 Pessoas
+                                  </span>
+                                </div>
+                              </div>
+
+                              {/* Detailed Breakdown for Accommodation */}
+                              {item.breakdown && (
+                                <div className="mt-2 pt-1.5 border-t border-white/10 space-y-1 text-[8px] font-mono leading-tight">
+                                  {item.breakdown.map((b, i) => (
+                                    <div key={i} className="flex flex-col justify-start">
+                                      <span className={`${item.included ? 'text-slate-400 font-medium' : 'text-slate-500'} truncate`}>
+                                        {b.label}
+                                      </span>
+                                      <span className={`font-bold text-right ${item.included ? 'text-slate-200' : 'text-slate-500'}`}>
+                                        R$ {b.value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                      </span>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+
+                              {/* Simple Description for non-breakdown items */}
+                              {!item.breakdown && (
+                                <p className={`text-[9px] font-medium leading-normal mt-1.5 ${
+                                  item.included ? 'text-slate-300' : 'text-slate-500'
+                                }`}>
+                                  {item.description}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
-                  );
-                })}
+                  </div>
+                )}
               </div>
             </div>
 

@@ -120,8 +120,8 @@ const ITINERARY_DATABASE: Record<string, TripItineraryConfig> = {
     ],
     manha: [
       { time: "08:25", activity: "Voo GIG → SSA (Confirmado! 📱)", details: "Decolagem autorizada no Aeroporto do Galeão (GIG) às 08h25 no voo G3 1896. Viagem tranquila com previsão de pouso em Salvador (SSA) às 10h30. Malas prontas para começar a viagem cedo!", costType: "gratuito", costLabel: "Sem Custos Extra" },
-      { time: "09:30", activity: "MAB, Museu Geológico & Casa Branca", details: "Manhã de imersão cultural no Corredor da Vitória e Federação antes do jogo:\n• Museu de Arte da Bahia (MAB): Gratuito (Acervo riquíssimo de artes decorativas, pinturas e mobiliário em lindo casarão histórico)\n• Museu Geológico da Bahia (MGB): Gratuito (Excelente acervo de minerais, pedras preciosas e fósseis de dinossauros)\n• Terreiro Casa Branca (Ilê Axé Iyá Nassô Oká): Gratuito (O templo de candomblé mais antigo e emblemático do Brasil, na Federação, para uma visita externa respeitosa).", costType: "gratuito", costLabel: "Entrada Gratuita" },
-      { time: "04:00", activity: "Saída para Maceió", details: "Saída de Salvador pegando a estrada (BR-101/BA-099) rumo a Alagoas. É uma viagem de aproximadamente 600 km (cerca de 8 horas de duração).", costType: "pago", costLabel: "💳 Gasto: Aluguel Carro + Combustível" },
+      { time: "08:30", activity: "Circuito Histórico Pelourinho & Federação 🏛️", details: "Pela manhã, pegamos o carro alugado para fazer o belíssimo circuito cultural no Centro Histórico e arredores. Tudo no Pelourinho é feito a pé, as atrações são coladas uma na outra!\n• 08h30: Estacionamento subterrâneo da Praça da Sé (Well Park) - Super seguro e prático, logo na entrada do Pelourinho (Estacione o carro aqui uma única vez!)\n• 08h45: Museu da Misericórdia (Aberto! R$ 10) - História e arte sacra primorosas, ao lado do estacionamento.\n• 09h30: Museu da Gastronomia Baiana - Senac (Aberto! Gratuito) - História culinária, baianas e acervos no Largo do Pelourinho.\n• 10h15: Casa do Carnaval da Bahia (Aberto! R$ 20) - Tecnologia, figurinos e cinema interativo, ao lado do Terreiro de Jesus.\n• 10h50: Parada obrigatória no Cravinho (Terreiro de Jesus) e garantir o maravilhoso Pãozinho Delícia na Pãozito (a melhor iguaria baiana!).\n• 11h15: MUNCAB - Museu da Cultura Afro-Brasileira (Aberto! R$ 20) - Acervo e representação afro fundamental (perto da saída da Praça da Sé).\n• 11h50: Pegar o carro na Praça da Sé e passar no Terreiro Casa Branca (Federação) no caminho para o almoço no Imbuí!\n\nSeguiremos em seguida de carro direto para o Imbuí!", costType: "pago", costLabel: "💳 Ingressos: R$ 50 + Estacionamento" },
+      { time: "04:00", activity: "Saída para Maceió", details: "Saída de Salvador pegando a estrada (BR-101/BA-099) rumo a Alagoas. É uma viagem de aproximadamente 600 km (cerca de 8 hours de duração).", costType: "pago", costLabel: "💳 Gasto: Aluguel Carro + Combustível" },
       { time: "06:00", activity: "Saída para Maragogi (Catamarã)", details: "Saída para Maragogi (Passeio fechado com agência). A viagem dura cerca de 2h a 2h30. Aproveitar o pacote já incluso (Transporte + Passeio de Catamarã às piscinas naturais).", costType: "pago", costLabel: "💳 Combo 2 Dias" },
       { time: "07:00", activity: "Praia do Gunga", details: "Saída para a Praia do Gunga (roteiro completo com a agência). A praia fica a cerca de 1 hora de Maceió. O roteiro inclui Parada para Fotos e Mirante.", costType: "pago", costLabel: "Incluso no Combo" },
       { time: "Manhã", activity: "Museu da Gente Sergipana", details: "Visita ao Museu da Gente Sergipana. É um museum interativo espetacular que narra a formação cultural, geográfica e histórica do povo sergipano de forma muito imersiva.", costType: "gratuito", costLabel: "💸 Gratuito" },
@@ -130,14 +130,14 @@ const ITINERARY_DATABASE: Record<string, TripItineraryConfig> = {
       { time: "02:00", activity: "Acordar e Aeroporto (SSA)", details: "02h00: Acordar e solicitar o Uber. Devolução do carro se aplicável.\n02h30-03h00: Chegada ao Aeroporto de Salvador (SSA) para despachar bagagem e raio-x com calma.\n05h50: Decolagem do voo G3 1865 de volta para o Rio de Janeiro.", costType: "pago", costLabel: "💳 Gasto: Uber/Devolução" }
     ],
     tarde: [
-      { time: "10:30", activity: "Chegada, Supermercado & Pelourinho", details: "Pouso em SSA às 10h30 e retirada do carro na LocarX. Check-in no Airbnb Caminho das Árvores. Como o tempo hoje está chuvoso, faremos primeiro as compras de mantimentos em supermercados vizinhos:\n• Pão de Açúcar (no Salvador Shopping, ao lado do Airbnb)\n• Hiperideal Caminho das Árvores (Rua das Espatódeas, a 3 min)\n• Carrefour Iguatemi (a 5 min).\n\nApós o almoço, faremos as visitas aos museus vizinhos e abrigados no Pelourinho:\n• MUNCAB (Museu da Cultura Afro-Brasileira): Pago (R$ 20)\n• Museu da Gastronomia Baiana (Senac): Gratuito\n• Museu da Misericórdia: Pago (R$ 10)\n• Casa do Carnaval da Bahia: Pago (R$ 20).", costType: "pago", costLabel: "💳 Mercado + Ingressos" },
-      { time: "15:30", activity: "Esquadrãozone VIP (Fonte Nova) 🔴🔵", details: "Almoço antecipado e deslocamento para a Arena Fonte Nova. Chegada programada com 4 horas de antecedência (às 15h30) para curtir ao máximo o Camarote Esquadrãozone VIP! Desfrutar de buffet completo, bebidas inclusas, música ao vivo e a melhor vibração pré-jogo do Bahia contra a Chapecoense!", costType: "pago", costLabel: "💳 Camarote VIP" },
+      { time: "10:30", activity: "Ajuste Logístico (Sem Carro) 🛒", details: "Pouso programado em Salvador às 10h30. Devido a imprevistos logísticos, o carro não foi retirado ontem. Fomos de Uber para o Airbnb Caminho das Árvores, fizemos compras básicas no supermercado Pão de Açúcar (no Salvador Shopping, ao lado) e descansamos preparando o fôlego para o resto do roteiro.", costType: "pago", costLabel: "💳 Gasto: Supermercado" },
+      { time: "12:30", activity: "Almoço no Imbuí & Camarote Esquadrãozone 🔴🔵", details: "• 12h30: Chegada de carro no Imbuí para almoço caseiro e aconchegante em família.\n• 14h30: Deslocamento estratégico do Imbuí para a Arena Fonte Nova.\n• 15h30: Entrada na Arena Fonte Nova (com 4 horas de antecedência) para desfrutar da excelente área VIP, buffet completo com comidas típicas, bebidas inclusas, música ao vivo e toda a animação pré-jogo do Bahia contra a Chapecoense!", costType: "pago", costLabel: "💳 Camarote VIP" },
       { time: "12:00", activity: "Chegada em Maceió & Orla", details: "Chegada prevista em Maceió. Realizar o check-in no aconchegante apartamento alugado (Airbnb de Luciano). Tarde: Almoço, visita à orla urbana (Praia da Ponta Verde e Praia de Pajuçara) e passeio pela Feira de Artesanato de Pajuçara. Retorno ao apartamento para descansar da viagem.", costType: "gratuito", costLabel: "Sem Custos" },
       { time: "Tarde", activity: "Maragogi e Retorno", details: "Continuar aproveitando as belezas das piscinas naturais de Maragogi. Fim da tarde: Retorno para Maceió.", costType: "gratuito", costLabel: "-" },
       { time: "15:30", activity: "Fim do Passeio e Viagem p/ Aracaju", details: "Fim do passeio no Gunga e partida imediata rumo a Aracaju. A viagem tem cerca de 270 km e dura em média 4h30.", costType: "pago", costLabel: "💳 Gasto: Combustível" },
       { time: "Tarde", activity: "Passeio pela Cidade", details: "Passeio por outros pontos da cidade de Aracaju (como os Mercados Centrais ou a própria extensão da Orla de Atalaia).", costType: "gratuito", costLabel: "💸 Gratuito" },
       { time: "13:00", activity: "Passeio pelo Carmo ou Humaitá", details: "13h00: Chegada de carro em Salvador vindo de Aracaju. Almoço saboroso e check-in na hospedagem. À tarde, aproveitaremos para passear no charmoso e histórico bairro de Santo Antônio Além do Carmo ou contemplar o inesquecível pôr do sol na Ponta de Humaitá, na Baía de Todos os Santos.", costType: "misto", costLabel: "💳 Gasto: Almoço / Lanches" },
-      { time: "Tarde", activity: "Farol da Barra ou Bonfim", details: "Visita turística ao imponente Farol da Barra com direito a fotos clássicas, ou subida na histórica Colina Sagrada do Bonfim para amarrar as fitinhas e agradecer.", costType: "gratuito", costLabel: "Sem Gastos" },
+      { time: "13:00", activity: "MAB, Museu Geológico & Farol da Barra 🎨", details: "À tarde (quando abrem às 13h00), visitaremos os fantásticos museus no Corredor da Vitória:\n• Museu de Arte da Bahia (MAB): Gratuito. Excelente acervo de artes decorativas, pinturas e mobílias históricas.\n• Museu Geológico da Bahia (MGB): Gratuito. Incrível coleção de minerais, pedras preciosas e fósseis de dinossauros.\n• 16h30: Seguiremos de carro para ver o pôr do sol clássico no Farol da Barra!", costType: "gratuito", costLabel: "Entradas Gratuitas" },
       { time: "-", activity: "Chegada no Rio", details: "Chegada previsto no Aeroporto Galeão (GIG). Retorno seguro à residência no RJ finalizando as férias.", costType: "gratuito", costLabel: "-" }
     ],
     noite: [
@@ -721,6 +721,22 @@ const GuideList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
 
   // Determine active itinerary configuration based on active trip id
   const activeConfig = selectedTrip ? (ITINERARY_DATABASE[selectedTrip.id] || DEFAULT_ITINERARY) : DEFAULT_ITINERARY;
+
+  // Auto-detect and set activeDayIndex based on today's actual date
+  useEffect(() => {
+    if (activeConfig && activeConfig.dias) {
+      const today = new Date();
+      const dayStr = String(today.getDate()).padStart(2, '0');
+      const monthStr = String(today.getMonth() + 1).padStart(2, '0');
+      const targetPrefix = `${dayStr}/${monthStr}`; // e.g., "17/07"
+      
+      const foundIndex = activeConfig.dias.findIndex(d => d.data.startsWith(targetPrefix));
+      if (foundIndex !== -1) {
+        setActiveDayIndex(foundIndex);
+        console.log(`[PWA] Automatically selected today's itinerary index: ${foundIndex} (${targetPrefix})`);
+      }
+    }
+  }, [activeConfig]);
 
   const getProgress = () => {
     let total = 0;
