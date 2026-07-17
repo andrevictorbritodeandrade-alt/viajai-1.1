@@ -1,28 +1,28 @@
 
-const CACHE_NAME = 'checkin-go-v23-premium-backgrounds';
+const CACHE_NAME = 'viajai-v24-pwa';
 // FIX: Caminhos relativos para garantir funcionamento em preview e produção, pré-carregando backgrounds premium para celular/offline
 const CORE_ASSETS = [
-  './',
-  './index.html',
-  './manifest.json',
-  './favicon.svg',
-  './styles.css',
-  './africa_premium.png',
-  './aracaju_capital_premium.png',
-  './ba_ass_foz_premium.png',
-  './colombia_premium.jpg',
-  './colombia_premium.png',
-  './foz_ass_ba_premium.png',
-  './foz_ba_patagonia_premium.png',
-  './foz_ba_premium.jpg',
-  './foz_ba_premium.png',
-  './foz_premium.png',
-  './peru_premium.png',
-  './porto_seguro_premium.png',
-  './salvador_aracaju_maceio.jpg',
-  './salvador_premium.jpg',
-  './sp_ssa_aju_premium.png',
-  './ssa_aju_premium.png'
+  '/',
+  '/index.html',
+  '/manifest.json',
+  '/favicon.svg',
+  '/styles.css',
+  '/africa_premium.png',
+  '/aracaju_capital_premium.png',
+  '/ba_ass_foz_premium.png',
+  '/colombia_premium.jpg',
+  '/colombia_premium.png',
+  '/foz_ass_ba_premium.png',
+  '/foz_ba_patagonia_premium.png',
+  '/foz_ba_premium.jpg',
+  '/foz_ba_premium.png',
+  '/foz_premium.png',
+  '/peru_premium.png',
+  '/porto_seguro_premium.png',
+  '/salvador_aracaju_maceio.jpg',
+  '/salvador_premium.jpg',
+  '/sp_ssa_aju_premium.png',
+  '/ssa_aju_premium.png'
 ];
 
 self.addEventListener('install', (event) => {
@@ -57,7 +57,7 @@ self.addEventListener('fetch', (event) => {
         })
         .catch(() => {
           // Fallback para o cache offline
-          return caches.match('./index.html') || caches.match('/');
+          return caches.match('/index.html') || caches.match('/');
         })
     );
     return;

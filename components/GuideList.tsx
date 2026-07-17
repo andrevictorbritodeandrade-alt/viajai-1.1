@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ArrowLeft, Sparkles, AlertCircle, ShieldCheck, HelpCircle, Calendar, List, Table } from 'lucide-react';
 import { getSessionUser } from '../services/session';
 import CategoryHeader from './CategoryHeader';
+import PelourinhoRouteMap from './PelourinhoRouteMap';
 
 export const GUIDE_STORAGE_KEY = 'viajai_guide_v1';
 
@@ -925,6 +926,10 @@ const GuideList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
               {line}
             </p>
           ))}
+
+          {item.activity.includes('Pelourinho & Federação') && (
+            <PelourinhoRouteMap />
+          )}
 
           {item.links && item.links.length > 0 && (
             <div className="flex flex-col gap-1.5 mt-3">
