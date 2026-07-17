@@ -8,10 +8,9 @@ const UpdatePrompt: React.FC = () => {
 
   useEffect(() => {
     if ('serviceWorker' in navigator) {
-      // Disable Service Worker in development to prevent caching of live code changes
+      // Only disable Service Worker in local development (localhost or 127.0.0.1)
       const isDev = window.location.hostname === 'localhost' || 
-                    window.location.hostname === '127.0.0.1' || 
-                    window.location.hostname.includes('dev');
+                    window.location.hostname === '127.0.0.1';
       if (isDev) {
         console.log("[PWA] Service Worker registration bypassed in development.");
         navigator.serviceWorker.getRegistrations().then((registrations) => {

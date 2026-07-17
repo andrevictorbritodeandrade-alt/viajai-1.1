@@ -412,21 +412,21 @@ const TEMPLATE_ITINERARIES: Record<string, ItineraryData> = {
       { airport: 'AJU', city: 'Aracaju', coords: '10.9841° S, 37.0701° W' }
     ],
     outboundDate: '16 de Julho de 2026',
-    outboundTime: '23:20',
-    returnDate: '23 de Julho de 2026',
+    outboundTime: '08:25',
+    returnDate: '24 de Julho de 2026',
     returnTime: '05:50',
     price: '1.152,53',
     lastResearched: 'Hoje',
     outboundLegs: [
       {
-        flightNumber: 'G3 1898',
+        flightNumber: 'G3 1896 (Adiantado pelo App 📱)',
         airline: 'GOL Linhas Aéreas',
         from: 'GIG',
         fromCity: 'Rio de Janeiro',
         to: 'SSA',
         toCity: 'Salvador',
-        depTime: '23:20',
-        arrTime: '01:25',
+        depTime: '08:25',
+        arrTime: '10:30',
         duration: '2h05m',
         dateInfo: 'Quinta-feira, 16 de Jul de 2026',
         priceInfo: 'R$ 697,00 / px Ida e Volta'
@@ -440,11 +440,11 @@ const TEMPLATE_ITINERARIES: Record<string, ItineraryData> = {
         fromCity: 'Salvador',
         to: 'MCZ',
         toCity: 'Maceió',
-        depTime: '08:00',
-        arrTime: '16:00',
-        duration: '7h53m',
-        dateInfo: 'Sexta-feira, 17 de Jul de 2026',
-        priceInfo: 'Trajeto de carro: 561 km (aprox. 7h 53min). Rodovia Linha Verde (BA-099) e AL-101. Pedágios: R$ 9,80.'
+        depTime: '04:00',
+        arrTime: '12:00',
+        duration: '8h00m',
+        dateInfo: 'Sábado, 18 de Jul de 2026',
+        priceInfo: 'Trajeto de carro: ~600 km (aprox. 8h). Rodovia BR-101/BA-099.'
       },
       {
         flightNumber: 'Carro Alugado (LocarX)',
@@ -453,10 +453,10 @@ const TEMPLATE_ITINERARIES: Record<string, ItineraryData> = {
         fromCity: 'Maceió',
         to: 'AJU',
         toCity: 'Aracaju',
-        depTime: '17:00',
-        arrTime: '21:00',
-        duration: '4h00m',
-        dateInfo: 'Domingo, 19 de Jul de 2026',
+        depTime: '15:30',
+        arrTime: '20:00',
+        duration: '4h30m',
+        dateInfo: 'Segunda-feira, 20 de Jul de 2026',
         priceInfo: 'Deslocamento sul em direção a Sergipe pela AL-101 e SE-100. Aprox. 270 km.'
       },
       {
@@ -466,11 +466,11 @@ const TEMPLATE_ITINERARIES: Record<string, ItineraryData> = {
         fromCity: 'Aracaju',
         to: 'SSA',
         toCity: 'Salvador',
-        depTime: '08:30',
+        depTime: '06:00',
         arrTime: '13:00',
-        duration: '4h30m',
-        dateInfo: 'Terça-feira, 21 de Jul de 2026',
-        priceInfo: 'Retorno para a Bahia pela Rodovia Linha Verde'
+        duration: '7h00m',
+        dateInfo: 'Quarta-feira, 22 de Jul de 2026',
+        priceInfo: 'Retorno para a Bahia com parada na Lagoa dos Tambaquis'
       }
     ],
     inboundLegs: [
@@ -484,7 +484,7 @@ const TEMPLATE_ITINERARIES: Record<string, ItineraryData> = {
         depTime: '05:50',
         arrTime: '07:55',
         duration: '2h05m',
-        dateInfo: 'Quinta-feira, 23 de Jul de 2026',
+        dateInfo: 'Sexta-feira, 24 de Jul de 2026',
         priceInfo: 'Incluso'
       }
     ],
@@ -586,12 +586,12 @@ const getTerrestrialLegDetails = (tripId: string, tab: string) => {
         depTime: '08:00',
         depCode: 'SSA',
         depSub: 'Loja de Aluguel de Carros (LocarX)',
-        depDate: '17 de jul. de 2026',
+        depDate: '18 de jul. de 2026',
         arrLabel: 'CHEGADA MACEIÓ',
         arrTime: '15:53',
         arrCode: 'MCZ',
         arrSub: 'Hospedagem em Maceió (Pontas de Jatiúca)',
-        arrDate: '17 de jul. de 2026',
+        arrDate: '18 de jul. de 2026',
         route: 'BA-099 (Linha Verde) e AL-101 (Via Litoral)',
         distance: '561 km',
         toll: 'R$ 9,80',
@@ -610,12 +610,12 @@ const getTerrestrialLegDetails = (tripId: string, tab: string) => {
         depTime: '17:00',
         depCode: 'MCZ',
         depSub: 'Hospedagem em Maceió (Check-out)',
-        depDate: '19 de jul. de 2026',
+        depDate: '20 de jul. de 2026',
         arrLabel: 'CHEGADA ARACAJU',
         arrTime: '21:00',
         arrCode: 'AJU',
         arrSub: 'Hospedagem em Aracaju (Orla de Atalaia)',
-        arrDate: '19 de jul. de 2026',
+        arrDate: '20 de jul. de 2026',
         route: 'AL-101 e SE-100 (Litoral Sul)',
         distance: '270 km',
         toll: 'Isento',
@@ -634,12 +634,12 @@ const getTerrestrialLegDetails = (tripId: string, tab: string) => {
         depTime: '08:30',
         depCode: 'AJU',
         depSub: 'Hospedagem em Aracaju (Check-out)',
-        depDate: '21 de jul. de 2026',
+        depDate: '22 de jul. de 2026',
         arrLabel: 'DEVOLUÇÃO SALVADOR',
         arrTime: '13:00',
         arrCode: 'SSA',
         arrSub: 'Loja de Aluguel de Carros (LocarX)',
-        arrDate: '21 de jul. de 2026',
+        arrDate: '22 de jul. de 2026',
         route: 'BA-099 (Retorno via Linha Verde)',
         distance: '320 km',
         toll: 'Isento',
@@ -790,7 +790,11 @@ export const ItineraryVisualOverview: React.FC<OverviewProps> = ({ tripId }) => 
     };
 
     setData(updated);
-    localStorage.setItem(`itinerary_custom_${tripId}`, JSON.stringify(updated));
+    try {
+      localStorage.setItem(`itinerary_custom_${tripId}`, JSON.stringify(updated));
+    } catch (e) {
+      console.error("Circular reference in itinerary_custom:", updated);
+    }
     
     // Alerta o evento customizado no topo para manter os preços das viagens em sincronia profunda no dashboard
     window.dispatchEvent(new CustomEvent('trip-price-updated', { detail: { id: tripId, price: editedPrice } }));

@@ -331,7 +331,11 @@ const PackingList: React.FC<{
 
     // Atualiza localmente IMEDIATAMENTE (Optimistic UI)
     setData(newData);
-    localStorage.setItem(tripStorageKey, JSON.stringify(newData));
+    try {
+      localStorage.setItem(tripStorageKey, JSON.stringify(newData));
+    } catch (e) {
+      console.error("Circular reference in packing_list:", newData);
+    }
     // Envia para nuvem em background usando a ID da viagem para isolamento de dados
     syncDataToCloud('packing_list_v5', newData, customDocId);
   };

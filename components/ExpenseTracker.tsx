@@ -38,13 +38,39 @@ const ExpenseTracker: React.FC<{
   const [expenses, setExpenses] = useState<Expense[]>(() => {
     try {
       const saved = localStorage.getItem(EXPENSES_STORAGE_KEY);
+      let list: Expense[] = [];
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed)) {
-          return parsed.filter((e: any) => e.id !== 'initial_stay_mar_hotel' && !e.description.includes('Mar Hotel Rio Vermelho'));
+          list = parsed.filter((e: any) => e.id !== 'initial_stay_mar_hotel' && !e.description.includes('Mar Hotel Rio Vermelho'));
         }
       }
-      return [];
+      // Seed default Uber expenses for the July trip
+      if (trip.id === 'am_salvador_julho') {
+        const hasMarica = list.some((e: Expense) => e.id === 'uber_marica_cachambi' || e.description.includes('Maricá'));
+        if (!hasMarica) {
+          list.push({
+            id: 'uber_marica_cachambi',
+            description: 'Uber: Maricá → Cachambi',
+            amount: 113.52,
+            currency: 'BRL',
+            amountInBRL: 113.52,
+            date: '16/07/2026'
+          });
+        }
+        const hasGIG = list.some((e: Expense) => e.id === 'uber_cachambi_gig' || e.description.includes('GIG'));
+        if (!hasGIG) {
+          list.push({
+            id: 'uber_cachambi_gig',
+            description: 'Uber: Cachambi → Aeroporto GIG',
+            amount: 36.35,
+            currency: 'BRL',
+            amountInBRL: 36.35,
+            date: '16/07/2026'
+          });
+        }
+      }
+      return list;
     } catch { return []; }
   });
 
@@ -69,7 +95,29 @@ const ExpenseTracker: React.FC<{
     // 2. Real-time Cloud Sync for Expenses
     const unsubscribe = subscribeToCloudData('expenses_log', (data) => {
       if (data && Array.isArray(data.list)) {
-        const filtered = data.list.filter((e: any) => e.id !== 'initial_stay_mar_hotel' && !e.description.includes('Mar Hotel Rio Vermelho'));
+        let filtered = data.list.filter((e: any) => e.id !== 'initial_stay_mar_hotel' && !e.description.includes('Mar Hotel Rio Vermelho'));
+        if (trip.id === 'am_salvador_julho') {
+          if (!filtered.some((e: any) => e.id === 'uber_marica_cachambi' || e.description.includes('Maricá'))) {
+            filtered.push({
+              id: 'uber_marica_cachambi',
+              description: 'Uber: Maricá → Cachambi',
+              amount: 113.52,
+              currency: 'BRL',
+              amountInBRL: 113.52,
+              date: '16/07/2026'
+            });
+          }
+          if (!filtered.some((e: any) => e.id === 'uber_cachambi_gig' || e.description.includes('GIG'))) {
+            filtered.push({
+              id: 'uber_cachambi_gig',
+              description: 'Uber: Cachambi → Aeroporto GIG',
+              amount: 36.35,
+              currency: 'BRL',
+              amountInBRL: 36.35,
+              date: '16/07/2026'
+            });
+          }
+        }
         setExpenses(filtered);
         localStorage.setItem(EXPENSES_STORAGE_KEY, JSON.stringify(filtered));
       }

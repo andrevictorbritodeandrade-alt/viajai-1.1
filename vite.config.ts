@@ -6,6 +6,10 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, (process as any).cwd(), '');
   return {
+    server: {
+      port: 3000,
+      host: '0.0.0.0'
+    },
     plugins: [react(), tailwindcss()],
     define: {
       'process.env.API_KEY': JSON.stringify(env.API_KEY || env.REACT_APP_GEMINI_API_KEY || ""),

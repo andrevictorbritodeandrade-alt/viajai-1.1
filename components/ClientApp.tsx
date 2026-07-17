@@ -57,7 +57,11 @@ const ClientApp: React.FC = () => {
 
   const handleSelectTrip = (trip: { id: string, name: string }) => {
     setSelectedTrip(trip);
-    localStorage.setItem('selected_trip', JSON.stringify(trip));
+    try {
+      localStorage.setItem('selected_trip', JSON.stringify(trip));
+    } catch (e) {
+      console.error("Circular reference in selected_trip:", trip);
+    }
   };
 
   const handleResetTrip = () => {

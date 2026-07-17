@@ -348,10 +348,10 @@ const SALVADOR_TRIPS: any[] = [
     ],
     legs: [
       {
-        flightNumber: 'G3 1898',
+        flightNumber: 'G3 1896 (Adiantado pelo App 📱)',
         airline: 'GOL Linhas Aéreas',
-        departure: { code: 'GIG', city: 'Rio de Janeiro, RJ', time: '23:20', date: 'Quinta-feira, 16 de Jul de 2026' },
-        arrival: { code: 'SSA', city: 'Salvador, BA', time: '01:25', date: 'Sexta-feira, 17 de Jul de 2026' },
+        departure: { code: 'GIG', city: 'Rio de Janeiro, RJ', time: '08:25', date: 'Quinta-feira, 16 de Jul de 2026' },
+        arrival: { code: 'SSA', city: 'Salvador, BA', time: '10:30', date: 'Quinta-feira, 16 de Jul de 2026' },
         duration: '2h 05m',
         weatherDeparture: RIO_WEATHER_DEP,
         weatherArrival: SALVADOR_WEATHER_ARR
@@ -378,8 +378,8 @@ const SALVADOR_TRIPS: any[] = [
         flightNumber: 'G3 1865',
         airline: 'GOL Linhas Aéreas',
         checkInTime: '03:50',
-        departure: { code: 'SSA', city: 'Salvador, BA', time: '05:50', date: 'Quinta-feira, 23 de Jul de 2026' },
-        arrival: { code: 'GIG', city: 'Rio de Janeiro, RJ', time: '07:55', date: 'Quinta-feira, 23 de Jul de 2026' },
+        departure: { code: 'SSA', city: 'Salvador, BA', time: '05:50', date: 'Sexta-feira, 24 de Jul de 2026' },
+        arrival: { code: 'GIG', city: 'Rio de Janeiro, RJ', time: '07:55', date: 'Sexta-feira, 24 de Jul de 2026' },
         duration: '2h 05m',
         weatherDeparture: SALVADOR_WEATHER_ARR,
         weatherArrival: RIO_WEATHER_DEP
@@ -666,10 +666,10 @@ const FlightList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       passengers: [{ name: 'André Victor' }, { name: 'Marcelly Bispo' }],
       legs: [
         {
-          flightNumber: 'G3 1898',
+          flightNumber: 'G3 1896 (Adiantado pelo App 📱)',
           airline: 'GOL Linhas Aéreas',
-          departure: { code: 'GIG', city: 'Rio de Janeiro', time: '23:20', date: 'Quinta-feira, 16 de Jul de 2026' },
-          arrival: { code: 'SSA', city: 'Salvador', time: '01:25', date: 'Sexta-feira, 17 de Jul de 2026' },
+          departure: { code: 'GIG', city: 'Rio de Janeiro', time: '08:25', date: 'Quinta-feira, 16 de Jul de 2026' },
+          arrival: { code: 'SSA', city: 'Salvador', time: '10:30', date: 'Quinta-feira, 16 de Jul de 2026' },
           duration: '2h 05m',
           weatherDeparture: RIO_WEATHER_DEP,
           weatherArrival: SALVADOR_WEATHER_ARR
@@ -869,7 +869,7 @@ const FlightList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     
     const legsData = {
       ida: {
-        flight: "G3 1898",
+        flight: "G3 1896",
         aircraft: "BOEING 737 MAX",
         class: "O (Econômica)",
         fromCode: "GIG",
@@ -877,9 +877,9 @@ const FlightList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
         toCode: "SSA",
         toName: "Deputado Luís Eduardo Magalhães - Salvador, BA",
         date: "16 JUL 2026",
-        depTime: "23:20",
-        arrTime: "01:25",
-        boarding: "22:40",
+        depTime: "08:25",
+        arrTime: "10:30",
+        boarding: "07:45",
         gate: "T2 - B22",
         group: "Grupo 3",
         duration: "2h 05m"
@@ -892,7 +892,7 @@ const FlightList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
         fromName: "Deputado Luís Eduardo Magalhães - Salvador, BA",
         toCode: "GIG",
         toName: "Galeão - Rio de Janeiro, RJ (T2)",
-        date: "23 JUL 2026",
+        date: "24 JUL 2026",
         depTime: "05:50",
         arrTime: "07:55",
         boarding: "05:10",
@@ -1255,7 +1255,7 @@ const FlightList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                       onClick={() => setSelectedPassDirection('ida')}
                       className={`flex-1 py-3 text-center font-bold uppercase tracking-wider transition relative ${selectedPassDirection === 'ida' ? 'text-white' : 'text-slate-500 hover:text-slate-300'}`}
                     >
-                      Ida: G3 1898
+                      Ida: G3 1896
                       {selectedPassDirection === 'ida' && <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#FF6600]"></span>}
                     </button>
                     <button

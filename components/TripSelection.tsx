@@ -131,7 +131,7 @@ const ANDRE_MARCELLY_TRIPS: Trip[] = [
   {
     id: 'am_salvador_julho',
     name: 'Plano B: Salvador + Maceió + Aracaju (Carro)',
-    date: '16 a 23 de Julho',
+    date: '16 a 24 de Julho',
     image: '/salvador_aracaju_maceio.jpg',
     lat: -12.9714,
     lon: -38.5014,
@@ -139,7 +139,7 @@ const ANDRE_MARCELLY_TRIPS: Trip[] = [
     isDomestic: true,
     category: 'julho',
     price: 'Carro + Aéreo: R$ 1.152,53',
-    subtitle: 'Salvador, Maceió & Aracaju • 16 a 23 de Julho'
+    subtitle: 'Salvador, Maceió & Aracaju • 16 a 24 de Julho'
   },
   {
     id: 'am_aracaju_planob',

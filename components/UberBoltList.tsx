@@ -36,8 +36,37 @@ const UberBoltList: React.FC<{
   const [rides, setRides] = useState<Ride[]>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) return JSON.parse(saved);
-      return [];
+      let list: Ride[] = saved ? JSON.parse(saved) : [];
+      if (!Array.isArray(list)) list = [];
+      
+      // Seed default rides if empty or missing for July Salvador trip
+      if (tripId === 'am_salvador_julho') {
+        const hasMarica = list.some(r => r.id === 'uber_marica_cachambi' || r.origin === 'Maricá');
+        if (!hasMarica) {
+          list.push({
+            id: 'uber_marica_cachambi',
+            origin: 'Maricá',
+            destination: 'Cachambi',
+            date: '16/07/2026',
+            amount: 113.52,
+            currency: 'BRL',
+            amountInBRL: 113.52
+          });
+        }
+        const hasGIG = list.some(r => r.id === 'uber_cachambi_gig' || r.destination === 'Aeroporto GIG');
+        if (!hasGIG) {
+          list.push({
+            id: 'uber_cachambi_gig',
+            origin: 'Cachambi',
+            destination: 'Aeroporto GIG',
+            date: '16/07/2026',
+            amount: 36.35,
+            currency: 'BRL',
+            amountInBRL: 36.35
+          });
+        }
+      }
+      return list;
     } catch { return []; }
   });
 
@@ -59,8 +88,33 @@ const UberBoltList: React.FC<{
         try {
             const cloudData = await loadDataFromCloud(`rides_log_${tripId}`); 
             if (cloudData && cloudData.list) {
-                setRides(cloudData.list);
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(cloudData.list));
+                let merged = [...cloudData.list];
+                if (tripId === 'am_salvador_julho') {
+                  if (!merged.some(r => r.id === 'uber_marica_cachambi' || r.origin === 'Maricá')) {
+                    merged.push({
+                      id: 'uber_marica_cachambi',
+                      origin: 'Maricá',
+                      destination: 'Cachambi',
+                      date: '16/07/2026',
+                      amount: 113.52,
+                      currency: 'BRL',
+                      amountInBRL: 113.52
+                    });
+                  }
+                  if (!merged.some(r => r.id === 'uber_cachambi_gig' || r.destination === 'Aeroporto GIG')) {
+                    merged.push({
+                      id: 'uber_cachambi_gig',
+                      origin: 'Cachambi',
+                      destination: 'Aeroporto GIG',
+                      date: '16/07/2026',
+                      amount: 36.35,
+                      currency: 'BRL',
+                      amountInBRL: 36.35
+                    });
+                  }
+                }
+                setRides(merged);
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
             }
         } catch (e) { console.error("Background sync failed", e); }
       }

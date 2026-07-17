@@ -44,9 +44,27 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
-  // Estratégia Cache-First para navegação, scripts, estilos e mídias comuns
-  if (event.request.mode === 'navigate' || 
-      url.pathname.endsWith('.js') || 
+  // 1. Estratégia Network-First para navegação (index.html) para garantir atualizações 24/7
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse.ok && url.origin === self.location.origin) {
+            const cacheCopy = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, cacheCopy));
+          }
+          return networkResponse;
+        })
+        .catch(() => {
+          // Fallback para o cache offline
+          return caches.match('./index.html') || caches.match('/');
+        })
+    );
+    return;
+  }
+
+  // 2. Estratégia Cache-First com fallback para rede para scripts, estilos e imagens comuns
+  if (url.pathname.endsWith('.js') || 
       url.pathname.endsWith('.css') || 
       url.pathname.endsWith('.png') ||
       url.pathname.endsWith('.svg') ||
@@ -55,21 +73,14 @@ self.addEventListener('fetch', (event) => {
       url.pathname.endsWith('.webp')) {
     event.respondWith(
       caches.match(event.request).then((cachedResponse) => {
-        // Retorna o cache IMEDIATAMENTE se existir
         if (cachedResponse) return cachedResponse;
 
-        // Se não estiver no cache, tenta a rede e salva apenas se for do mesmo domínio (evita problemas de CORS)
         return fetch(event.request).then((networkResponse) => {
           if (networkResponse.ok && url.origin === self.location.origin) {
             const cacheCopy = networkResponse.clone();
             caches.open(CACHE_NAME).then((cache) => cache.put(event.request, cacheCopy));
           }
           return networkResponse;
-        }).catch(() => {
-           // Fallback para index.html se estiver offline e navegando
-           if (event.request.mode === 'navigate') {
-             return caches.match('./index.html');
-           }
         });
       })
     );
