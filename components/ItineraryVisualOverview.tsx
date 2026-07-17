@@ -911,7 +911,7 @@ export const ItineraryVisualOverview: React.FC<OverviewProps> = ({ tripId }) => 
                 }`}
               >
                 <Plane className="w-3 h-3 sm:w-4 sm:h-4 shrink-0" />
-                <span className="truncate">Voo Ida (16/07)</span>
+                <span className="truncate">Voo Ida ({data.outboundDate.split(' de ')[0]}/{data.outboundDate.split(' de ')[1] === 'Janeiro' ? '01' : '07'})</span>
               </button>
               <button
                 onClick={() => setActiveTimelineTab('car_ssa_mcz')}
@@ -955,7 +955,7 @@ export const ItineraryVisualOverview: React.FC<OverviewProps> = ({ tripId }) => 
                 }`}
               >
                 <Plane className="w-3 h-3 sm:w-4 sm:h-4 rotate-180 shrink-0" />
-                <span className="truncate">Voo Volta (23/07)</span>
+                <span className="truncate">Voo Volta ({data.returnDate.split(' de ')[0]}/{data.returnDate.split(' de ')[1] === 'Janeiro' ? '01' : '07'})</span>
               </button>
             </div>
           ) : (

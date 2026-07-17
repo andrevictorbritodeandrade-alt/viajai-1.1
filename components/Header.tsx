@@ -193,10 +193,10 @@ const Header: React.FC<HeaderProps> = ({ tripName, lat, lon, onBack, tripId, use
   const [selectedLocIdx, setSelectedLocIdx] = useState(0);
 
   const SALVADOR_JULHO_LOCATIONS = [
-    { name: 'Salvador', lat: -12.9714, lon: -38.5014, dateRange: '16 Jul', description: 'Salvador' },
-    { name: 'Maceió', lat: -9.6658, lon: -35.7353, dateRange: '17-19 Jul', description: 'Maceió' },
-    { name: 'Aracaju', lat: -10.9472, lon: -37.0731, dateRange: '19-21 Jul', description: 'Aracaju' },
-    { name: 'Salvador', lat: -12.9714, lon: -38.5014, dateRange: '21-24 Jul', description: 'Salvador (Retorno)' }
+    { name: 'Salvador', lat: -12.9714, lon: -38.5014, dateRange: '16 Jul', description: 'Salvador', dates: ['2026-07-16'] },
+    { name: 'Maceió', lat: -9.6658, lon: -35.7353, dateRange: '17-19 Jul', description: 'Maceió', dates: ['2026-07-17', '2026-07-18', '2026-07-19'] },
+    { name: 'Aracaju', lat: -10.9472, lon: -37.0731, dateRange: '19-21 Jul', description: 'Aracaju', dates: ['2026-07-19', '2026-07-20', '2026-07-21'] },
+    { name: 'Salvador', lat: -12.9714, lon: -38.5014, dateRange: '21-24 Jul', description: 'Salvador (Retorno)', dates: ['2026-07-21', '2026-07-22', '2026-07-23', '2026-07-24'] }
   ];
 
   // Update clock every second
@@ -791,22 +791,25 @@ const Header: React.FC<HeaderProps> = ({ tripName, lat, lon, onBack, tripId, use
                   {/* 7-Day Forecast Grid (Fidedigno e Completo) */}
                   <div className="bg-white/5 border border-white/10 rounded-xl p-2 flex flex-col justify-between hover:border-white/20 transition-all duration-200">
                     <h4 className="text-[10px] font-black tracking-[0.15em] text-cyan-400 uppercase mb-2 border-b border-white/10 pb-1 shrink-0">
-                      PREVISÃO COMPLETA PARA OS PRÓXIMOS 7 DIAS
+                      PROGRAMAÇÃO DA VIAGEM • {SALVADOR_JULHO_LOCATIONS[selectedLocIdx]?.name?.toUpperCase()}
                     </h4>
-                    <div className="grid grid-cols-7 gap-1 flex-1 py-0.5">
-                      {weather.daily?.time?.slice(0, 7).map((time: string, i: number) => {
-                        const dayName = getDayLabel(time);
-                        const code = weather.daily.weatherCode?.[i] ?? 0;
-                        const max = Math.round(weather.daily.tempMax?.[i] ?? weather.temp);
-                        const min = Math.round(weather.daily.tempMin?.[i] ?? weather.temp - 4);
-                        const prob = Math.round(weather.daily.rainProb?.[i] ?? 0);
+                    <div className={`grid gap-1 flex-1 py-0.5 ${SALVADOR_JULHO_LOCATIONS[selectedLocIdx]?.dates?.length === 1 ? 'grid-cols-1' : SALVADOR_JULHO_LOCATIONS[selectedLocIdx]?.dates?.length === 3 ? 'grid-cols-3' : 'grid-cols-4'}`}>
+                      {SALVADOR_JULHO_LOCATIONS[selectedLocIdx]?.dates?.map((targetDate: string) => {
+                        const i = weather.daily?.time?.findIndex((t: string) => t === targetDate);
+                        
+                        const code = i !== undefined && i >= 0 ? (weather.daily.weatherCode?.[i] ?? 0) : 0;
+                        const max = i !== undefined && i >= 0 ? Math.round(weather.daily.tempMax?.[i] ?? weather.temp) : Math.round(weather.temp);
+                        const min = i !== undefined && i >= 0 ? Math.round(weather.daily.tempMin?.[i] ?? weather.temp - 4) : Math.round(weather.temp - 4);
+                        const prob = i !== undefined && i >= 0 ? Math.round(weather.daily.rainProb?.[i] ?? 0) : 0;
                         const details = getWeatherDetails(code);
                         const IconComponent = details.icon;
                         
+                        const dayLabel = `${targetDate.slice(8, 10)} JUL`;
+                        
                         return (
-                          <div key={time} className="flex flex-col items-center justify-between py-1 px-0.5 rounded-lg hover:bg-white/5 transition-colors duration-200">
+                          <div key={targetDate} className="flex flex-col items-center justify-between py-1 px-0.5 rounded-lg hover:bg-white/5 transition-colors duration-200 bg-black/20">
                             <span className="text-[9.5px] text-slate-400 font-bold uppercase leading-none mb-1.5">
-                              {dayName}
+                              {dayLabel}
                             </span>
                             <IconComponent className={`w-4 h-4 ${details.color} mb-1.5`} />
                             <div className="flex flex-col items-center leading-none mb-1">
