@@ -22,7 +22,8 @@ import {
   ShieldCheck,
   Luggage,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Fuel
 } from 'lucide-react';
 
 interface Stop {
@@ -404,7 +405,7 @@ const TEMPLATE_ITINERARIES: Record<string, ItineraryData> = {
   },
   'am_salvador_julho': {
     id: 'am_salvador_julho',
-    tripName: 'Salvador + Maceió + Aracaju (Carro Alugado)',
+    tripName: 'Nordeste em Julho',
     stops: [
       { airport: 'GIG', city: 'Rio de Janeiro', coords: '22.8123° S, 43.2505° W' },
       { airport: 'SSA', city: 'Salvador', coords: '12.9110° S, 38.3314° W' },
@@ -413,7 +414,7 @@ const TEMPLATE_ITINERARIES: Record<string, ItineraryData> = {
     ],
     outboundDate: '16 de Julho de 2026',
     outboundTime: '08:25',
-    returnDate: '24 de Julho de 2026',
+    returnDate: '23 de Julho de 2026',
     returnTime: '05:50',
     price: '1.152,53',
     lastResearched: 'Hoje',
@@ -469,7 +470,7 @@ const TEMPLATE_ITINERARIES: Record<string, ItineraryData> = {
         depTime: '06:00',
         arrTime: '13:00',
         duration: '7h00m',
-        dateInfo: 'Quarta-feira, 22 de Jul de 2026',
+        dateInfo: 'Terça-feira, 21 de Jul de 2026',
         priceInfo: 'Retorno para a Bahia com parada na Lagoa dos Tambaquis'
       }
     ],
@@ -484,7 +485,7 @@ const TEMPLATE_ITINERARIES: Record<string, ItineraryData> = {
         depTime: '05:50',
         arrTime: '07:55',
         duration: '2h05m',
-        dateInfo: 'Sexta-feira, 24 de Jul de 2026',
+        dateInfo: 'Quinta-feira, 23 de Jul de 2026',
         priceInfo: 'Incluso'
       }
     ],
@@ -594,11 +595,10 @@ const getTerrestrialLegDetails = (tripId: string, tab: string) => {
         arrDate: '18 de jul. de 2026',
         route: 'BA-099 (Linha Verde) e AL-101 (Via Litoral)',
         distance: '561 km',
-        toll: 'R$ 9,80',
-        fuelGas: 'R$ 270,30',
-        fuelEtanol: 'R$ 251,89',
-        gasLiters: '39.2L',
-        etanolLiters: '56.1L'
+        toll: 'R$ 14,90',
+        fuelGas: 'R$ 145,00',
+        totalCircuitFuel: 'R$ 290,00',
+        totalCircuitToll: 'R$ 24,30 (R$ 14,90 + R$ 9,40)'
       };
     } else if (tab === 'interno' || tab === 'car_mcz_aju') {
       return {
@@ -619,10 +619,9 @@ const getTerrestrialLegDetails = (tripId: string, tab: string) => {
         route: 'AL-101 e SE-100 (Litoral Sul)',
         distance: '270 km',
         toll: 'Isento',
-        fuelGas: 'R$ 130,09',
-        fuelEtanol: 'R$ 121,23',
-        gasLiters: '18.9L',
-        etanolLiters: '27.0L'
+        fuelGas: 'R$ 70,00',
+        totalCircuitFuel: 'R$ 290,00',
+        totalCircuitToll: 'R$ 24,30 (R$ 14,90 + R$ 9,40)'
       };
     } else if (tab === 'volta' || tab === 'car_aju_ssa') {
       return {
@@ -642,11 +641,10 @@ const getTerrestrialLegDetails = (tripId: string, tab: string) => {
         arrDate: '22 de jul. de 2026',
         route: 'BA-099 (Retorno via Linha Verde)',
         distance: '320 km',
-        toll: 'Isento',
-        fuelGas: 'R$ 154,18',
-        fuelEtanol: 'R$ 143,68',
-        gasLiters: '22.4L',
-        etanolLiters: '32.0L'
+        toll: 'R$ 9,40',
+        fuelGas: 'R$ 75,00',
+        totalCircuitFuel: 'R$ 290,00',
+        totalCircuitToll: 'R$ 24,30 (R$ 14,90 + R$ 9,40)'
       };
     }
     return null;
@@ -714,7 +712,7 @@ export const ItineraryVisualOverview: React.FC<OverviewProps> = ({ tripId }) => 
   const [activeTimelineTab, setActiveTimelineTab] = useState<string>('ida');
 
   const [isTimelineExpanded, setIsTimelineExpanded] = useState(true);
-  const [isMainCardExpanded, setIsMainCardExpanded] = useState(true);
+  const [isMainCardExpanded, setIsMainCardExpanded] = useState(false);
 
   // Flight Editable Fields State
   const [editedPrice, setEditedPrice] = useState('');
@@ -856,8 +854,12 @@ export const ItineraryVisualOverview: React.FC<OverviewProps> = ({ tripId }) => 
           <div className="flex items-center flex-wrap gap-2 text-emerald-600 text-[10px] font-black uppercase tracking-widest mb-1">
             <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
             <span>ROTEIRO ATIVO DEDICADO</span>
-            <span className="bg-emerald-500/10 text-emerald-600 text-[8px] sm:text-[9px] px-2 py-0.5 rounded-full font-black flex items-center gap-1 uppercase tracking-wider font-mono">
-              {isMainCardExpanded ? 'RECOLHER' : 'EXPANDIR'}
+            <span className={`text-[9px] sm:text-[10px] px-2.5 py-1 rounded-full font-black flex items-center gap-1 uppercase tracking-wider font-mono transition-all ${
+              isMainCardExpanded 
+                ? 'bg-slate-100 text-slate-600 hover:bg-slate-200' 
+                : 'bg-emerald-500 text-slate-950 hover:bg-emerald-400 shadow-md shadow-emerald-500/20'
+            }`}>
+              {isMainCardExpanded ? 'RECOLHER ROTEIRO' : 'VER ROTEIRO DETALHADO'}
               {isMainCardExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
             </span>
           </div>
@@ -1218,19 +1220,30 @@ export const ItineraryVisualOverview: React.FC<OverviewProps> = ({ tripId }) => 
                                     <span className="font-extrabold text-[9px] sm:text-xs text-slate-900 block leading-tight">{leg.distance} <span className="text-slate-400 font-normal">|</span> {leg.toll}</span>
                                   </div>
                                   <div className="border-l border-slate-200 pl-2 sm:pl-4 col-span-1">
-                                    <span className="text-[8px] sm:text-[9px] font-black text-slate-500 uppercase tracking-widest block font-mono mb-1">COMBUSTÍVEL</span>
-                                    <div className="flex flex-col gap-1">
-                                      <div className="bg-sky-500/5 border border-sky-500/10 rounded px-1 sm:px-1.5 py-0.5 flex items-center justify-between gap-1">
-                                        <span className="text-[7px] sm:text-[8px] font-bold text-slate-500 font-mono">GAS:</span>
-                                        <strong className="text-sky-600 text-[8px] sm:text-[10px] font-black">{leg.fuelGas}</strong>
-                                      </div>
-                                      <div className="bg-emerald-500/5 border border-emerald-500/10 rounded px-1 sm:px-1.5 py-0.5 flex items-center justify-between gap-1">
-                                        <span className="text-[7px] sm:text-[8px] font-bold text-slate-500 font-mono">ETA:</span>
-                                        <strong className="text-emerald-600 text-[8px] sm:text-[10px] font-black">{leg.fuelEtanol}</strong>
-                                      </div>
+                                    <span className="text-[8px] sm:text-[9px] font-black text-slate-500 uppercase tracking-widest block font-mono mb-1">COMBUSTÍVEL TRECHO</span>
+                                    <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg px-2 py-1 flex items-center justify-between gap-1">
+                                      <span className="text-[8px] font-bold text-emerald-800 font-mono">ESTIMADO:</span>
+                                      <strong className="text-emerald-700 text-[10px] sm:text-xs font-black">{leg.fuelGas}</strong>
                                     </div>
                                   </div>
                                 </div>
+
+                                {leg.totalCircuitFuel && (
+                                  <div className="mt-2.5 pt-2 border-t border-slate-200 flex flex-wrap items-center justify-between gap-2 text-[10px]">
+                                    <span className="text-slate-600 font-bold flex items-center gap-1">
+                                      <Fuel className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                                      <span>GASTO REAL DO CIRCUITO (SSA ➔ MCZ ➔ AJU ➔ SSA):</span>
+                                    </span>
+                                    <div className="flex items-center gap-2 font-mono font-black">
+                                      <span className="bg-emerald-600 text-white px-2 py-0.5 rounded-full">
+                                        Combustível: {leg.totalCircuitFuel}
+                                      </span>
+                                      <span className="bg-amber-500 text-slate-950 px-2 py-0.5 rounded-full">
+                                        Pedágios: {leg.totalCircuitToll}
+                                      </span>
+                                    </div>
+                                  </div>
+                                )}
                               </div>
 
                             </div>

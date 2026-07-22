@@ -381,7 +381,7 @@ const SALVADOR_ARACAJU_ACCOMMODATION_DATA = [
     ]
   },
   {
-    region: 'Salvador — Retorno (21 a 24 de Julho de 2026 — 3 noites)',
+    region: 'Salvador — Retorno (21 a 23 de Julho de 2026 — 2 noites / Voo 05h50)',
     options: [
       {
         id: 'ssa_aju_airbnb_ssa_retorno',
@@ -391,9 +391,9 @@ const SALVADOR_ARACAJU_ACCOMMODATION_DATA = [
         rating: 4.91,
         pricePerDay: 185.71,
         totalPrice: 557.13,
-        totalDays: 3,
+        totalDays: 2,
         proximity: 'Ao lado do Salvador Shopping. Excelente localização central e segura para explorar a cidade.',
-        description: 'Oferecido por Lilia. Código de confirmação: HMT3Q9TBYB. Check-in 21/07, Checkout 24/07. Apartamento acolhedor e confortável, perfeito para relaxar, preparar as malas até o horário do voo de volta ao Rio de Janeiro. Preço total: R$ 557,13.',
+        description: 'Oferecido por Lilia. Código de confirmação: HMT3Q9TBYB. Check-in 21/07, Checkout 23/07 (Madrugada do voo). Apartamento acolhedor e confortável, perfeito para relaxar, preparar as malas até o horário do voo de volta ao Rio de Janeiro às 05h50.',
         amenities: ['Oferecido por Lilia', 'Conf: HMT3Q9TBYB', 'Garagem Coberta', 'Ar-condicionado', 'Wi-Fi Fibra', 'Cozinha equipada', 'Check-out fácil'],
         image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=500&auto=format&fit=crop',
         url: 'https://www.airbnb.com.br/s/Salvador--Bahia'

@@ -378,8 +378,8 @@ const SALVADOR_TRIPS: any[] = [
         flightNumber: 'G3 1865',
         airline: 'GOL Linhas Aéreas',
         checkInTime: '03:50',
-        departure: { code: 'SSA', city: 'Salvador, BA', time: '05:50', date: 'Sexta-feira, 24 de Jul de 2026' },
-        arrival: { code: 'GIG', city: 'Rio de Janeiro, RJ', time: '07:55', date: 'Sexta-feira, 24 de Jul de 2026' },
+        departure: { code: 'SSA', city: 'Salvador, BA', time: '05:50', date: 'Quinta-feira, 23 de Jul de 2026' },
+        arrival: { code: 'GIG', city: 'Rio de Janeiro, RJ', time: '07:55', date: 'Quinta-feira, 23 de Jul de 2026' },
         duration: '2h 05m',
         weatherDeparture: SALVADOR_WEATHER_ARR,
         weatherArrival: RIO_WEATHER_DEP

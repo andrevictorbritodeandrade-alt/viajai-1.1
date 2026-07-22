@@ -79,59 +79,10 @@ const enrichTripData = (trip: any): Trip => {
 };
 
 const ANDRE_MARCELLY_TRIPS: Trip[] = [
-  // --- OPÇÕES JANEIRO 2027 ---
-  {
-    id: 'am_foz_ass_ba',
-    name: 'Plano A: Buenos Aires + Assunção + Foz do Iguaçu',
-    date: 'Janeiro de 2027',
-    image: '/ba_ass_foz_premium.png',
-    lat: -25.2637,
-    lon: -57.5759,
-    userId: 'shared_andre_marcelly',
-    isDomestic: false,
-    category: 'janeiro2027',
-    price: 'Aéreo/Bus: R$ 1.649 / px'
-  },
-  {
-    id: 'am_bh_med_san',
-    name: 'Plano B: Caribe Colombiano (Medellín + San Andrés)',
-    date: 'Janeiro de 2027',
-    image: '/colombia_premium.png',
-    lat: 6.2442,
-    lon: -75.5812,
-    userId: 'shared_andre_marcelly',
-    isDomestic: false,
-    category: 'janeiro2027',
-    price: 'Aéreo: R$ 3.701 / px'
-  },
-  {
-    id: 'am_rio_san',
-    name: 'Plano C: GIG ⇄ San Andrés (Mais Barato)',
-    date: 'Janeiro de 2027',
-    image: '/colombia_premium.jpg',
-    lat: 12.5847,
-    lon: -81.7006,
-    userId: 'shared_andre_marcelly',
-    isDomestic: false,
-    category: 'janeiro2027',
-    price: 'Aéreo: R$ 2.450 / px'
-  },
-  {
-    id: 'am_rio_foz_ba',
-    name: 'Plano D: Rio ⇄ Foz + Buenos Aires',
-    date: 'Dezembro a Janeiro',
-    image: '/foz_ba_premium.jpg',
-    lat: -25.5977,
-    lon: -58.3816,
-    userId: 'shared_andre_marcelly',
-    isDomestic: false,
-    category: 'janeiro2027',
-    price: 'Aéreo: R$ 1.427 / px'
-  },
   {
     id: 'am_salvador_julho',
-    name: 'Plano B: Salvador + Maceió + Aracaju (Carro)',
-    date: '16 a 24 de Julho',
+    name: 'Nordeste em Julho',
+    date: '16 a 23 de Julho',
     image: '/salvador_aracaju_maceio.jpg',
     lat: -12.9714,
     lon: -38.5014,
@@ -139,20 +90,7 @@ const ANDRE_MARCELLY_TRIPS: Trip[] = [
     isDomestic: true,
     category: 'julho',
     price: 'Carro + Aéreo: R$ 1.152,53',
-    subtitle: 'Salvador, Maceió & Aracaju • 16 a 24 de Julho'
-  },
-  {
-    id: 'am_aracaju_planob',
-    name: 'Plano A (Novo): Aracaju Cultural, Forró & Econômico (Foco na Capital)',
-    date: '16 a 23 de Julho de 2026',
-    image: '/aracaju_capital_premium.png',
-    lat: -10.9472,
-    lon: -37.0731,
-    userId: 'shared_andre_marcelly',
-    isDomestic: true,
-    category: 'julho',
-    price: 'Passagem Econômica • Atrações Gratuitas',
-    subtitle: 'Roteiro Cultural em Aracaju • 16 a 23 de Julho'
+    subtitle: 'Salvador, Maceió & Aracaju • 16 a 23 de Julho'
   }
 ];
 

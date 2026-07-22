@@ -103,32 +103,30 @@ const ITINERARY_DATABASE: Record<string, TripItineraryConfig> = {
   // 1. Salvador - Plano E (Férias em Salvador)
   'am_salvador_julho': {
     id: 'am_salvador_julho',
-    title: 'Roteiro Integrado - Salvador + Maceió + Aracaju de Carro',
-    date: '16 de Julho a 24 de Julho de 2026',
+    title: 'Nordeste em Julho',
+    date: '16 de Julho a 23 de Julho de 2026',
     base: 'Bases: Salvador, Maceió & Orla de Atalaia',
     mode: 'Modo Road Trip • Carro Alugado',
     flagType: 'bahia_serg_alagoas',
     dias: [
-      { data: '16/07 (Qui)', label: 'Quinta' },
-      { data: '17/07 (Sex)', label: 'Sexta' },
-      { data: '18/07 (Sáb)', label: 'Sábado' },
-      { data: '19/07 (Dom)', label: 'Domingo' },
-      { data: '20/07 (Seg)', label: 'Segunda' },
-      { data: '21/07 (Ter)', label: 'Terça' },
-      { data: '22/07 (Qua)', label: 'Quarta' },
-      { data: '23/07 (Qui)', label: 'Quinta' },
-      { data: '24/07 (Sex)', label: 'Sexta (Retorno ao Rio)' }
+      { data: '16/07 (Qui)', label: 'Quinta (Chegada SSA)' },
+      { data: '17/07 (Sex)', label: 'Sexta (Pelourinho & Bahia)' },
+      { data: '18/07 (Sáb)', label: 'Sábado (Indo p/ Maceió)' },
+      { data: '19/07 (Dom)', label: 'Domingo (Maragogi)' },
+      { data: '20/07 (Seg)', label: 'Segunda (Maceió ➔ Aracaju)' },
+      { data: '21/07 (Ter)', label: 'Terça (Hoje - Passeios SSA)' },
+      { data: '22/07 (Qua)', label: 'Quarta (Amanhã - ÚLTIMO DIA)' },
+      { data: '23/07 (Qui)', label: 'Quinta (VOO 05h50 ✈️)' }
     ],
     manha: [
       { time: "08:25", activity: "Voo GIG → SSA (Confirmado! 📱)", details: "Decolagem autorizada no Aeroporto do Galeão (GIG) às 08h25 no voo G3 1896. Viagem tranquila com previsão de pouso em Salvador (SSA) às 10h30. Malas prontas para começar a viagem cedo!", costType: "gratuito", costLabel: "Sem Custos Extra" },
       { time: "08:30", activity: "Circuito Histórico Pelourinho & Federação 🏛️", details: "Pela manhã, pegamos o carro alugado para fazer o belíssimo circuito cultural no Centro Histórico e arredores. Tudo no Pelourinho é feito a pé, as atrações são coladas uma na outra!\n• 08h30: Estacionamento subterrâneo da Praça da Sé (Well Park) - Super seguro e prático, logo na entrada do Pelourinho (Estacione o carro aqui uma única vez!)\n• 08h45: Museu da Misericórdia (Aberto! R$ 10) - História e arte sacra primorosas, ao lado do estacionamento.\n• 09h30: Museu da Gastronomia Baiana - Senac (Aberto! Gratuito) - História culinária, baianas e acervos no Largo do Pelourinho.\n• 10h15: Casa do Carnaval da Bahia (Aberto! R$ 20) - Tecnologia, figurinos e cinema interativo, ao lado do Terreiro de Jesus.\n• 10h50: Parada obrigatória no Cravinho (Terreiro de Jesus) e garantir o maravilhoso Pãozinho Delícia na Pãozito (a melhor iguaria baiana!).\n• 11h15: MUNCAB - Museu da Cultura Afro-Brasileira (Aberto! R$ 20) - Acervo e representação afro fundamental (perto da saída da Praça da Sé).\n• 11h45: Casa das Histórias de Salvador (Aberto! R$ 20) - Museu imersivo e tecnológico que resgata a trajetória fascinante da primeira capital do Brasil.\n• 12h30: Pegar o carro na Praça da Sé e passar no Terreiro Casa Branca (Federação) no caminho para o almoço no Imbuí!\n\nSeguiremos em seguida de carro direto para o Imbuí!", costType: "pago", costLabel: "💳 Ingressos: R$ 90 + Estacionamento" },
       { time: "04:00", activity: "Saída para Maceió", details: "Saída de Salvador pegando a estrada (BR-101/BA-099) rumo a Alagoas. É uma viagem de aproximadamente 600 km (cerca de 8 hours de duração).", costType: "pago", costLabel: "💳 Gasto: Aluguel Carro + Combustível" },
       { time: "06:00", activity: "Saída para Maragogi (Catamarã)", details: "Saída para Maragogi (Passeio fechado com agência). A viagem dura cerca de 2h a 2h30. Aproveitar o pacote já incluso (Transporte + Passeio de Catamarã às piscinas naturais).", costType: "pago", costLabel: "💳 Combo 2 Dias" },
-      { time: "07:00", activity: "Praia do Gunga", details: "Saída para a Praia do Gunga (roteiro completo com a agência). A praia fica a cerca de 1 hora de Maceió. O roteiro inclui Parada para Fotos e Mirante.", costType: "pago", costLabel: "Incluso no Combo" },
-      { time: "Manhã", activity: "Museu da Gente Sergipana", details: "Visita ao Museu da Gente Sergipana. É um museum interativo espetacular que narra a formação cultural, geográfica e histórica do povo sergipano de forma muito imersiva.", costType: "gratuito", costLabel: "💸 Gratuito" },
-      { time: "06:00", activity: "Saída de Aracaju & Tambaquis", details: "06h00: Saída de Aracaju pegando a rodovia sentido sul.\n07h00: Parada na Lagoa dos Tambaquis (Estância - SE). Tempo para conhecer, tirar fotos e aproveitar o local.\n09h00: Seguir viagem direto para Salvador (cerca de 280 km, em torno de 4 horas de estrada).", costType: "pago", costLabel: "💳 Entrada R$ 20/px + Combustível" },
-      { time: "Manhã", activity: "Praia de Stella Maris / Itapuã 🏖️", details: "Manhã de sol maravilhosa para curtir as melhores praias de Salvador. Banho de mar delicioso nas piscinas naturais e descanso nas barracas de praia.", costType: "gratuito", costLabel: "Sem Custos Extra" },
-      { time: "02:00", activity: "Acordar e Aeroporto (SSA)", details: "02h00: Acordar e solicitar o Uber. Devolução do carro se aplicável.\n02h30-03h00: Chegada ao Aeroporto de Salvador (SSA) para despachar bagagem e raio-x com calma.\n05h50: Decolagem do voo G3 1865 de volta para o Rio de Janeiro.", costType: "pago", costLabel: "💳 Gasto: Uber/Devolução" }
+      { time: "07:00", activity: "Praia do Gunga", details: "Saída para a Praia do Gunga (roteiro completo com a agência). A praia fica a cerca de 1 hora de Maceió. O roteiro includes Parada para Fotos e Mirante.", costType: "pago", costLabel: "Incluso no Combo" },
+      { time: "12:00", activity: "Saída de Aracaju (12h) 🚗", details: "Manhã tranquila e saída de Aracaju às 12h00 pegando a rodovia em direção a Salvador.", costType: "pago", costLabel: "💳 Combustível + Pedágio" },
+      { time: "09:00", activity: "🏛️ Cidade Baixa, Elevação & Cidade Alta", details: "• 09:00 — Galeria Mercado Modelo (Subsolo): Nova expografia no subsolo desmistificando o mito de prisão de escravizados (era estrutura de sustentação da alfândega), abrigando a série 'Cabeças de Tempo' de Mário Cravo Jr. e esculturas de Rubem Valentim. (Entrada Gratuita às quartas).\n• 10:00 — Casa das Histórias de Salvador: Na Rua da Bélgica (ao lado do Mercado Modelo), oferecendo uma imersão na formação estrutural, arquitetônica e social de Salvador. (Entrada Gratuita às quartas).\n• 11:30 — Elevador Lacerda (R$ 0,15) & Fundação Casa de Jorge Amado: Subida para a Cidade Alta rumo ao Largo do Pelourinho para conferir a exposição temática dedicada a Exu e o acervo de literatura baiana. (Entrada Gratuita às quartas).", costType: "gratuito", costLabel: "💸 100% Gratuito (Quarta Cultural)" },
+      { time: "02:00", activity: "Acordar e Aeroporto (SSA)", details: "02h00: Acordar e solicitar o Uber. Devolução do carro se aplicável na locadora.\n02h30-03h00: Chegada ao Aeroporto de Salvador (SSA) para despachar bagagem e raio-x com calma.\n05h50: Decolagem do voo G3 1865 de volta para o Rio de Janeiro.", costType: "pago", costLabel: "💳 Gasto: Uber/Devolução" }
     ],
     tarde: [
       { time: "10:30", activity: "Ajuste Logístico (Sem Carro) 🛒", details: "Pouso programado em Salvador às 10h30. Devido a imprevistos logísticos, o carro não foi retirado ontem. Fomos de Uber para o Airbnb Caminho das Árvores, fizemos compras básicas no supermercado Pão de Açúcar (no Salvador Shopping, ao lado) e descansamos preparando o fôlego para o resto do roteiro.", costType: "pago", costLabel: "💳 Gasto: Supermercado" },
@@ -136,10 +134,9 @@ const ITINERARY_DATABASE: Record<string, TripItineraryConfig> = {
       { time: "12:00", activity: "Chegada em Maceió & Orla", details: "Chegada prevista em Maceió. Realizar o check-in no aconchegante apartamento alugado (Airbnb de Luciano). Tarde: Almoço, visita à orla urbana (Praia da Ponta Verde e Praia de Pajuçara) e passeio pela Feira de Artesanato de Pajuçara. Retorno ao apartamento para descansar da viagem.", costType: "gratuito", costLabel: "Sem Custos" },
       { time: "Tarde", activity: "Maragogi e Retorno", details: "Continuar aproveitando as belezas das piscinas naturais de Maragogi. Fim da tarde: Retorno para Maceió.", costType: "gratuito", costLabel: "-" },
       { time: "15:30", activity: "Fim do Passeio e Viagem p/ Aracaju", details: "Fim do passeio no Gunga e partida imediata rumo a Aracaju. A viagem tem cerca de 270 km e dura em média 4h30.", costType: "pago", costLabel: "💳 Gasto: Combustível" },
-      { time: "Tarde", activity: "Passeio pela Cidade", details: "Passeio por outros pontos da cidade de Aracaju (como os Mercados Centrais ou a própria extensão da Orla de Atalaia).", costType: "gratuito", costLabel: "💸 Gratuito" },
-      { time: "13:00", activity: "Passeio pelo Carmo ou Humaitá", details: "13h00: Chegada de carro em Salvador vindo de Aracaju. Almoço saboroso e check-in na hospedagem. À tarde, aproveitaremos para passear no charmoso e histórico bairro de Santo Antônio Além do Carmo ou contemplar o inesquecível pôr do sol na Ponta de Humaitá, na Baía de Todos os Santos.", costType: "misto", costLabel: "💳 Gasto: Almoço / Lanches" },
-      { time: "13:00", activity: "MAB, Museu Geológico & Farol da Barra 🎨", details: "À tarde (quando abrem às 13h00), visitaremos os fantásticos museus no Corredor da Vitória:\n• Museu de Arte da Bahia (MAB): Gratuito. Excelente acervo de artes decorativas, pinturas e mobílias históricas.\n• Museu Geológico da Bahia (MGB): Gratuito. Incrível coleção de minerais, pedras preciosas e fósseis de dinossauros.\n• 16h30: Seguiremos de carro para ver o pôr do sol clássico no Farol da Barra!", costType: "gratuito", costLabel: "Entradas Gratuitas" },
-      { time: "-", activity: "Chegada no Rio", details: "Chegada previsto no Aeroporto Galeão (GIG). Retorno seguro à residência no RJ finalizando as férias.", costType: "gratuito", costLabel: "-" }
+      { time: "15:00", activity: "Outlet Premium, Aeroporto (Passagens) & Localiza 🛍️✈️", details: "• Parada no Outlet Premium Salvador na Estrada do Coco para passear e conhecer.\n• Visita ao Aeroporto de Salvador (SSA) para consultar remarcação/ajuste de voos.\n• Passagem na Localiza para tratativas do veículo.", costType: "misto", costLabel: "💳 Compras / Logística" },
+      { time: "13:00", activity: "🏿 Culinária de Resistência, Museologia & Ancestralidade", details: "13:00 — Almoço no Restaurante Zanzibar: No Santo Antônio Além do Carmo (caminhada curta a partir do Pelourinho), com culinária africana tradicional.\n14:30 — MUNCAB (Museu Nacional da Cultura Afro-Brasileira): Na Rua das Vassouras, abordando a diáspora, equidade racial e o enfrentamento ao racismo através da arte. (Ingresso: R$ 20,00 | Entrada permitida até as 16h30).\n15:45 — Ilê Axé Oxumare / Casa de Oxumarê: Passagem pela Av. Vasco da Gama para contemplar a imponência e o peso histórico deste terreiro secular, monumento vivo da resistência negra no Brasil.", costType: "pago", costLabel: "💳 MUNCAB: R$ 20 + Almoço Zanzibar" },
+      { time: "08:15", activity: "Pouso no Rio de Janeiro (GIG) 🛬", details: "Chegada prevista no Aeroporto Galeão (GIG) às 08h15. Retorno seguro à residência no RJ finalizando as férias inesquecíveis no Nordeste!", costType: "gratuito", costLabel: "-" }
     ],
     noite: [
       { time: "Noite", activity: "Jantar no Rio Vermelho 🍷", details: "Noite maravilhosa para celebrar a chegada na Bahia! Desfrutar do clima boêmio e animado do Rio Vermelho, saboreando um delicioso acarajé da Dinha ou da Cira e brindando as férias. Pernoitagem no Airbnb.", costType: "pago", costLabel: "💳 Gasto: Jantar / Acarajé" },
@@ -147,10 +144,9 @@ const ITINERARY_DATABASE: Record<string, TripItineraryConfig> = {
       { time: "19:00", activity: "Jantar na Orla de Maceió", details: "Jantar relaxante na orla de Maceió (Lopana ou Kanoa) para repor as energias da longa viagem de carro.", costType: "pago", costLabel: "💳 Gasto: Jantar" },
       { time: "19:00", activity: "Descanso e Jantar na Orla", details: "Início da noite: Chegar no apartamento e dormir/descansar do passeio intenso de Maragogi. Mais tarde: Sair para jantar na orla.", costType: "pago", costLabel: "💳 Gasto: Jantar" },
       { time: "20:00", activity: "Chegada em AJU & Passarela do Caranguejo", details: "Chegada prevista em Aracaju (20h00). Check-in na hospedagem Premium na Orla de Atalaia. Jantar na famosa Passarela do Caranguejo (excelente local para provar a culinária local).", costType: "pago", costLabel: "💳 Gasto: Jantar de Boas-Vindas" },
-      { time: "19:00", activity: "Feira do Turista", details: "Visita à bela Feira do Turista da Atalaia para comer, ver o artesanato local e aproveitar o forró tradicional sergipano.", costType: "pago", costLabel: "💳 Gasto: Alimentação" },
-      { time: "Noite", activity: "Jantar no Carmo 🍷", details: "Jantar romântico e relaxante no charmoso bairro de Santo Antônio Além do Carmo. Vista belíssima e clima de despedida inesquecível.", costType: "pago", costLabel: "💳 Gasto: Jantar" },
-      { time: "18:00", activity: "Descanso Estratégico", details: "Fim da tarde / Início da Noite: Ir para o local de pernoite, arrumar as malas e dormir cedo para garantir algumas horas de sono antes do voo de madrugada.", costType: "gratuito", costLabel: "Sem Gastos" },
-      { time: "-", activity: "Descanso", details: "Descanso bem merecido em casa no Rio de Janeiro.", costType: "gratuito", costLabel: "-" }
+      { time: "19:00", activity: "Salvador Shopping & Airbnb Caminho das Árvores 🛒🏡", details: "• Passeio e jantar no Salvador Shopping (ao lado do Caminho das Árvores).\n• Chegada e descanso no Airbnb no Caminho das Árvores se preparando para o último dia em Salvador.", costType: "pago", costLabel: "💳 Jantar / Shopping" },
+      { time: "16:45", activity: "🌅 Pôr do Sol na Barra & Preparação Pré-Voo", details: "16:45 — Praia do Farol da Barra: Contemplação do pôr do sol no Farol com água de coco gelada na orla.\n17:30 — Sorveteria da Barra (Edifício Expresso 2222): Alternativa para degustar os sorvetes artesanais de coco verde, cajá ou mangaba.\n19:30 em diante — Retorno ao Caminho das Árvores: Jantar leve, organização das bagagens e descanso estratégico para o voo de madrugada (02h00 ida ao aeroporto / 05h50 do dia 23/07 no Aeroporto de Salvador - SSA).", costType: "misto", costLabel: "⚖️ Sorvete + Coco + Uber" },
+      { time: "-", activity: "Descanso em Casa no Rio 🏠", details: "Descanso bem merecido em casa no Rio de Janeiro e ótimas lembranças da viagem.", costType: "gratuito", costLabel: "-" }
     ],
     culturalTitle: "🏺 Cultura, Mar e Tradições Nordestinas",
     culturalTips: [
@@ -700,11 +696,33 @@ const GuideList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const [viewMode, setViewMode] = useState<'days' | 'full' | 'table'>('days');
   const [activeDayIndex, setActiveDayIndex] = useState(0);
   const [completedCells, setCompletedCells] = useState<Record<string, boolean>>(() => {
+    const defaultChecked: Record<string, boolean> = {
+      // 16/07 (Quinta) - Voo GIG -> SSA & Ajuste Logístico
+      'am_salvador_julho_0_manha': true,
+      'am_salvador_julho_0_tarde': true,
+      'am_salvador_julho_0_noite': true,
+      'am_bh_med_san_0_manha': true,
+      'am_bh_med_san_0_tarde': true,
+      'am_bh_med_san_0_noite': true,
+
+      // 17/07 (Sexta) - Pelourinho, Camarote Esquadrãozone e Jogo do Bahia
+      'am_salvador_julho_1_manha': true,
+      'am_salvador_julho_1_tarde': true,
+      'am_salvador_julho_1_noite': true,
+      'am_bh_med_san_1_manha': true,
+      'am_bh_med_san_1_tarde': true,
+      'am_bh_med_san_1_noite': true,
+    };
     try {
       const saved = localStorage.getItem('viajai_completed_activities');
-      return saved ? JSON.parse(saved) : {};
+      if (saved) {
+        return { ...defaultChecked, ...JSON.parse(saved) };
+      }
+      // Save default checked items to localStorage
+      localStorage.setItem('viajai_completed_activities', JSON.stringify(defaultChecked));
+      return defaultChecked;
     } catch (e) {
-      return {};
+      return defaultChecked;
     }
   });
 
@@ -864,6 +882,38 @@ const GuideList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     }
   }, [activeConfig]);
 
+  const renderLineWithFormattedTimes = (lineText: string, isCompleted: boolean, period: 'manha' | 'tarde' | 'noite') => {
+    // Regex matching times like 09:00, 10:30, 06h00, 05h50, 16h30, 02h00, 12h00, etc.
+    const timeRegex = /(\b\d{1,2}[:h]\d{2}(?:h|m)?\b)/gi;
+    const parts = lineText.split(timeRegex);
+
+    if (parts.length <= 1) return lineText;
+
+    return (
+      <>
+        {parts.map((part, index) => {
+          if (timeRegex.test(part)) {
+            return (
+              <span 
+                key={index} 
+                className={`font-black font-mono px-1.5 py-0.5 rounded text-[12px] md:text-[13px] tracking-tight inline-flex items-center gap-0.5 mx-0.5 shadow-xs border select-none ${
+                  isCompleted 
+                    ? 'bg-slate-200 text-slate-500 border-slate-300' 
+                    : period === 'noite'
+                      ? 'bg-amber-400 text-slate-950 border-amber-300 font-black'
+                      : 'bg-amber-200 dark:bg-amber-950/90 text-amber-950 dark:text-amber-100 border-amber-400/80 font-black'
+                }`}
+              >
+                ⏱️ {part}
+              </span>
+            );
+          }
+          return part;
+        })}
+      </>
+    );
+  };
+
   const renderCardContent = (item: ScheduleCell | undefined, dayIndex: number, period: 'manha' | 'tarde' | 'noite') => {
     if (!item || (!item.activity && !item.details)) {
       return (
@@ -883,10 +933,12 @@ const GuideList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
         <div>
           <div className="flex items-center justify-between gap-2 mb-2">
             {item.time && item.time !== "-" && (
-              <span className={`font-black text-[11px] px-2 py-0.5 rounded shadow-sm inline-flex items-center gap-1 select-none ${
-                period === 'manha' ? 'bg-sky-200 text-sky-900 font-extrabold' :
-                period === 'tarde' ? 'bg-amber-200 text-amber-900 font-extrabold' :
-                'bg-indigo-900/80 text-indigo-100 border border-indigo-700/50 font-extrabold'
+              <span className={`font-black text-xs md:text-sm px-2.5 py-1 rounded-lg shadow-sm border tracking-wide uppercase inline-flex items-center gap-1.5 select-none ${
+                isCompleted 
+                  ? 'bg-slate-200 text-slate-500 border-slate-300' 
+                  : period === 'manha' ? 'bg-sky-600 text-white border-sky-400 font-black shadow-sky-200/50' :
+                    period === 'tarde' ? 'bg-amber-500 text-slate-950 border-amber-300 font-black shadow-amber-200/50' :
+                    'bg-indigo-600 text-white border-indigo-400 font-black shadow-indigo-900/50'
               }`}>
                 ⏱️ {item.time}
               </span>
@@ -923,7 +975,7 @@ const GuideList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                   : period === 'noite' ? 'text-slate-300' : 'text-slate-600'
               }`}
             >
-              {line}
+              {renderLineWithFormattedTimes(line, isCompleted, period)}
             </p>
           ))}
 
@@ -1016,12 +1068,12 @@ const GuideList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       >
         <div className="flex items-center justify-between gap-2 mb-2">
           {item.time && item.time !== "-" && (
-            <span className={`font-black text-xs px-2 py-0.5 rounded shadow-sm inline-block select-none ${
+            <span className={`font-black text-xs sm:text-sm px-2.5 py-1 rounded-md shadow-sm border tracking-wide uppercase inline-block select-none ${
               isCompleted
-                ? 'bg-slate-200 text-slate-500'
-                : period === 'manha' ? 'bg-sky-200 text-sky-900' :
-                  period === 'tarde' ? 'bg-amber-200 text-amber-900' :
-                  'bg-indigo-900/80 text-indigo-100 border border-indigo-700/50'
+                ? 'bg-slate-200 text-slate-500 border-slate-300'
+                : period === 'manha' ? 'bg-sky-600 text-white border-sky-400 font-black' :
+                  period === 'tarde' ? 'bg-amber-500 text-slate-950 border-amber-300 font-black' :
+                  'bg-indigo-600 text-white border-indigo-400 font-black'
             }`}>
               ⏱️ {item.time}
             </span>
@@ -1056,7 +1108,7 @@ const GuideList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                 : period === 'noite' ? 'text-slate-300' : 'text-slate-700'
             }`}
           >
-            {line}
+            {renderLineWithFormattedTimes(line, isCompleted, period)}
           </span>
         ))}
         
