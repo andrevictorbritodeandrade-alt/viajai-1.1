@@ -210,6 +210,29 @@ export const FuelCalculator: React.FC<{
 
       <main className="px-5 pt-6 pb-24 max-w-2xl mx-auto space-y-6">
         
+        {selectedTrip?.id === 'am_guarapari_2027' && (
+          <div className="bg-emerald-50 border border-emerald-200 p-4 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">
+            <div>
+              <span className="text-[10px] font-black text-emerald-700 uppercase tracking-widest block font-mono">ROTA MARICÁ ➔ GUARAPARI IDENTIFICADA</span>
+              <p className="text-xs text-emerald-900 font-bold mt-0.5">899 km (ida e volta) • Gasolina R$ 6,89 • Consumo 13 km/l</p>
+              <p className="text-[11px] text-emerald-700 font-medium">Combustível: R$ 476,49 • Pedágios BR-101: R$ 76,60 • Custo Total: R$ 553,09</p>
+            </div>
+            <button
+              onClick={() => {
+                setVehicle('Carro Próprio');
+                setGasPrice(6.89);
+                setGasKmL(13.0);
+                setOdoStart(0);
+                setOdoCurrent(899);
+                setTankCapacity(50);
+              }}
+              className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black rounded-xl uppercase tracking-wider transition-colors shrink-0 shadow-sm"
+            >
+              Aplicar Rota
+            </button>
+          </div>
+        )}
+
         {/* Veículo e Distância */}
         <section className="bg-white border border-slate-200 p-5 rounded-3xl">
           <div className="flex items-center gap-2 mb-4">

@@ -19,11 +19,23 @@ import {
   CloudSun,
   ShoppingBasket,
   Shield,
-  BookOpen
+  BookOpen,
+  Activity
 } from 'lucide-react';
 import { MenuItem } from './types';
 
 export const MENU_ITEMS: MenuItem[] = [
+  {
+    id: 'radar_passagens', 
+    title: 'Radar de Voos',
+    icon: <Activity className="w-12 h-12 text-white" />,
+    themeColor: 'green',
+    gradientClass: 'bg-emerald-600 border-white/20',
+    bgColor: '#059669',
+    category: 'Geral',
+    description: 'Monitoramento de passagens Dez-Jan e Google Flights.',
+    bgImage: '/dez_jan_radar_real.jpg'
+  },
   {
     id: 'clima_localizacao', 
     title: 'Clima & Local',

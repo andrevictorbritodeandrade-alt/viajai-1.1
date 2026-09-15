@@ -23,6 +23,7 @@ import UberBoltList from './UberBoltList';
 import WeatherLocation from './WeatherLocation';
 import WeatherCardHome from './WeatherCardHome';
 import Supplies from './Supplies';
+import FlightPriceRadar from './FlightPriceRadar';
 import { MENU_ITEMS } from '../constants';
 import { Construction, ArrowLeft, Grip, Loader2 } from 'lucide-react';
 import { MenuItem } from '../types';
@@ -166,6 +167,8 @@ const ClientApp: React.FC = () => {
         return <MelhoresDestinos onBack={goBack} />;
       case 'voos':
         return <FlightList onBack={goBack} />;
+      case 'radar_passagens':
+        return <FlightPriceRadar onBack={goBack} />;
       case 'checklist':
         return <PackingList selectedTrip={selectedTrip} onBack={goBack} />;
       case 'guias':
@@ -206,6 +209,14 @@ const ClientApp: React.FC = () => {
       return !isHidden;
     });
 
+    // Filtra Melhores Destinos e Guia IA para o Roteiro de Março de 2027
+    if (selectedTrip?.id === 'am_marco_2027' || (selectedTrip as any)?.category === 'marco2027') {
+      visibleMenuItems = visibleMenuItems.filter(item => 
+        item.id !== 'melhores_destinos' && 
+        item.id !== 'ia_assistant'
+      );
+    }
+
     // Filtra itens internacionais se for viagem nacional
     if (selectedTrip?.isDomestic) {
       visibleMenuItems = visibleMenuItems.filter(item => 
@@ -228,51 +239,76 @@ const ClientApp: React.FC = () => {
       visibleMenuItems = visibleMenuItems.filter(item => item.id !== 'onibus');
     }
 
-    // Determinate location name hint based on trip for the weather widget
-    let locationNameHint = "";
-    const tName = selectedTrip?.name?.toLowerCase() || '';
-    if (tName.includes('costa verde')) locationNameHint = 'Paraty';
-    else if (tName.includes('vertentes') || tName.includes('bh')) locationNameHint = 'Tiradentes';
-    else if (tName.includes('porto seguro') || tName.includes('bahia')) locationNameHint = 'Porto Seguro';
-    else if (tName.includes('áfrica do sul') || tName.includes('africa do sul')) locationNameHint = 'Cape Town';
-    else if (tName.includes('colômbia') || tName.includes('colombia')) locationNameHint = 'Cartagena';
-    else if (tName.includes('assunção')) locationNameHint = 'Assunção';
-    else if (tName.includes('foz') || tName.includes('buenos aires')) locationNameHint = 'Buenos Aires';
+    const cat1Items = visibleMenuItems.filter(item => ['checklist', 'financeiro', 'gastos', 'cambio', 'mercado'].includes(item.id));
+    const cat2Items = visibleMenuItems.filter(item => ['radar_passagens', 'voos', 'hospedagem', 'reservas', 'uber_bolt', 'onibus', 'abastecimento'].includes(item.id));
+    const cat3Items = visibleMenuItems.filter(item => ['guias', 'melhores_destinos', 'tradutor', 'vacinas', 'ia_assistant'].includes(item.id));
 
     return (
-      <div className="px-4 pb-20 space-y-8">
-        
-        {/* Categoria: Planejamento & Dinheiro */}
-        {visibleMenuItems.some(item => ['checklist', 'financeiro', 'gastos', 'cambio', 'mercado'].includes(item.id)) && (
-          <div className="space-y-4">
-            <h3 className="text-[#0369a1] font-display font-black uppercase text-xs tracking-widest pl-2">Planejamento & Dinheiro</h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 relative z-[100]">
-              {visibleMenuItems.filter(item => ['checklist', 'financeiro', 'gastos', 'cambio', 'mercado'].includes(item.id)).map(item => (
-                <MenuCard key={item.id} {...item} bgColor="#0ea5e9" onClick={() => navigateTo(item.id)} />
+      <div className="px-3 sm:px-4 pb-20 space-y-6 pt-4">
+
+        {/* Categoria iOS 1: Planejamento & Finanças */}
+        {cat1Items.length > 0 && (
+          <div className="bg-blue-50/75 dark:bg-blue-950/20 backdrop-blur-3xl border border-blue-200/50 dark:border-blue-900/30 rounded-[32px] p-5 sm:p-6 shadow-2xl shadow-blue-950/5">
+            <div className="flex items-center justify-between mb-4 px-1">
+              <h3 className="text-blue-900 dark:text-blue-100 font-black text-sm sm:text-base tracking-wider flex items-center gap-2.5 uppercase">
+                <span className="w-3 h-3 rounded-full bg-blue-500 inline-block shadow-md shadow-blue-500/50 animate-pulse" />
+                PLANEJAMENTO & FINANÇAS
+              </h3>
+              <span className="text-[10px] font-extrabold text-blue-600 dark:text-blue-400 uppercase tracking-widest bg-blue-100/60 dark:bg-blue-900/40 backdrop-blur-md px-3 py-1 rounded-full border border-blue-200/40 dark:border-blue-800/40">
+                {cat1Items.length} APPS
+              </span>
+            </div>
+            <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-6 gap-y-5 gap-x-3 sm:gap-x-5 justify-items-center">
+              {cat1Items.map(item => (
+                <MenuCard key={item.id} {...item} badge={item.id === 'checklist' ? 3 : undefined} onClick={() => navigateTo(item.id)} />
               ))}
             </div>
           </div>
         )}
 
-        {/* Categoria: Logística & Hospedagem */}
-        {visibleMenuItems.some(item => ['voos', 'hospedagem', 'reservas', 'uber_bolt', 'onibus', 'abastecimento'].includes(item.id)) && (
-          <div className="space-y-4 pt-2">
-            <h3 className="text-[#6d28d9] font-display font-black uppercase text-xs tracking-widest pl-2">Transporte & Local</h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 relative z-[100]">
-              {visibleMenuItems.filter(item => ['voos', 'hospedagem', 'reservas', 'uber_bolt', 'onibus', 'abastecimento'].includes(item.id)).map(item => (
-                <MenuCard key={item.id} {...item} bgColor="#8b5cf6" onClick={() => navigateTo(item.id)} />
-              ))}
+        {/* Categoria iOS 2: Transporte & Estadia */}
+        {cat2Items.length > 0 && (
+          <div className="bg-purple-50/75 dark:bg-purple-950/20 backdrop-blur-3xl border border-purple-200/50 dark:border-purple-900/30 rounded-[32px] p-5 sm:p-6 shadow-2xl shadow-purple-950/5">
+            <div className="flex items-center justify-between mb-4 px-1">
+              <h3 className="text-purple-900 dark:text-purple-100 font-black text-sm sm:text-base tracking-wider flex items-center gap-2.5 uppercase">
+                <span className="w-3 h-3 rounded-full bg-purple-500 inline-block shadow-md shadow-purple-500/50 animate-pulse" />
+                TRANSPORTE & ESTADIA
+              </h3>
+              <span className="text-[10px] font-extrabold text-purple-600 dark:text-purple-400 uppercase tracking-widest bg-purple-100/60 dark:bg-purple-900/40 backdrop-blur-md px-3 py-1 rounded-full border border-purple-200/40 dark:border-purple-800/40">
+                {cat2Items.length + (cat2Items.some(i => i.id === 'abastecimento') ? 1 : 0)} APPS
+              </span>
+            </div>
+            <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-6 gap-y-5 gap-x-3 sm:gap-x-5 justify-items-center">
+              {cat2Items.map(item => {
+                if (item.id === 'abastecimento') {
+                  return (
+                    <React.Fragment key={item.id}>
+                      <MenuCard {...item} variant3d="keyfob" onClick={() => navigateTo(item.id)} />
+                      <MenuCard {...item} variant3d="gaspump" onClick={() => navigateTo(item.id)} />
+                    </React.Fragment>
+                  );
+                }
+                return <MenuCard key={item.id} {...item} onClick={() => navigateTo(item.id)} />;
+              })}
             </div>
           </div>
         )}
 
-        {/* Categoria: Roteiro & Ferramentas */}
-        {visibleMenuItems.some(item => ['guias', 'melhores_destinos', 'tradutor', 'vacinas', 'ia_assistant'].includes(item.id)) && (
-          <div className="space-y-4 pt-2">
-            <h3 className="text-[#047857] font-display font-black uppercase text-xs tracking-widest pl-2">Roteiro & Ferramentas</h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 relative z-[100]">
-              {visibleMenuItems.filter(item => ['guias', 'melhores_destinos', 'tradutor', 'vacinas', 'ia_assistant'].includes(item.id)).map(item => (
-                <MenuCard key={item.id} {...item} bgColor="#10b981" onClick={() => navigateTo(item.id)} />
+        {/* Categoria iOS 3: Roteiro & Ferramentas */}
+        {cat3Items.length > 0 && (
+          <div className="bg-emerald-50/75 dark:bg-emerald-950/20 backdrop-blur-3xl border border-emerald-200/50 dark:border-emerald-900/30 rounded-[32px] p-5 sm:p-6 shadow-2xl shadow-emerald-950/5">
+            <div className="flex items-center justify-between mb-4 px-1">
+              <h3 className="text-emerald-900 dark:text-emerald-100 font-black text-sm sm:text-base tracking-wider flex items-center gap-2.5 uppercase">
+                <span className="w-3 h-3 rounded-full bg-emerald-500 inline-block shadow-md shadow-emerald-500/50 animate-pulse" />
+                ROTEIRO & FERRAMENTAS
+              </h3>
+              <span className="text-[10px] font-extrabold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest bg-emerald-100/60 dark:bg-emerald-900/40 backdrop-blur-md px-3 py-1 rounded-full border border-emerald-200/40 dark:border-emerald-800/40">
+                {cat3Items.length} APPS
+              </span>
+            </div>
+            <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-6 gap-y-5 gap-x-3 sm:gap-x-5 justify-items-center">
+              {cat3Items.map(item => (
+                <MenuCard key={item.id} {...item} onClick={() => navigateTo(item.id)} />
               ))}
             </div>
           </div>
@@ -284,6 +320,16 @@ const ClientApp: React.FC = () => {
 
   if (!selectedTrip) {
     return <TripSelection onSelect={handleSelectTrip} userName={userName} />;
+  }
+
+  if (selectedTrip.id === 'am_radar_dez_jan') {
+    return (
+      <div className="min-h-screen bg-[#0B0F19] text-white font-sans p-4 sm:p-8">
+        <div className="max-w-6xl mx-auto">
+          <FlightPriceRadar onBack={handleResetTrip} />
+        </div>
+      </div>
+    );
   }
 
   return (

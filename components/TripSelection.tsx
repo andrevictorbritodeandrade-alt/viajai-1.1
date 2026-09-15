@@ -15,7 +15,7 @@ export interface Trip {
   lon: number;
   userId: string;
   isDomestic?: boolean;
-  category?: 'realizada' | 'julho' | 'janeiro2027';
+  category?: 'realizada' | 'julho' | 'janeiro2027' | 'marco2027' | string;
   price?: string;
   subtitle?: string;
 }
@@ -82,15 +82,54 @@ const ANDRE_MARCELLY_TRIPS: Trip[] = [
   {
     id: 'am_salvador_julho',
     name: 'Nordeste em Julho',
-    date: '16 a 23 de Julho',
-    image: '/salvador_aracaju_maceio.jpg',
+    date: '16 a 23 de Julho de 2026',
+    image: '/nordeste_real_couple.jpg',
     lat: -12.9714,
     lon: -38.5014,
     userId: 'shared_andre_marcelly',
     isDomestic: true,
-    category: 'julho',
+    category: 'arquivada',
     price: 'Carro + Aéreo: R$ 1.152,53',
     subtitle: 'Salvador, Maceió & Aracaju • 16 a 23 de Julho'
+  },
+  {
+    id: 'am_radar_dez_jan',
+    name: 'Radar Dezembro & Janeiro',
+    date: 'Dezembro 2026 a Janeiro 2027',
+    image: '/dez_jan_radar_real.jpg',
+    lat: -34.9011,
+    lon: -56.1645,
+    userId: 'shared_andre_marcelly',
+    isDomestic: false,
+    category: 'planejada',
+    price: 'A partir de R$ 630 (Ida e Volta)',
+    subtitle: 'Montevidéu (MVD), Fortaleza (FOR) & Porto Alegre (POA)'
+  },
+  {
+    id: 'am_guarapari_2027',
+    name: 'Guarapari',
+    date: '4 a 7 de Setembro de 2026',
+    image: '/guarapari_real_couple.jpg',
+    lat: -20.6661,
+    lon: -40.4983,
+    userId: 'shared_andre_marcelly',
+    isDomestic: true,
+    category: 'planejada',
+    price: 'Carro: R$ 553,09',
+    subtitle: 'Maricá ➔ Guarapari • Feriado de 4 a 7 de Setembro • BR-101'
+  },
+  {
+    id: 'am_marco_2027',
+    name: 'SC > Cruzeiro > SP > Rio',
+    date: '11 a 17 de Março de 2027',
+    image: '/sc_cruzeiro_real_couple.jpg',
+    lat: -26.9078,
+    lon: -48.6619,
+    userId: 'shared_andre_marcelly',
+    isDomestic: true,
+    category: 'marco2027',
+    price: 'R$ 1.035,50 por pessoa',
+    subtitle: 'Beto Carrero, Itajaí, Navio MSC Musica, SP & Maricá • 11 a 17/03'
   }
 ];
 
@@ -208,10 +247,8 @@ const TripSelection: React.FC<TripSelectionProps> = ({ onSelect, userName }) => 
     setEditingTrip(null);
   };
 
-  const doneTrips = trips.filter(t => t.category === 'realizada');
-  const julyTrips = trips.filter(t => t.category === 'julho');
-  const jan2027Trips = trips.filter(t => t.category === 'janeiro2027');
-  const otherTrips = trips.filter(t => !t.category);
+  const archivedTrips = trips.filter(t => t.category === 'realizada' || t.category === 'arquivada');
+  const plannedTrips = trips.filter(t => t.category !== 'realizada' && t.category !== 'arquivada');
 
   // Renders a high fidelity card matching the image 2 aesthetic
   const renderFrostedCard = (trip: Trip, size: 'large' | 'medium' | 'small' = 'medium') => {
@@ -224,7 +261,7 @@ const TripSelection: React.FC<TripSelectionProps> = ({ onSelect, userName }) => 
           size === 'large' ? 'h-[360px] sm:h-[440px]' : size === 'medium' ? 'h-[240px] sm:h-[280px]' : 'h-[180px] sm:h-[200px]'
         }`}
       >
-        <TripCaricature name={trip.name} id={trip.id} size={size} />
+        <TripCaricature name={trip.name} id={trip.id} size={size} image={trip.image} />
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent pointer-events-none"></div>
         
         {/* Completed Green Circle Checkmark in Top Right corner for África do Sul */}
@@ -310,23 +347,8 @@ const TripSelection: React.FC<TripSelectionProps> = ({ onSelect, userName }) => 
 
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10 w-full">
           
-          <div className="flex items-center gap-4 text-left">
-            {/* Elegant avatar holding first initial with styled borders */}
-            <div className="w-14 h-14 bg-emerald-500 rounded-full flex items-center justify-center text-slate-950 font-black text-xl shadow-[0_0_20px_rgba(16,185,129,0.4)] border-2 border-white/20 shrink-0">
-              {userName ? userName.charAt(0).toUpperCase() : 'A'}
-            </div>
-            
-            <div>
-              <p className="text-[9.5px] font-black tracking-[0.25em] text-slate-400 uppercase leading-none mb-1.5">
-                BEM-VINDO AO SEU PERFIL
-              </p>
-              <h2 className="text-xl font-black text-white hover:text-emerald-400 transition-colors uppercase">
-                {userName || 'ANDRÉ BRITO'}
-              </h2>
-            </div>
-          </div>
-
-          <div className="text-center md:text-right flex flex-col items-center md:items-end">
+          {/* LEFT: Central Branding */}
+          <div className="text-left">
             <h1 className="text-white select-none leading-none drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)] uppercase tracking-wider font-black font-sans" style={{ fontSize: '28px' }}>
               MINHAS VIAGENS
             </h1>
@@ -335,7 +357,24 @@ const TripSelection: React.FC<TripSelectionProps> = ({ onSelect, userName }) => 
             </p>
           </div>
 
-          <div className="shrink-0 self-center md:self-auto">
+          {/* RIGHT: User Profile & Exit Button grouped together */}
+          <div className="flex items-center gap-4 shrink-0 self-center md:self-auto justify-end">
+            <div className="flex items-center gap-3 text-right">
+              <div className="hidden sm:block">
+                <p className="text-[9.5px] font-black tracking-[0.25em] text-slate-400 uppercase leading-none mb-1">
+                  BEM-VINDO AO SEU PERFIL
+                </p>
+                <h2 className="text-base sm:text-lg font-black text-white hover:text-emerald-400 transition-colors uppercase">
+                  {userName || 'ANDRÉ BRITO'}
+                </h2>
+              </div>
+              
+              {/* Elegant avatar holding first initial with styled borders */}
+              <div className="w-11 h-11 sm:w-12 sm:h-12 bg-emerald-500 rounded-full flex items-center justify-center text-slate-950 font-black text-lg shadow-[0_0_20px_rgba(16,185,129,0.4)] border-2 border-white/20 shrink-0">
+                {userName ? userName.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase() : 'AB'}
+              </div>
+            </div>
+
             {/* Boxed modern exit button styled for dark theme */}
             <button 
               onClick={handleLogout}
@@ -357,54 +396,35 @@ const TripSelection: React.FC<TripSelectionProps> = ({ onSelect, userName }) => 
         ) : (
           <div className="space-y-16">
             
-            {/* CATEGORY 1: Opções para os próximos meses (Julho de 2026) */}
-            {julyTrips.length > 0 && (
-              <div className={`grid grid-cols-1 ${doneTrips.length > 0 ? 'lg:grid-cols-4' : ''} gap-12 items-start`}>
-                <div className={`${doneTrips.length > 0 ? 'lg:col-span-3' : ''} space-y-8`}>
+            {/* MAIN PORTFOLIO GRID: Holds category 1 on left (Span 3) and history on right (Span 1) */}
+            <div className={`grid grid-cols-1 ${archivedTrips.length > 0 ? 'lg:grid-cols-4' : ''} gap-12 items-start`}>
+              
+              {/* CATEGORY 1: Viagens Planejadas */}
+              {plannedTrips.length > 0 && (
+                <div className={`${archivedTrips.length > 0 ? 'lg:col-span-3' : ''} space-y-8`}>
                   <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 rounded-full w-fit shadow-inner">
                     <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <h2 className="text-[10px] font-bold text-emerald-400 uppercase tracking-[0.2em]">
-                      OPÇÕES PARA OS PRÓXIMOS MESES (JULHO DE 2026)
+                    <h2 className="text-[12px] md:text-[14px] font-black text-emerald-400 uppercase tracking-widest">
+                      VIAGENS PLANEJADAS
                     </h2>
                   </div>
                   <div className="grid grid-cols-1 gap-6">
-                    {julyTrips.map(trip => renderFrostedCard(trip, 'large'))}
-                  </div>
-                </div>
-                {/* Spacer column on desktop so it matches the alignment perfectly with January column */}
-                {doneTrips.length > 0 && <div className="hidden lg:block lg:col-span-1"></div>}
-              </div>
-            )}
-
-            {/* MAIN PORTFOLIO GRID: Holds category 2 on left (Span 3) and history on right (Span 1) */}
-            <div className={`grid grid-cols-1 ${doneTrips.length > 0 ? 'lg:grid-cols-4' : ''} gap-12 items-start`}>
-              
-              {/* CATEGORY 2: Opções de Viagens (Janeiro de 2027) */}
-              {jan2027Trips.length > 0 && (
-                <div className={`${doneTrips.length > 0 ? 'lg:col-span-3' : ''} space-y-8`}>
-                  <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 rounded-full w-fit shadow-inner">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-                    <h2 className="text-[10px] font-bold text-emerald-400 uppercase tracking-[0.2em]">
-                      ROTEIRO SELECIONADO: JANEIRO DE 2027
-                    </h2>
-                  </div>
-                  <div className="grid grid-cols-1 gap-6">
-                    {jan2027Trips.map(trip => renderFrostedCard(trip, 'large'))}
+                    {plannedTrips.map(trip => renderFrostedCard(trip, 'large'))}
                   </div>
                 </div>
               )}
 
-              {/* CATEGORY 3: Viagens Realizadas (Histórico) */}
-              {doneTrips.length > 0 && (
+              {/* CATEGORY 2: Viagens Arquivadas (Histórico) */}
+              {archivedTrips.length > 0 && (
                 <div className="lg:col-span-1 space-y-8">
                   <div className="flex items-center gap-2 bg-white/5 border border-white/5 px-4 py-2 rounded-full w-fit shadow-inner">
                     <span className="w-2 h-2 rounded-full bg-slate-400"></span>
-                    <h2 className="text-[10px] font-bold text-slate-300 uppercase tracking-[0.2em]">
-                      VIAGENS REALIZADAS (HISTÓRICO)
+                    <h2 className="text-[12px] md:text-[14px] font-black text-slate-300 uppercase tracking-widest">
+                      VIAGENS ARQUIVADAS
                     </h2>
                   </div>
-                  <div>
-                    {doneTrips.map(trip => renderFrostedCard(trip, 'large'))}
+                  <div className="grid grid-cols-1 gap-6">
+                    {archivedTrips.map(trip => renderFrostedCard(trip, 'large'))}
                   </div>
                 </div>
               )}

@@ -4,13 +4,13 @@ import { Car, Footprints, MapPin, CheckCircle2, Circle } from 'lucide-react';
 
 const routePoints = [
   { id: 1, name: "Estacionamento Praça da Sé", desc: "Deixe o carro aqui", lat: -12.9734, lon: -38.5114, walkToNext: "1 min (50m)", carToNext: "Desnecessário" },
-  { id: 2, name: "Museu da Misericórdia", desc: "História e arte sacra", lat: -12.9736, lon: -38.5117, walkToNext: "8 min (650m)", carToNext: "Ruim (Ruas de pedestre)" },
-  { id: 3, name: "Museu da Gastronomia Baiana", desc: "Largo do Pelourinho", lat: -12.9719, lon: -38.5083, walkToNext: "4 min (300m)", carToNext: "Desnecessário" },
-  { id: 4, name: "Casa do Carnaval da Bahia", desc: "Museu interativo", lat: -12.9729, lon: -38.5100, walkToNext: "1 min (50m)", carToNext: "Desnecessário" },
-  { id: 5, name: "O Cravinho", desc: "Terreiro de Jesus", lat: -12.9725, lon: -38.5097, walkToNext: "5 min (400m)", carToNext: "Desnecessário" },
-  { id: 6, name: "Casa das Histórias de Salvador", desc: "Museu imersivo", lat: -12.9735, lon: -38.5144, walkToNext: "5 min (400m)", carToNext: "Desnecessário" },
-  { id: 7, name: "MUNCAB", desc: "Próximo à Praça da Sé", lat: -12.9733, lon: -38.5100, walkToNext: "Retirar o carro", carToNext: "15 min (5km)" },
-  { id: 8, name: "Terreiro Casa Branca", desc: "Bairro Federação", lat: -13.0041, lon: -38.5066, walkToNext: null, carToNext: null },
+  { id: 2, name: "Axego Restaurante & Bar", desc: "Almoço com comida típica baiana no Pelourinho", lat: -12.9722, lon: -38.5088, walkToNext: "2 min (100m)", carToNext: "Desnecessário" },
+  { id: 3, name: "Fundação Casa de Jorge Amado", desc: "Casarão azul no Largo do Pelourinho", lat: -12.9718, lon: -38.5085, walkToNext: "1 min (50m)", carToNext: "Desnecessário" },
+  { id: 4, name: "Museu da Gastronomia Baiana (Senac)", desc: "Tradição culinária baiana no Largo do Pelourinho", lat: -12.9719, lon: -38.5083, walkToNext: "3 min (200m)", carToNext: "Desnecessário" },
+  { id: 5, name: "Casa do Carnaval da Bahia", desc: "Museu interativo na Praça Ramos de Queirós", lat: -12.9729, lon: -38.5100, walkToNext: "1 min (50m)", carToNext: "Desnecessário" },
+  { id: 6, name: "O Cravinho", desc: "Terreiro de Jesus", lat: -12.9725, lon: -38.5097, walkToNext: "4 min (300m)", carToNext: "Desnecessário" },
+  { id: 7, name: "Casa das Histórias de Salvador & MUNCAB", desc: "Museu imersivo e cultura afro-brasileira", lat: -12.9735, lon: -38.5144, walkToNext: "Retirar o carro", carToNext: "15 min (5km)" },
+  { id: 8, name: "Terreiro Casa Branca / Oxumarê", desc: "Bairro Federação / Vasco da Gama", lat: -13.0041, lon: -38.5066, walkToNext: null, carToNext: null },
 ];
 
 const ROUTE_CHECKS_KEY = 'viajai_pelourinho_checks_v1';

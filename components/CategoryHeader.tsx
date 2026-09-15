@@ -11,6 +11,7 @@ interface CategoryHeaderProps {
 
 const getTripBgImage = (id: string) => {
   const images: Record<string, string> = {
+    'am_guarapari_2027': '/guarapari_real_couple.jpg',
     'am_ssa_aju': '/ssa_aju_premium.png',
     'am_sp_ssa_aju': '/sp_ssa_aju_premium.png',
     'am_africa_sul': '/africa_premium.png',
@@ -19,7 +20,8 @@ const getTripBgImage = (id: string) => {
     'am_foz_ba': '/foz_ba_premium.png',
     'am_foz_ass_ba': '/ba_ass_foz_premium.png',
     'am_rio_foz_ba': '/foz_ba_premium.jpg',
-    'am_salvador_julho': '/salvador_aracaju_maceio.jpg',
+    'am_salvador_julho': '/salvador_maragogi_atalaia.jpg',
+    'am_marco_2027': '/marco_2027_premium.jpg',
     'am_aracaju_planob': '/aracaju_capital_premium.png',
     'am_rio_san': '/colombia_premium.jpg',
     'am_bh_med_san': '/colombia_premium.png'

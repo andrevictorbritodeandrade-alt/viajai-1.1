@@ -402,6 +402,64 @@ const SALVADOR_ARACAJU_ACCOMMODATION_DATA = [
   }
 ];
 
+const GUARAPARI_ACCOMMODATION_DATA = [
+  {
+    region: 'Praia da Areia Preta & Centro — Guarapari (ES)',
+    options: [
+      {
+        id: 'pousada_areia_preta',
+        name: 'Hotel Pousada Areia Preta',
+        type: 'Pousada / Hotel',
+        neighborhood: 'Praia da Areia Preta',
+        rating: 8.8,
+        pricePerDay: 220,
+        totalPrice: 880,
+        totalDays: 4,
+        proximity: 'A 50 metros da Praia da Areia Preta',
+        description: 'Excelente localização próxima às areias monazíticas, café da manhã incluso e estacionamento privativo.',
+        amenities: ['Café da manhã incluso', 'Estacionamento privativo', 'Wi-Fi grátis', 'Ar-condicionado', 'Próximo à praia'],
+        image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=500&auto=format&fit=crop',
+        url: 'https://www.booking.com/city/br/guarapari.pt-br.html'
+      },
+      {
+        id: 'flat_castanheiras',
+        name: 'Flat Vista Mar Castanheiras',
+        type: 'Apartamento Inteiro',
+        neighborhood: 'Praia das Castanheiras',
+        rating: 9.2,
+        pricePerDay: 260,
+        totalPrice: 1040,
+        totalDays: 4,
+        proximity: 'Em frente à Praia das Castanheiras',
+        description: 'Varanda com vista cinematográfica para o mar, cozinha completa e garagem para carro.',
+        amenities: ['Vista para o mar', 'Cozinha equipada', 'Garagem coberta', 'Wi-Fi rápido', 'Elevador'],
+        image: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=500&auto=format&fit=crop',
+        url: 'https://www.booking.com/city/br/guarapari.pt-br.html'
+      }
+    ]
+  },
+  {
+    region: 'Enseada Azul & Meaípe — Guarapari (ES)',
+    options: [
+      {
+        id: 'pousada_meaipe',
+        name: 'Pousada Meaípe & Gastronomia',
+        type: 'Pousada Charmosa',
+        neighborhood: 'Meaípe',
+        rating: 9.0,
+        pricePerDay: 250,
+        totalPrice: 1000,
+        totalDays: 4,
+        proximity: 'Perto dos restaurantes Gaeta e Curuca',
+        description: 'Ambiente tranquilo perto da melhor moqueca capixaba, piscina e área verde.',
+        amenities: ['Piscina ao ar livre', 'Café da manhã colonial', 'Wi-Fi', 'Estacionamento gratuito', 'Pet friendly'],
+        image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=500&auto=format&fit=crop',
+        url: 'https://www.booking.com/city/br/guarapari.pt-br.html'
+      }
+    ]
+  }
+];
+
 const AccommodationList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const menuItem = MENU_ITEMS.find(item => item.id === 'hospedagem');
   const [selectedTrip, setSelectedTrip] = useState<any>(null);
@@ -415,17 +473,20 @@ const AccommodationList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     }
   }, []);
 
+  const isGuarapariTrip = selectedTrip?.id === 'am_guarapari_2027' || selectedTrip?.name?.toLowerCase().includes('guarapari');
   const isBuenosAiresTrip = selectedTrip?.id === 'am_foz_ass_ba' || selectedTrip?.name?.toLowerCase().includes('buenos aires');
   const isColombiaTrip = selectedTrip?.id === 'am_bh_med_san' || selectedTrip?.id === 'am_rio_san' || selectedTrip?.name?.toLowerCase().includes('medellin') || selectedTrip?.name?.toLowerCase().includes('san andrés');
   const isSalvadorAjuTrip = selectedTrip?.id === 'am_salvador_julho' || selectedTrip?.name?.toLowerCase().includes('aracaju') || selectedTrip?.name?.toLowerCase().includes('aracajú');
 
-  const currentAccommodationData = isColombiaTrip 
-    ? COLOMBIA_ACCOMMODATION_DATA 
-    : isSalvadorAjuTrip
-      ? SALVADOR_ARACAJU_ACCOMMODATION_DATA
-      : isBuenosAiresTrip 
-        ? BUENOS_AIRES_ACCOMMODATION_DATA 
-        : ACCOMMODATION_DATA;
+  const currentAccommodationData = isGuarapariTrip
+    ? GUARAPARI_ACCOMMODATION_DATA
+    : isColombiaTrip 
+      ? COLOMBIA_ACCOMMODATION_DATA 
+      : isSalvadorAjuTrip
+        ? SALVADOR_ARACAJU_ACCOMMODATION_DATA
+        : isBuenosAiresTrip 
+          ? BUENOS_AIRES_ACCOMMODATION_DATA 
+          : ACCOMMODATION_DATA;
 
   return (
     <div className="space-y-6 pb-20 animate-in fade-in slide-in-from-bottom-4">

@@ -187,7 +187,7 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess, onStartOnboarding }) => {
                         className="w-full text-left p-3 rounded-xl hover:bg-white/5 transition-colors flex items-center gap-4 text-white"
                       >
                         <div className={`w-10 h-10 rounded-full flex items-center justify-center text-[11px] font-black shadow-lg ${profile.role === 'agent' ? 'bg-emerald-500' : 'bg-blue-500'}`}>
-                          {profile.name.charAt(0)}
+                          {profile.name.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase()}
                         </div>
                         <div>
                           <p className="text-sm font-bold">{profile.name}</p>

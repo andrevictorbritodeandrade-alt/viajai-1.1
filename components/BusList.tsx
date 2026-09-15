@@ -183,7 +183,78 @@ const COLOMBIA_BUS_DATA: BusTrip[] = [
   }
 ];
 
+const SANTOS_BUS_DATA: BusTrip[] = [
+  {
+    id: 'bus-santos-sp-cometa',
+    type: 'ida',
+    origin: 'Santos',
+    terminalOrigin: 'Santos - Rodoviária',
+    destination: 'São Paulo',
+    terminalDest: 'São Paulo - Rodoviária do Jabaquara',
+    departureTime: '11:00',
+    arrivalTime: '12:10',
+    duration: '01h 10m',
+    company: 'Viação Cometa',
+    classType: 'Convencional',
+    features: ['Passagem no celular', 'Passagem por e-mail', 'Reclinável 122º', 'Ar-condicionado'],
+    price: 'R$ 46,50',
+    date: '16/Mar',
+    fullDate: '16/03/2027',
+    firstMile: {
+      title: 'Embarque: Orla / Centro de Santos → Rodoviária',
+      origin: 'Santos / Baixada Santista',
+      dest: 'Santos - Rodoviária',
+      options: [
+        { type: 'UberX', price: 'R$ 14,50', desc: 'Transfer local até a rodoviária em Santos', recommended: true }
+      ]
+    },
+    lastMile: {
+      title: 'Desembarque: Rodoviária do Jabaquara → Capital Paulista',
+      origin: 'São Paulo - Rodoviária do Jabaquara',
+      dest: 'Capital Paulista / Hotel',
+      options: [
+        { type: 'Metrô Linha 1-Azul', price: 'R$ 5,00', desc: 'Integração direta no Terminal Jabaquara', recommended: true },
+        { type: 'UberX', price: 'R$ 22,00', desc: 'Deslocamento de app até hotel/centro' }
+      ]
+    }
+  }
+];
+
 const BUS_DATA: BusTrip[] = [
+  {
+    id: 'bus-santos-sp-cometa',
+    type: 'ida',
+    origin: 'Santos',
+    terminalOrigin: 'Santos - Rodoviária',
+    destination: 'São Paulo',
+    terminalDest: 'São Paulo - Rodoviária do Jabaquara',
+    departureTime: '11:00',
+    arrivalTime: '12:10',
+    duration: '01h 10m',
+    company: 'Viação Cometa',
+    classType: 'Convencional',
+    features: ['Passagem no celular', 'Passagem por e-mail', 'Reclinável 122º', 'Ar-condicionado'],
+    price: 'R$ 46,50',
+    date: '16/Mar',
+    fullDate: '16/03/2027',
+    firstMile: {
+      title: 'Embarque: Orla / Centro de Santos → Rodoviária',
+      origin: 'Santos / Baixada Santista',
+      dest: 'Santos - Rodoviária',
+      options: [
+        { type: 'UberX', price: 'R$ 14,50', desc: 'Transfer local até a rodoviária em Santos', recommended: true }
+      ]
+    },
+    lastMile: {
+      title: 'Desembarque: Rodoviária do Jabaquara → Capital Paulista',
+      origin: 'São Paulo - Rodoviária do Jabaquara',
+      dest: 'Capital Paulista / Hotel',
+      options: [
+        { type: 'Metrô Linha 1-Azul', price: 'R$ 5,00', desc: 'Integração direta no Terminal Jabaquara', recommended: true },
+        { type: 'UberX', price: 'R$ 22,00', desc: 'Deslocamento de app até hotel/centro' }
+      ]
+    }
+  },
   {
     id: 'bus-ida-rio-sp',
     type: 'ida',
@@ -263,11 +334,14 @@ const BusList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
 
   const isSalvadorAracaju = selectedTrip?.id === 'am_ssa_aju' || selectedTrip?.id === 'am_sp_ssa_aju';
   const isColombia = selectedTrip?.id === 'am_bh_med_san' || selectedTrip?.name?.toLowerCase().includes('medellin');
+  const isMarco2027 = selectedTrip?.id === 'am_marco_2027' || selectedTrip?.name?.toLowerCase().includes('março') || selectedTrip?.name?.toLowerCase().includes('santos');
   const currentBusData = isColombia 
     ? COLOMBIA_BUS_DATA 
     : isSalvadorAracaju 
       ? SALVADOR_BUS_DATA 
-      : BUS_DATA;
+      : isMarco2027
+        ? SANTOS_BUS_DATA
+        : BUS_DATA;
   
   const totals = useMemo(() => {
     let busTotal = 0;

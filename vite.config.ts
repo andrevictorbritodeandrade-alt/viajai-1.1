@@ -12,10 +12,8 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [react(), tailwindcss()],
     define: {
-      'process.env.API_KEY': JSON.stringify(env.API_KEY || env.REACT_APP_GEMINI_API_KEY || ""),
-      // Polyfill process.env for libraries that might expect it
-      // We ensure we don't stringify undefined values as the string "undefined"
-      'process.env': JSON.stringify(env)
+      'process.env.API_KEY': JSON.stringify(env.API_KEY || env.REACT_APP_GEMINI_API_KEY || env.GEMINI_API_KEY || ""),
+      'process.env.NODE_ENV': JSON.stringify(mode)
     },
     build: {
       outDir: 'dist',

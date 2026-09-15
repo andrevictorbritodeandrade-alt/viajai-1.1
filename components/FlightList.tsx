@@ -388,6 +388,63 @@ const SALVADOR_TRIPS: any[] = [
   }
 ];
 
+const MARCO_2027_TRIPS: any[] = [
+  {
+    id: 'marco2027-ida',
+    type: 'ida',
+    title: 'Ida: Rio de Janeiro (GIG) → Navegantes (NVG)',
+    bookingReference: 'HQLM20',
+    provider: 'GOL Linhas Aéreas',
+    baggage: 'Mala de mão 10kg inclusa • Mochila inclusa',
+    financials: { 
+      total: 'R$ 638,00 (Total 2 Pax) — R$ 319,00 / pax', 
+      status: 'Confirmado' 
+    },
+    passengers: [
+      { name: 'André Victor Brito de Andrade' },
+      { name: 'Marcelly Bispo Pereira da Silva' }
+    ],
+    legs: [
+      {
+        flightNumber: 'G3 1210',
+        airline: 'GOL Linhas Aéreas',
+        departure: { code: 'GIG', city: 'Rio de Janeiro, GIG', time: '08:35', date: 'Quinta-feira, 11 de Mar de 2027' },
+        arrival: { code: 'NVG', city: 'Navegantes, SC', time: '10:15', date: 'Quinta-feira, 11 de Mar de 2027' },
+        duration: '1h 40m',
+        weatherDeparture: { tempMax: 28, tempMin: 22, feelsLike: 30, humidity: 75, rainProb: 10, condition: 'Sol' },
+        weatherArrival: { tempMax: 26, tempMin: 19, feelsLike: 27, humidity: 72, rainProb: 15, condition: 'Sol com algumas nuvens' }
+      }
+    ]
+  },
+  {
+    id: 'marco2027-volta',
+    type: 'volta',
+    title: 'Volta: São Paulo (CGH) → Rio de Janeiro (SDU)',
+    bookingReference: 'HQLM20',
+    provider: 'GOL Linhas Aéreas',
+    baggage: 'Mala de mão 10kg inclusa • Mochila inclusa',
+    financials: { 
+      total: 'R$ 472,00 (Total 2 Pax) — R$ 236,00 / pax', 
+      status: 'Confirmado' 
+    },
+    passengers: [
+      { name: 'André Victor Brito de Andrade' },
+      { name: 'Marcelly Bispo Pereira da Silva' }
+    ],
+    legs: [
+      {
+        flightNumber: 'G3 1215',
+        airline: 'GOL Linhas Aéreas',
+        departure: { code: 'CGH', city: 'São Paulo, SP', time: '18:00', date: 'Quarta-feira, 17 de Mar de 2027' },
+        arrival: { code: 'SDU', city: 'Rio de Janeiro, SDU', time: '19:05', date: 'Quarta-feira, 17 de Mar de 2027' },
+        duration: '1h 05m',
+        weatherDeparture: { tempMax: 26, tempMin: 19, feelsLike: 27, humidity: 72, rainProb: 15, condition: 'Sol com algumas nuvens' },
+        weatherArrival: { tempMax: 28, tempMin: 22, feelsLike: 30, humidity: 75, rainProb: 10, condition: 'Sol' }
+      }
+    ]
+  }
+];
+
 const RIO_SAN_ANDRES_TRIPS: any[] = [
   {
     id: 'rio-san-ida',
@@ -1939,7 +1996,8 @@ const FlightList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   }
 
   const isSalvador = selectedTrip?.id === 'am_salvador_julho';
-  const currentTrips = (isRioSan ? RIO_SAN_ANDRES_TRIPS : isColombia ? COLOMBIA_TRIPS : isSalvador ? SALVADOR_TRIPS : isSPRoute ? SSA_AJU_TRIPS : isPlanoD ? currentPlanoDTrips : FOZ_BA_TRIPS) as Trip[];
+  const isMarco2027 = selectedTrip?.id === 'am_marco_2027';
+  const currentTrips = (isRioSan ? RIO_SAN_ANDRES_TRIPS : isColombia ? COLOMBIA_TRIPS : isSalvador ? SALVADOR_TRIPS : isSPRoute ? SSA_AJU_TRIPS : isPlanoD ? currentPlanoDTrips : isMarco2027 ? MARCO_2027_TRIPS : FOZ_BA_TRIPS) as Trip[];
 
   if (isPlanoD) {
     const activeOption = PLANO_D_OPTIONS[selectedOptionIdx];

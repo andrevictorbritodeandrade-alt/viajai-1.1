@@ -12,6 +12,7 @@ import {
   Plane,
   Bus,
   Building,
+  Ship,
   Car,
   Wallet,
   Check,
@@ -155,11 +156,32 @@ const TRIP_COSTS: Record<string, CostDetails> = {
     accommodationDesc: 'Hospedagem Salvador + Maceió + Aracaju (metade p/pessoa)',
     uber: 250.00,
     uberDesc: 'Aluguel de Carro + Combustível (metade p/pessoa)'
+  },
+  'am_marco_2027': {
+    flight: 555.00,
+    flightDesc: 'Passagem Aérea (Ida R$ 319 + Volta R$ 236)',
+    bus: 46.50,
+    busDesc: 'Ônibus de Santos para São Paulo',
+    accommodation: 434.00,
+    accommodationDesc: 'Cruzeiro MSC Musica',
+    uber: 0.00,
+    uberDesc: 'Não se aplica'
+  },
+  'am_guarapari_2027': {
+    flight: 0.00,
+    flightDesc: 'Viagem 100% de Carro Próprio',
+    bus: 0.00,
+    busDesc: 'Não se aplica',
+    accommodation: 450.00,
+    accommodationDesc: 'Hospedagem em Guarapari (por pessoa)',
+    uber: 276.55,
+    uberDesc: 'Pedágios (R$ 76,60) + Combustível (R$ 476,49) = R$ 553,09 (R$ 276,55 p/pessoa)'
   }
 };
 
 const getTripBgImage = (id: string) => {
   const images: Record<string, string> = {
+    'am_guarapari_2027': '/guarapari_real_couple.jpg',
     'am_ssa_aju': '/ssa_aju_premium.png',
     'am_sp_ssa_aju': '/sp_ssa_aju_premium.png',
     'am_africa_sul': '/africa_premium.png',
@@ -168,7 +190,8 @@ const getTripBgImage = (id: string) => {
     'am_foz_ba': '/foz_ba_premium.png',
     'am_foz_ass_ba': '/ba_ass_foz_premium.png',
     'am_rio_foz_ba': '/foz_ba_premium.jpg',
-    'am_salvador_julho': '/salvador_aracaju_maceio.jpg',
+    'am_salvador_julho': '/salvador_maragogi_atalaia.jpg',
+    'am_marco_2027': '/marco_2027_premium.jpg',
     'am_aracaju_planob': '/aracaju_capital_premium.png',
     'am_rio_san': '/colombia_premium.jpg',
     'am_bh_med_san': '/colombia_premium.png'
@@ -293,8 +316,8 @@ const Header: React.FC<HeaderProps> = ({ tripName, lat, lon, onBack, tripId, use
 
     costItems.push({
       id: 'accommodation',
-      title: 'Hospedagem',
-      icon: Building,
+      title: activeTripKey === 'am_marco_2027' ? 'Cruzeiro MSC' : 'Hospedagem',
+      icon: activeTripKey === 'am_marco_2027' ? Ship : Building,
       included: includeAccommodation,
       onToggle: () => setIncludeAccommodation(!includeAccommodation),
       valuePerPerson: isSalvadorJulho ? 625.08 : activeCosts.accommodation,
@@ -308,7 +331,7 @@ const Header: React.FC<HeaderProps> = ({ tripName, lat, lon, onBack, tripId, use
   if (activeCosts.bus > 0) {
     costItems.push({
       id: 'bus',
-      title: activeTripKey === 'am_ssa_aju' || activeTripKey === 'am_sp_ssa_aju' ? 'Carro Alugado' : 'Rodoviário',
+      title: activeTripKey === 'am_marco_2027' ? 'Ônibus (Santos ➔ SP)' : (activeTripKey === 'am_ssa_aju' || activeTripKey === 'am_sp_ssa_aju' ? 'Carro Alugado' : 'Rodoviário'),
       icon: activeTripKey === 'am_ssa_aju' || activeTripKey === 'am_sp_ssa_aju' ? Car : Bus,
       included: includeBus,
       onToggle: () => setIncludeBus(!includeBus),
@@ -405,7 +428,7 @@ const Header: React.FC<HeaderProps> = ({ tripName, lat, lon, onBack, tripId, use
           {/* Circular green avatar "A" */}
           <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-full overflow-hidden border-2 border-emerald-500/60 bg-emerald-950 flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(16,185,129,0.2)]">
             <span className="text-emerald-400 font-black text-base sm:text-xl">
-              {userName ? userName.charAt(0).toUpperCase() : 'A'}
+              {userName ? userName.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase() : 'AB'}
             </span>
           </div>
 

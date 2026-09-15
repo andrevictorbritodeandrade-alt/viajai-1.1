@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ArrowLeft, Sparkles, AlertCircle, ShieldCheck, HelpCircle, Calendar, List, Table } from 'lucide-react';
+import { ArrowLeft, Sparkles, AlertCircle, ShieldCheck, HelpCircle, Calendar, List, Table, ExternalLink, Compass, MapPin, Globe, Map } from 'lucide-react';
 import { getSessionUser } from '../services/session';
 import CategoryHeader from './CategoryHeader';
 import PelourinhoRouteMap from './PelourinhoRouteMap';
@@ -26,7 +26,7 @@ interface TripItineraryConfig {
   date: string;
   base: string;
   mode: string;
-  flagType: 'bahia' | 'bahia_serg' | 'bahia_serg_alagoas' | 'colombia' | 'argentina' | 'argentina_brazil' | 'brazil' | 'south_africa' | 'sergipe';
+  flagType: 'bahia' | 'bahia_serg' | 'bahia_serg_alagoas' | 'colombia' | 'argentina' | 'argentina_brazil' | 'brazil' | 'south_africa' | 'sergipe' | 'marco_2027' | 'guarapari_2027';
   dias: DayOption[];
   manha: ScheduleCell[];
   tarde: ScheduleCell[];
@@ -35,6 +35,8 @@ interface TripItineraryConfig {
   culturalTips: string[];
   logisticsTitle: string;
   logisticsTips: string[];
+  mscBookingUrl?: string;
+  cruisePackages?: any[];
 }
 
 const ITINERARY_DATABASE: Record<string, TripItineraryConfig> = {
@@ -47,14 +49,14 @@ const ITINERARY_DATABASE: Record<string, TripItineraryConfig> = {
     mode: 'Modo Econômico • Foco na Capital',
     flagType: 'sergipe',
     dias: [
-      { data: '16/07 (Qui)', label: 'Quinta' },
-      { data: '17/07 (Sex)', label: 'Sexta' },
-      { data: '18/07 (Sáb)', label: 'Sábado' },
-      { data: '19/07 (Dom)', label: 'Domingo' },
-      { data: '20/07 (Seg)', label: 'Segunda' },
-      { data: '21/07 (Ter)', label: 'Terça' },
-      { data: '22/07 (Qua)', label: 'Quarta' },
-      { data: '23/07 (Qui)', label: 'Quinta' }
+      { data: '16/07', label: 'QUINTA' },
+      { data: '17/07', label: 'SEXTA' },
+      { data: '18/07', label: 'SÁBADO' },
+      { data: '19/07', label: 'DOMINGO' },
+      { data: '20/07', label: 'SEGUNDA' },
+      { data: '21/07', label: 'TERÇA' },
+      { data: '22/07', label: 'QUARTA' },
+      { data: '23/07', label: 'QUINTA' }
     ],
     manha: [
       { time: "Manhã", activity: "Voo de Ida / Chegada em Aracaju", details: "Embarque no Rio de Janeiro (GIG) com destino ao Aeroporto de Aracaju (AJU). Chegada e recepção sob o sol de Sergipe.", costType: "pago", costLabel: "💳 Gasto: Voo de Ida" },
@@ -100,6 +102,153 @@ const ITINERARY_DATABASE: Record<string, TripItineraryConfig> = {
     ]
   },
 
+  // 0. Roteiro Guarapari 2027 (Maricá > BR-101 > Guarapari ES)
+  'am_guarapari_2027': {
+    id: 'am_guarapari_2027',
+    title: 'Maricá ➔ Guarapari (ES)',
+    date: '04 a 07 de Setembro de 2026 • Feriado da Independência',
+    base: 'Bases: Maricá (RJ) & Guarapari (Praia da Areia Preta / Centro)',
+    mode: 'Modo Road Trip • Carro Próprio (899 km • BR-101)',
+    flagType: 'guarapari_2027',
+    dias: [
+      { data: '04/09 (SEX)', label: 'ROAD TRIP & CHEGADA' },
+      { data: '05/09 (SÁB)', label: 'AREIA PRETA & CASTANHEIRAS' },
+      { data: '06/09 (DOM)', label: 'ENSEADA AZUL & MEAÍPE' },
+      { data: '07/09 (SEG)', label: 'RETORNO MARICÁ' }
+    ],
+    manha: [
+      { time: "06:00", activity: "Saída de Maricá 🚗💨 Estrada de Ubatiba & BR-101", details: "Partida cedinho de Maricá pela Estrada de Ubatiba acessando a Rodovia Governador Mário Covas (BR-101 Norte). Tanque abastecido e playlist pronta.", costType: "pago", costLabel: "💳 Pedágios + Gasolina" },
+      { time: "08:30", activity: "Praia da Areia Preta & Castanheiras 🏖️", details: "Manhã nas famosas areias monazíticas da Praia da Areia Preta e sombra das amendoeiras na Praia das Castanheiras. Mar calmo e cristalino.", costType: "gratuito", costLabel: "Praia Gratuita" },
+      { time: "09:00", activity: "Enseada Azul (Praia de Bacutia & Peracanga) 🌊", details: "Dia dedicado às águas límpidas e calmas da Enseada Azul. Ponto perfeito para mergulho livre e relaxar a dois.", costType: "gratuito", costLabel: "Natureza & Praia" },
+      { time: "09:00", activity: "Compras de Artesanato, Panelas de Barro & Lembranças 🏺", details: "Passeio pelo comércio central de Guarapari e feirinhas de artesanato capixaba para levar as tradicionais peças de barro e doces.", costType: "pago", costLabel: "💳 Compras & Lembranças" }
+    ],
+    tarde: [
+      { time: "13:20", activity: "Chegada a Guarapari & Check-in na Hospedagem 🏨", details: "Chegada após 449.5 km de viagem com paradas na rodovia. Check-in na pousada/hotel e almoço de boas-vindas com vista pro mar.", costType: "pago", costLabel: "💳 Hospedagem" },
+      { time: "13:00", activity: "Almoço Tradicional: Moqueca Capixaba no Centro 🍲", details: "Almoço com a legítima moqueca capixaba (sem azeite de dendê e sem leite de coco) servida na tradicional panela de barro com pirão e arroz.", costType: "pago", costLabel: "💳 Moqueca Capixaba" },
+      { time: "14:00", activity: "Praia dos Padres & Meaípe 🌿", details: "Acesso por escadaria cercada de vegetação nativa à paradisíaca Praia dos Padres e pôr do sol em Meaípe.", costType: "gratuito", costLabel: "Praia Selvagem" },
+      { time: "11:30", activity: "Almoço de Despedida no Gaeta ou Curuca (Meaípe) 🍤", details: "Desfrutar da moqueca premiada nacionalmente nos tradicionais restaurantes da bucólica vila de pescadores de Meaípe antes de pegar a estrada.", costType: "pago", costLabel: "💳 Gastronomia Famosa" }
+    ],
+    noite: [
+      { time: "19:00", activity: "Passeio Noturno pelo Calçadão do Centro & Sorvete 🍦", details: "Caminhada tranquila sob a brisa do mar, curtindo os quiosques e iluminação noturna das praias centrais.", costType: "pago", costLabel: "💳 Lazer Noturno" },
+      { time: "20:00", activity: "Jantar Romântico com Frutos do Mar 🍷", details: "Jantar a dois com peixe grelhado, camarões e vinho em restaurante aconchegante da orla.", costType: "pago", costLabel: "💳 Jantar a Dois" },
+      { time: "19:30", activity: "Bate-papo & Petiscos nos Bares de Meaípe 🍹", details: "Noite descontraída experimentando o famoso bolinho de aipim com camarão e drinks capixabas.", costType: "pago", costLabel: "💳 Petiscos & Drinks" },
+      { time: "17:20", activity: "Chegada em Casa (Maricá) com Segurança 🏠✨", details: "Retorno tranquilo pela BR-101 e Estrada de Ubatiba no final do feriado de 7 de Setembro. Fim de uma viagem inesquecível a dois com o carro próprio!", costType: "gratuito", costLabel: "Viagem Concluída" }
+    ],
+    culturalTitle: "🏖️ Guia Completo — Guarapari, Praias Paradisíacas & Rota BR-101",
+    culturalTips: [
+      "Moqueca Capixaba Autêntica: 'Moqueca é capixaba, o resto é peixada!' Não deixe de provar no Curuca ou Gaeta em Meaípe.",
+      "Areias Monazíticas: A Praia da Areia Preta é mundialmente famosa por suas propriedades terapêuticas naturais.",
+      "Praia dos Padres: Leve água e protetor solar, pois a praia tem menos quiosques e preserva visual rústico de cartão-postal."
+    ],
+    logisticsTitle: "🚗 Logística da Road Trip (Maricá ⇄ Guarapari)",
+    logisticsTips: [
+      "Distância e Tempo: 449.5 km por trecho (899 km total ida e volta) — cerca de 7h 20min de direção tranquila.",
+      "Custos Fixos Calculados: R$ 76,60 em pedágios (BR-101) + R$ 476,49 em combustível (Gasolina R$ 6,89, média 13 km/l) = R$ 553,09 total.",
+      "Paradas Recomendadas: Paradas de descanso em Campos dos Goytacazes (RJ) e Mimoso do Sul (ES) para café e esticar as pernas."
+    ]
+  },
+
+  // 0. Roteiro Março de 2027 (Santa Catarina > Cruzeiro MSC > SP > Rio)
+  'am_marco_2027': {
+    id: 'am_marco_2027',
+    title: 'SC > Cruzeiro > SP > Rio',
+    date: '11 de Março a 17 de Março de 2027',
+    base: 'Bases: Balneário Camboriú, Navio MSC Musica, SP & Maricá',
+    mode: 'Modo Roteiro Integrado • Aéreo + Cruzeiro + Terrestre',
+    flagType: 'marco_2027',
+    dias: [
+      { data: '11/03', label: 'QUINTA' },
+      { data: '12/03', label: 'SEXTA' },
+      { data: '13/03', label: 'SÁBADO' },
+      { data: '14/03', label: 'DOMINGO' },
+      { data: '15/03', label: 'SEGUNDA' },
+      { data: '16/03', label: 'TERÇA' },
+      { data: '17/03', label: 'QUARTA' }
+    ],
+    manha: [
+      { time: "20:00", activity: "Voo GIG/SDU ✈️ NVT (Navegantes)", details: "Voo com destino ao Aeroporto Internacional de Navegantes (NVT). Uber/táxi para hospedagem em Balneário Camboriú ou próximo ao parque.", costType: "pago", costLabel: "💳 Voo + Uber" },
+      { time: "09:00", activity: "Beto Carrero World (Dia Inteiro no Parque) 🎡", details: "Dia integralmente dedicado ao Beto Carrero World em Penha. Parque mais vazio por ser dia útil, otimizando atracões e filas.", costType: "pago", costLabel: "💳 Ingresso Beto Carrero" },
+      { time: "09:00", activity: "Museu Histórico de Itajaí & Parque do Atalaia 🏛️", details: "Visita ao Museu Histórico de Itajaí (aberto 09h-13h) para entender a formação da cidade e porto. Depois, Parque Natural Municipal do Atalaia para observar o relevo costeiro e a foz do rio.", costType: "gratuito", costLabel: "Gratuito / Cultural" },
+      { time: "08:00", activity: "Café da Manhã & Check-out em Balneário ☕", details: "Check-out tranquilo na hospedagem. Às 11h, Uber de Balneário Camboriú ao Porto de Itajaí (30-40 min) para evitar filas e almoçar a bordo.", costType: "pago", costLabel: "💳 Uber Porto" },
+      { time: "08:00", activity: "Chegada a Santos & Ônibus Subindo a Serra do Mar 🚌", details: "Atracação no Terminal Concais em Santos (08h-10h). Uber até o Terminal Rodoviário de Santos e ônibus para São Paulo (Viação Cometa/Express). Vista da escarpa da Serra do Mar e Mata Atlântica.", costType: "pago", costLabel: "💳 Uber + Passagem Ônibus" },
+      { time: "09:00", activity: "Avenida Paulista, MASP & Japan House 🎨", details: "Caminhada pela Avenida Paulista observando arquitetura e dinâmicas urbanas. Visita ao MASP ou Japan House (entrada gratuita).", costType: "misto", costLabel: "💳 Passeio SP" },
+      { time: "09:00", activity: "Centro Histórico SP, Bairro da Liberdade ou Pinacoteca ⛩️", details: "(Se optar por 2ª diária em SP): Exploração do bairro oriental da Liberdade, Farol Santander ou acervo da Pinacoteca do Estado.", costType: "pago", costLabel: "💳 Opção Diária 2" }
+    ],
+    tarde: [
+      { time: "14:00", activity: "Check-in Hospedagem & Organização de Malas 🏨", details: "Deixar bagagens no hotel/pousada em Balneário Camboriú e preparar para os passeios da região.", costType: "pago", costLabel: "💳 Hospedagem" },
+      { time: "13:00", activity: "Almoço dentro do Parque & Shows 🍔", details: "Almoço na praça temática, show Hot Wheels Epic Show e principais montanhas-russas.", costType: "pago", costLabel: "💳 Alimentação Parque" },
+      { time: "12:30", activity: "Almoço em Itajaí & Parque Ecológico Raimundo Malta 🌿", details: "Almoço no Mercado Público de Itajaí (gastronomia tradicional) ou shopping. Às 14h30, Parque Ecológico Raimundo Malta em BC com trilhas planas e muita sombra.", costType: "pago", costLabel: "💳 Almoço + Parque" },
+      { time: "12:00", activity: "Embarque no Navio MSC Musica (Tarifa Super Bingo) 🚢", details: "Check-in no Terminal Cruzeiros de Itajaí. Entrada na cabine, almoço buffet a bordo e exploração da estrutura do navio. Despartida às 17h!", costType: "pago", costLabel: "💳 Cruzeiro R$ 434/p" },
+      { time: "13:00", activity: "Check-in Hotel SP & Parque Ibirapuera + Museu Afro Brasil 🏛️", details: "Desembarque no Jabaquara, check-in no hotel. Visita ao Parque Ibirapuera com imersão profunda no Museu Afro Brasil (história, cultura e resistência negra).", costType: "pago", costLabel: "💳 Ingresso Museu / Uber" },
+      { time: "13:00", activity: "Almoço Paulista & Transfer p/ Aeroporto (CGH / GRU) ✈️", details: "Almoço em restaurante tradicional da Paulista ou Jardins. Uber para Congonhas ou Guarulhos e voo de retorno ao Rio de Janeiro.", costType: "pago", costLabel: "💳 Voo Retorno RJ" },
+      { time: "13:00", activity: "Almoço no Mercado Municipal de SP (Sanduíche de Mortadela) 🥪", details: "Almoço festivo no Mercadão de SP provando pastel de bacalhau e sanduíche tradicional.", costType: "pago", costLabel: "💳 Mercadão" }
+    ],
+    noite: [
+      { time: "19:30", activity: "Jantar Leve em Balneário Camboriú 🍽️", details: "Caminhada inicial pela orla da praia central ou restaurante próximo. Descanso para acordar cedo.", costType: "pago", costLabel: "💳 Jantar" },
+      { time: "18:30", activity: "Retorno a Balneário Camboriú & Jantar 🍕", details: "Retorno para a hospedagem, jantar prático e descanso total das pernas.", costType: "pago", costLabel: "💳 Jantar" },
+      { time: "18:00", activity: "Jantar no Balneário Shopping & Preparação p/ Cruzeiro 🛍️", details: "Jantar tranquilo no Balneário Shopping ou Atlântico Shopping. Retorno cedo p/ hospedagem p/ garantir sono antes do embarque no navio.", costType: "pago", costLabel: "💳 Jantar" },
+      { time: "19:00", activity: "Jantar Gastronômico & Show Estilo Broadway a Bordo 🎭", details: "Primeiro jantar com menu internacional incluído e espetáculo teatral no teatro do MSC Musica navegando pelo oceano.", costType: "gratuito", costLabel: "Incluído no Navio" },
+      { time: "19:30", activity: "Caminhada e Jantar na Avenida Paulista 🍝", details: "Jantar aconchegante e passeio noturno iluminado pelos arredores da Avenida Paulista e Jardins.", costType: "pago", costLabel: "💳 Jantar SP" },
+      { time: "19:00", activity: "Desembarque no RJ & Chegada em Casa (Maricá) 🏠", details: "Pouso no Santos Dumont (SDU) ou Galeão (GIG) e transporte final de volta para a residência em Maricá com bagagem cheia de boas memórias!", costType: "gratuito", costLabel: "Concluído" },
+      { time: "18:00", activity: "Voo de Volta SP ✈️ RJ & Chegada a Maricá 🚗", details: "Voo final para o Rio e transporte para Maricá se tiver optado pela pernoite extra de quarta-feira.", costType: "gratuito", costLabel: "Concluído" }
+    ],
+    culturalTitle: "🚢 Roteiro Integrado — Santa Catarina, Navio MSC Musica, São Paulo & Maricá",
+    mscBookingUrl: "https://www.msccruzeiros.com.br/Booking?CruiseID=MU20270314ITJSSZ&Type=CROL&DealID=bb9cf5fc-d79f-464c-86ad-204f956e3d22&PriceCode=&NewCruise=true&MacroCategory=&Category=&D5khRbFgz0nqK8qp3Z8MmCXdefQJ5QMiU3p2m_ul_L8QxQNI8tVX6KR8hM35HIwT&src=BB9CF5FCD79F464C86AD204F956E3D22#/pricing",
+    culturalTips: [
+      "No Parque Beto Carrero (Sexta 12/03), dia útil ideal com menor fila nas montanhas-russas.",
+      "Pacotes do Cruzeiro MSC Musica (14/03 Itajaí -> Santos): Opções de R$ 454 (sem bebidas), R$ 634 (Pacote Easy Bebidas) e R$ 684 (Premium Extra). Todas incluem refeições e espetáculos estilo Broadway!",
+      "No Museu Afro Brasil (Ibirapuera - SP), reserve ao menos 2h para uma experiência cultural e histórica inesquecível."
+    ],
+    logisticsTitle: "📌 Dicas de Logística & Link de Reserva Directa MSC",
+    logisticsTips: [
+      "Voo de ida: Rio de Janeiro (SDU/GIG) ✈️ Navegantes (NVT).",
+      "Embarque do Navio: Porto de Itajaí às 11h do domingo 14/03 (Saída 17h / Chegada Santos 08h de segunda).",
+      "Desembarque: Terminal Concais de Santos -> Ônibus para SP subindo a Serra do Mar.",
+      "Link de Reserva do Cruzeiro MSC Musica: Acesse o painel abaixo para comprar diretamente no site oficial da MSC."
+    ],
+    cruisePackages: [
+      {
+        title: "3º E 4º VIAJAM GRÁTIS",
+        price: "R$ 454",
+        priceNote: "por pessoa*",
+        badge: "Opção Mais Econômica",
+        features: [
+          "3º e 4º hóspedes viajam grátis pagando apenas as taxas",
+          "Amplas e confortáveis cabines",
+          "Todas as refeições com o melhor da gastronomia internacional (Buffet & Restaurantes)",
+          "Shows ao estilo Broadway no teatro do navio",
+          "Atividades e entretenimento para toda a família"
+        ]
+      },
+      {
+        title: "BEBIDAS INCLUSAS",
+        price: "R$ 634",
+        priceNote: "por pessoa*",
+        badge: "Mais Vendido / Recomendado",
+        highlight: true,
+        features: [
+          "3º e 4º hóspedes viajam grátis pagando apenas as taxas",
+          "Pacote de Bebidas Easy Incluso (Chopp, vinhos em taça, refrigerantes, sucos, água mineral & bebidas quentes)",
+          "Todas as refeições inclusas na gastronomia internacional",
+          "Shows ao estilo Broadway e estrutura de lazer a bordo"
+        ]
+      },
+      {
+        title: "PREMIUM EXTRA INCLUSO",
+        price: "R$ 684",
+        priceNote: "por pessoa*",
+        badge: "Experiência VIP Completa",
+        features: [
+          "3º e 4º hóspedes viajam grátis pagando apenas as taxas",
+          "Pacote de Bebidas Premium Extra Incluso",
+          "Vinhos finos, destilados de marcas premium, coquetéis artesanais & cervejas especiais",
+          "Sucos naturais, energéticos, cafés de especialidade e águas de garrafa",
+          "Gastronomia completa e espetáculos ao estilo Broadway"
+        ]
+      }
+    ]
+  },
+
   // 1. Salvador - Plano E (Férias em Salvador)
   'am_salvador_julho': {
     id: 'am_salvador_julho',
@@ -109,14 +258,14 @@ const ITINERARY_DATABASE: Record<string, TripItineraryConfig> = {
     mode: 'Modo Road Trip • Carro Alugado',
     flagType: 'bahia_serg_alagoas',
     dias: [
-      { data: '16/07 (Qui)', label: 'Quinta (Chegada SSA)' },
-      { data: '17/07 (Sex)', label: 'Sexta (Pelourinho & Bahia)' },
-      { data: '18/07 (Sáb)', label: 'Sábado (Indo p/ Maceió)' },
-      { data: '19/07 (Dom)', label: 'Domingo (Maragogi)' },
-      { data: '20/07 (Seg)', label: 'Segunda (Maceió ➔ Aracaju)' },
-      { data: '21/07 (Ter)', label: 'Terça (Hoje - Passeios SSA)' },
-      { data: '22/07 (Qua)', label: 'Quarta (Amanhã - ÚLTIMO DIA)' },
-      { data: '23/07 (Qui)', label: 'Quinta (VOO 05h50 ✈️)' }
+      { data: '16/07', label: 'QUINTA' },
+      { data: '17/07', label: 'SEXTA' },
+      { data: '18/07', label: 'SÁBADO' },
+      { data: '19/07', label: 'DOMINGO' },
+      { data: '20/07', label: 'SEGUNDA' },
+      { data: '21/07', label: 'TERÇA' },
+      { data: '22/07', label: 'QUARTA' },
+      { data: '23/07', label: 'QUINTA' }
     ],
     manha: [
       { time: "08:25", activity: "Voo GIG → SSA (Confirmado! 📱)", details: "Decolagem autorizada no Aeroporto do Galeão (GIG) às 08h25 no voo G3 1896. Viagem tranquila com previsão de pouso em Salvador (SSA) às 10h30. Malas prontas para começar a viagem cedo!", costType: "gratuito", costLabel: "Sem Custos Extra" },
@@ -125,7 +274,7 @@ const ITINERARY_DATABASE: Record<string, TripItineraryConfig> = {
       { time: "06:00", activity: "Saída para Maragogi (Catamarã)", details: "Saída para Maragogi (Passeio fechado com agência). A viagem dura cerca de 2h a 2h30. Aproveitar o pacote já incluso (Transporte + Passeio de Catamarã às piscinas naturais).", costType: "pago", costLabel: "💳 Combo 2 Dias" },
       { time: "07:00", activity: "Praia do Gunga", details: "Saída para a Praia do Gunga (roteiro completo com a agência). A praia fica a cerca de 1 hora de Maceió. O roteiro includes Parada para Fotos e Mirante.", costType: "pago", costLabel: "Incluso no Combo" },
       { time: "12:00", activity: "Saída de Aracaju (12h) 🚗", details: "Manhã tranquila e saída de Aracaju às 12h00 pegando a rodovia em direção a Salvador.", costType: "pago", costLabel: "💳 Combustível + Pedágio" },
-      { time: "09:00", activity: "🏛️ Cidade Baixa, Elevação & Cidade Alta", details: "• 09:00 — Galeria Mercado Modelo (Subsolo): Nova expografia no subsolo desmistificando o mito de prisão de escravizados (era estrutura de sustentação da alfândega), abrigando a série 'Cabeças de Tempo' de Mário Cravo Jr. e esculturas de Rubem Valentim. (Entrada Gratuita às quartas).\n• 10:00 — Casa das Histórias de Salvador: Na Rua da Bélgica (ao lado do Mercado Modelo), oferecendo uma imersão na formação estrutural, arquitetônica e social de Salvador. (Entrada Gratuita às quartas).\n• 11:30 — Elevador Lacerda (R$ 0,15) & Fundação Casa de Jorge Amado: Subida para a Cidade Alta rumo ao Largo do Pelourinho para conferir a exposição temática dedicada a Exu e o acervo de literatura baiana. (Entrada Gratuita às quartas).", costType: "gratuito", costLabel: "💸 100% Gratuito (Quarta Cultural)" },
+      { time: "09:00", activity: "🏛️ Cidade Baixa, Elevação & Cidade Alta (Pelourinho)", details: "• 09:00 — Galeria Mercado Modelo (Subsolo): Nova expografia no subsolo desmistificando o mito de prisão de escravizados (era estrutura de sustentação da alfândega), abrigando a série 'Cabeças de Tempo' de Mário Cravo Jr. e esculturas de Rubem Valentim. (Entrada Gratuita às quartas).\n• 10:00 — Casa das Histórias de Salvador: Na Rua da Bélgica (ao lado do Mercado Modelo), oferecendo uma imersão na formação estrutural, arquitetônica e social de Salvador. (Entrada Gratuita às quartas).\n• 11:30 — Elevador Lacerda (R$ 0,15): Subida para a Cidade Alta rumo ao Pelourinho para dar início ao circuito cultural e almoço.", costType: "gratuito", costLabel: "💸 100% Gratuito (Quarta Cultural)" },
       { time: "02:00", activity: "Acordar e Aeroporto (SSA)", details: "02h00: Acordar e solicitar o Uber. Devolução do carro se aplicável na locadora.\n02h30-03h00: Chegada ao Aeroporto de Salvador (SSA) para despachar bagagem e raio-x com calma.\n05h50: Decolagem do voo G3 1865 de volta para o Rio de Janeiro.", costType: "pago", costLabel: "💳 Gasto: Uber/Devolução" }
     ],
     tarde: [
@@ -135,7 +284,7 @@ const ITINERARY_DATABASE: Record<string, TripItineraryConfig> = {
       { time: "Tarde", activity: "Maragogi e Retorno", details: "Continuar aproveitando as belezas das piscinas naturais de Maragogi. Fim da tarde: Retorno para Maceió.", costType: "gratuito", costLabel: "-" },
       { time: "15:30", activity: "Fim do Passeio e Viagem p/ Aracaju", details: "Fim do passeio no Gunga e partida imediata rumo a Aracaju. A viagem tem cerca de 270 km e dura em média 4h30.", costType: "pago", costLabel: "💳 Gasto: Combustível" },
       { time: "15:00", activity: "Outlet Premium, Aeroporto (Passagens) & Localiza 🛍️✈️", details: "• Parada no Outlet Premium Salvador na Estrada do Coco para passear e conhecer.\n• Visita ao Aeroporto de Salvador (SSA) para consultar remarcação/ajuste de voos.\n• Passagem na Localiza para tratativas do veículo.", costType: "misto", costLabel: "💳 Compras / Logística" },
-      { time: "13:00", activity: "🏿 Culinária de Resistência, Museologia & Ancestralidade", details: "13:00 — Almoço no Restaurante Zanzibar: No Santo Antônio Além do Carmo (caminhada curta a partir do Pelourinho), com culinária africana tradicional.\n14:30 — MUNCAB (Museu Nacional da Cultura Afro-Brasileira): Na Rua das Vassouras, abordando a diáspora, equidade racial e o enfrentamento ao racismo através da arte. (Ingresso: R$ 20,00 | Entrada permitida até as 16h30).\n15:45 — Ilê Axé Oxumare / Casa de Oxumarê: Passagem pela Av. Vasco da Gama para contemplar a imponência e o peso histórico deste terreiro secular, monumento vivo da resistência negra no Brasil.", costType: "pago", costLabel: "💳 MUNCAB: R$ 20 + Almoço Zanzibar" },
+      { time: "13:00", activity: "🍲 Almoço no Axego, Casa de Jorge Amado & Gastronomia Baiana 🏛️", details: "• 13:00 — Almoço no Axego Restaurante & Bar: Almoço especial saboreando a autêntica moqueca e culinária baiana no Pelourinho.\n• 14:30 — Fundação Casa de Jorge Amado: Visita ao casarão azul no Largo do Pelourinho com exposições da obra literária e a exposição temática dedicada a Exu.\n• 15:30 — Museu da Gastronomia Baiana (Senac Pelourinho): Imersão na história dos pratos típicos, temperos, baianas de acarajé e acervo da culinária baiana.", costType: "pago", costLabel: "💳 Axego + Museus Pelourinho" },
       { time: "08:15", activity: "Pouso no Rio de Janeiro (GIG) 🛬", details: "Chegada prevista no Aeroporto Galeão (GIG) às 08h15. Retorno seguro à residência no RJ finalizando as férias inesquecíveis no Nordeste!", costType: "gratuito", costLabel: "-" }
     ],
     noite: [
@@ -170,15 +319,15 @@ const ITINERARY_DATABASE: Record<string, TripItineraryConfig> = {
     mode: 'Modo Conjugado Nordeste',
     flagType: 'bahia_serg',
     dias: [
-      { data: '11/07 (Sáb)', label: 'Sábado' },
-      { data: '12/07 (Dom)', label: 'Domingo' },
-      { data: '13/07 (Seg)', label: 'Segunda' },
-      { data: '14/07 (Ter)', label: 'Terça' },
-      { data: '15/07 (Qua)', label: 'Quarta' },
-      { data: '16/07 (Qui)', label: 'Quinta' },
-      { data: '17/07 (Sex)', label: 'Sexta' },
-      { data: '18/07 (Sáb)', label: 'Sábado' },
-      { data: '19/07 (Dom)', label: 'Domingo' }
+      { data: '11/07', label: 'SÁBADO' },
+      { data: '12/07', label: 'DOMINGO' },
+      { data: '13/07', label: 'SEGUNDA' },
+      { data: '14/07', label: 'TERÇA' },
+      { data: '15/07', label: 'QUARTA' },
+      { data: '16/07', label: 'QUINTA' },
+      { data: '17/07', label: 'SEXTA' },
+      { data: '18/07', label: 'SÁBADO' },
+      { data: '19/07', label: 'DOMINGO' }
     ],
     manha: [
       { time: "Manhã", activity: "Embarque no Rio", details: "Voo LATAM GIG -> SSA.", costType: "pago", costLabel: "💳 Gasto: Voo de Ida" },
@@ -232,15 +381,15 @@ const ITINERARY_DATABASE: Record<string, TripItineraryConfig> = {
     mode: 'Modo Conjugado Nordeste',
     flagType: 'bahia_serg',
     dias: [
-      { data: '11/07 (Sáb)', label: 'Sábado' },
-      { data: '12/07 (Dom)', label: 'Domingo' },
-      { data: '13/07 (Seg)', label: 'Segunda' },
-      { data: '14/07 (Ter)', label: 'Terça' },
-      { data: '15/07 (Qua)', label: 'Quarta' },
-      { data: '16/07 (Qui)', label: 'Quinta' },
-      { data: '17/07 (Sex)', label: 'Sexta' },
-      { data: '18/07 (Sáb)', label: 'Sábado' },
-      { data: '19/07 (Dom)', label: 'Domingo' }
+      { data: '11/07', label: 'SÁBADO' },
+      { data: '12/07', label: 'DOMINGO' },
+      { data: '13/07', label: 'SEGUNDA' },
+      { data: '14/07', label: 'TERÇA' },
+      { data: '15/07', label: 'QUARTA' },
+      { data: '16/07', label: 'QUINTA' },
+      { data: '17/07', label: 'SEXTA' },
+      { data: '18/07', label: 'SÁBADO' },
+      { data: '19/07', label: 'DOMINGO' }
     ],
     manha: [
       { time: "Manhã", activity: "Embarque no Rio", details: "Voo LATAM GIG -> SSA.", costType: "pago", costLabel: "💳 Gasto: Voo de Ida" },
@@ -296,14 +445,14 @@ const ITINERARY_DATABASE: Record<string, TripItineraryConfig> = {
     mode: 'Modo Premium Internacional',
     flagType: 'argentina_brazil',
     dias: [
-      { data: '01/01 (Sex)', label: 'Sexta' },
-      { data: '02/01 (Sáb)', label: 'Sábado' },
-      { data: '03/01 (Dom)', label: 'Domingo' },
-      { data: '04/01 (Seg)', label: 'Segunda' },
-      { data: '05/01 (Ter)', label: 'Terça' },
-      { data: '06/01 (Qua)', label: 'Quarta' },
-      { data: '07/01 (Qui)', label: 'Quinta' },
-      { data: '08/01 (Sex)', label: 'Sexta' }
+      { data: '01/01', label: 'SEXTA' },
+      { data: '02/01', label: 'SÁBADO' },
+      { data: '03/01', label: 'DOMINGO' },
+      { data: '04/01', label: 'SEGUNDA' },
+      { data: '05/01', label: 'TERÇA' },
+      { data: '06/01', label: 'QUARTA' },
+      { data: '07/01', label: 'QUINTA' },
+      { data: '08/01', label: 'SEXTA' }
     ],
     manha: [
       { time: "03:55", activity: "Voo para Buenos Aires", details: "Decolagem do voo Flybondi de GIG para AEP. Check-in e migração.", costType: "pago", costLabel: "💳 Gasto: Passagem" },
@@ -354,14 +503,14 @@ const ITINERARY_DATABASE: Record<string, TripItineraryConfig> = {
     mode: 'Modo Multi-Destinos',
     flagType: 'argentina_brazil',
     dias: [
-      { data: '01/01 (Sex)', label: 'Sexta' },
-      { data: '02/01 (Sáb)', label: 'Sábado' },
-      { data: '03/01 (Dom)', label: 'Domingo' },
-      { data: '04/01 (Seg)', label: 'Segunda' },
-      { data: '05/01 (Ter)', label: 'Terça' },
-      { data: '06/01 (Qua)', label: 'Quarta' },
-      { data: '07/01 (Qui)', label: 'Quinta' },
-      { data: '08/01 (Sex)', label: 'Sexta' }
+      { data: '01/01', label: 'SEXTA' },
+      { data: '02/01', label: 'SÁBADO' },
+      { data: '03/01', label: 'DOMINGO' },
+      { data: '04/01', label: 'SEGUNDA' },
+      { data: '05/01', label: 'TERÇA' },
+      { data: '06/01', label: 'QUARTA' },
+      { data: '07/01', label: 'QUINTA' },
+      { data: '08/01', label: 'SEXTA' }
     ],
     manha: [
       { time: "03:55", activity: "Voo para Buenos Aires", details: "Decolagem do voo Flybondi de GIG para AEP. Check-in e migração.", costType: "pago", costLabel: "💳 Gasto: Passagem" },
@@ -414,14 +563,14 @@ const ITINERARY_DATABASE: Record<string, TripItineraryConfig> = {
     mode: 'Modo Road Trip • Detalhado',
     flagType: 'bahia_serg_alagoas',
     dias: [
-      { data: '16/07 (Qui)', label: 'Quinta (Salvador)' },
-      { data: '17/07 (Sex)', label: 'Sexta (Salvador)' },
-      { data: '18/07 (Sáb)', label: 'Sábado (Salvador p/ Maceió)' },
-      { data: '19/07 (Dom)', label: 'Domingo (Maceió/Maragogi)' },
-      { data: '20/07 (Seg)', label: 'Segunda (Maceió p/ Aracaju)' },
-      { data: '21/07 (Ter)', label: 'Terça (Aracaju)' },
-      { data: '22/07 (Qua)', label: 'Quarta (Aracaju p/ Salvador)' },
-      { data: '23/07 (Qui)', label: 'Quinta (Retorno ao Rio)' }
+      { data: '16/07', label: 'QUINTA' },
+      { data: '17/07', label: 'SEXTA' },
+      { data: '18/07', label: 'SÁBADO' },
+      { data: '19/07', label: 'DOMINGO' },
+      { data: '20/07', label: 'SEGUNDA' },
+      { data: '21/07', label: 'TERÇA' },
+      { data: '22/07', label: 'QUARTA' },
+      { data: '23/07', label: 'QUINTA' }
     ],
     manha: [
       { time: "Manhã", activity: "Chegada em Salvador", details: "Check-in e preparação para o jogo do Bahia.", costType: "gratuito", costLabel: "-" },
@@ -472,14 +621,14 @@ const ITINERARY_DATABASE: Record<string, TripItineraryConfig> = {
     mode: 'Modo Descoberta e Praia',
     flagType: 'colombia',
     dias: [
-      { data: '14/01 (Qui)', label: 'Quinta' },
-      { data: '15/01 (Sex)', label: 'Sexta' },
-      { data: '16/01 (Sáb)', label: 'Sábado' },
-      { data: '17/01 (Dom)', label: 'Domingo' },
-      { data: '18/01 (Seg)', label: 'Segunda' },
-      { data: '19/01 (Ter)', label: 'Terça' },
-      { data: '20/01 (Qua)', label: 'Quarta' },
-      { data: '21/01 (Qui)', label: 'Quinta' }
+      { data: '14/01', label: 'QUINTA' },
+      { data: '15/01', label: 'SEXTA' },
+      { data: '16/01', label: 'SÁBADO' },
+      { data: '17/01', label: 'DOMINGO' },
+      { data: '18/01', label: 'SEGUNDA' },
+      { data: '19/01', label: 'TERÇA' },
+      { data: '20/01', label: 'QUARTA' },
+      { data: '21/01', label: 'QUINTA' }
     ],
     manha: [
       { time: "19:10", activity: "Voo para Colômbia", details: "Embarque no GIG rumo a Medellín com conexão.", costType: "pago", costLabel: "💳 Gasto: Passagem já paga" },
@@ -690,6 +839,157 @@ const drawBrazilFlag = (ctx: CanvasRenderingContext2D, w: number, h: number) => 
   ctx.stroke();
 };
 
+const drawSantaCatarinaFlag = (ctx: CanvasRenderingContext2D, w: number, h: number) => {
+  const stripeH = h / 3;
+  ctx.fillStyle = '#E8112D'; // Vermelho
+  ctx.fillRect(0, 0, w, stripeH);
+  ctx.fillStyle = '#FFFFFF'; // Branco
+  ctx.fillRect(0, stripeH, w, stripeH);
+  ctx.fillStyle = '#E8112D'; // Vermelho
+  ctx.fillRect(0, stripeH * 2, w, stripeH);
+
+  // Losango verde
+  ctx.fillStyle = '#007A48';
+  ctx.beginPath();
+  ctx.moveTo(w / 2, h * 0.18);
+  ctx.lineTo(w * 0.82, h / 2);
+  ctx.lineTo(w / 2, h * 0.82);
+  ctx.lineTo(w * 0.18, h / 2);
+  ctx.closePath();
+  ctx.fill();
+
+  // Estrela branca no centro
+  ctx.fillStyle = '#FFFFFF';
+  const cx = w / 2;
+  const cy = h / 2;
+  const r = h * 0.12;
+  ctx.beginPath();
+  for (let i = 0; i < 5; i++) {
+    ctx.lineTo(Math.cos((18 + i * 72) * Math.PI / 180) * r + cx, -Math.sin((18 + i * 72) * Math.PI / 180) * r + cy);
+    ctx.lineTo(Math.cos((54 + i * 72) * Math.PI / 180) * (r * 0.4) + cx, -Math.sin((54 + i * 72) * Math.PI / 180) * (r * 0.4) + cy);
+  }
+  ctx.closePath();
+  ctx.fill();
+};
+
+const drawCruiseFlag = (ctx: CanvasRenderingContext2D, w: number, h: number) => {
+  // Oceano Azul MSC
+  const grad = ctx.createLinearGradient(0, 0, 0, h);
+  grad.addColorStop(0, '#001E4D');
+  grad.addColorStop(1, '#0052A5');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, w, h);
+
+  // Ondas
+  ctx.fillStyle = '#00A3E0';
+  ctx.beginPath();
+  ctx.arc(w / 2, h * 1.35, h * 0.75, 0, 2 * Math.PI);
+  ctx.fill();
+
+  // Casco do Navio
+  ctx.fillStyle = '#FFFFFF';
+  ctx.beginPath();
+  ctx.moveTo(w * 0.12, h * 0.55);
+  ctx.lineTo(w * 0.88, h * 0.55);
+  ctx.lineTo(w * 0.76, h * 0.72);
+  ctx.lineTo(w * 0.24, h * 0.72);
+  ctx.closePath();
+  ctx.fill();
+
+  // Decks superiores
+  ctx.fillRect(w * 0.22, h * 0.42, w * 0.56, h * 0.11);
+  ctx.fillRect(w * 0.30, h * 0.32, w * 0.40, h * 0.09);
+
+  // Chaminé Vermelha
+  ctx.fillStyle = '#E8112D';
+  ctx.fillRect(w * 0.52, h * 0.20, w * 0.12, h * 0.11);
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(w * 0.52, h * 0.20, w * 0.12, h * 0.025);
+};
+
+const drawSaoPauloFlag = (ctx: CanvasRenderingContext2D, w: number, h: number) => {
+  const stripes = 13;
+  const stripeH = h / stripes;
+  for (let i = 0; i < stripes; i++) {
+    ctx.fillStyle = i % 2 === 0 ? '#000000' : '#FFFFFF';
+    ctx.fillRect(0, i * stripeH, w, stripeH);
+  }
+
+  // Cantão vermelho
+  const cantonW = w * 0.45;
+  const cantonH = stripeH * 5;
+  ctx.fillStyle = '#E8112D';
+  ctx.fillRect(0, 0, cantonW, cantonH);
+
+  // Círculo com detalhe
+  ctx.fillStyle = '#FFFFFF';
+  ctx.beginPath();
+  ctx.arc(cantonW / 2, cantonH / 2, cantonH * 0.32, 0, 2 * Math.PI);
+  ctx.fill();
+
+  ctx.fillStyle = '#000000';
+  ctx.beginPath();
+  ctx.arc(cantonW / 2, cantonH / 2, cantonH * 0.18, 0, 2 * Math.PI);
+  ctx.fill();
+};
+
+const drawRioFlag = (ctx: CanvasRenderingContext2D, w: number, h: number) => {
+  const hw = w / 2;
+  const hh = h / 2;
+
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(0, 0, hw, hh);
+  ctx.fillStyle = '#1A75CF';
+  ctx.fillRect(hw, 0, hw, hh);
+  ctx.fillStyle = '#1A75CF';
+  ctx.fillRect(0, hh, hw, hh);
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(hw, hh, hw, hh);
+
+  // Brasão central vermelho
+  ctx.fillStyle = '#E8112D';
+  ctx.beginPath();
+  ctx.arc(hw, hh, h * 0.22, 0, 2 * Math.PI);
+  ctx.fill();
+
+  ctx.strokeStyle = '#FFD200';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  // Estrela dourada no centro
+  ctx.fillStyle = '#FFD200';
+  const cx = hw;
+  const cy = hh;
+  const r = h * 0.10;
+  ctx.beginPath();
+  for (let i = 0; i < 5; i++) {
+    ctx.lineTo(Math.cos((18 + i * 72) * Math.PI / 180) * r + cx, -Math.sin((18 + i * 72) * Math.PI / 180) * r + cy);
+    ctx.lineTo(Math.cos((54 + i * 72) * Math.PI / 180) * (r * 0.4) + cx, -Math.sin((54 + i * 72) * Math.PI / 180) * (r * 0.4) + cy);
+  }
+  ctx.closePath();
+  ctx.fill();
+};
+
+const drawEspiritoSantoFlag = (ctx: CanvasRenderingContext2D, w: number, h: number) => {
+  const stripeH = h / 3;
+  // Azul celeste (topo)
+  ctx.fillStyle = '#87CEEB';
+  ctx.fillRect(0, 0, w, stripeH);
+  // Branco (meio)
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(0, stripeH, w, stripeH);
+  // Rosa claro (fundo)
+  ctx.fillStyle = '#F8A5C2';
+  ctx.fillRect(0, stripeH * 2, w, stripeH);
+
+  // Faixa/Arco suave no meio
+  ctx.strokeStyle = '#3A86FF';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.arc(w / 2, stripeH * 1.5, stripeH * 0.35, 0, Math.PI);
+  ctx.stroke();
+};
+
 const GuideList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [selectedTrip, setSelectedTrip] = useState<any>(null);
@@ -853,6 +1153,70 @@ const GuideList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
           ctx.fillStyle = '#FFFFFF';
           ctx.fillRect(w / 3 - 1, 0, 2, h);
           ctx.fillRect(w * 2 / 3 - 1, 0, 2, h);
+        } else if (flagType === 'marco_2027') {
+          // Blended 4 flags: Santa Catarina | Cruzeiro MSC | São Paulo | Rio de Janeiro
+          const sw = w / 4;
+
+          // 1. Santa Catarina
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(0, 0, sw, h);
+          ctx.clip();
+          drawSantaCatarinaFlag(ctx, sw, h);
+          ctx.restore();
+
+          // 2. Cruzeiro MSC
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(sw, 0, sw, h);
+          ctx.clip();
+          ctx.translate(sw, 0);
+          drawCruiseFlag(ctx, sw, h);
+          ctx.restore();
+
+          // 3. São Paulo
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(sw * 2, 0, sw, h);
+          ctx.clip();
+          ctx.translate(sw * 2, 0);
+          drawSaoPauloFlag(ctx, sw, h);
+          ctx.restore();
+
+          // 4. Rio de Janeiro
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(sw * 3, 0, sw, h);
+          ctx.clip();
+          ctx.translate(sw * 3, 0);
+          drawRioFlag(ctx, sw, h);
+          ctx.restore();
+
+          // Line dividers
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fillRect(sw - 1, 0, 2, h);
+          ctx.fillRect(sw * 2 - 1, 0, 2, h);
+          ctx.fillRect(sw * 3 - 1, 0, 2, h);
+        } else if (flagType === 'guarapari_2027') {
+          // Blended Rio de Janeiro & Espírito Santo flags (Road trip RJ -> ES)
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(0, 0, w / 2, h);
+          ctx.clip();
+          drawRioFlag(ctx, w / 2, h);
+          ctx.restore();
+
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(w / 2, 0, w / 2, h);
+          ctx.clip();
+          ctx.translate(w / 2, 0);
+          drawEspiritoSantoFlag(ctx, w / 2, h);
+          ctx.restore();
+
+          // White separation line
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fillRect(w / 2 - 1.5, 0, 3, h);
         } else if (flagType === 'colombia') {
           drawColombiaFlag(ctx, w, h);
         } else if (flagType === 'argentina' || flagType === 'argentina_brazil') {
@@ -1149,21 +1513,30 @@ const GuideList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
         {/* Header Section */}
         <div className="p-6 md:p-10 border-b-2 border-slate-100 flex flex-col md:flex-row items-center justify-between gap-6 bg-white">
           <div className="flex flex-col md:flex-row items-center gap-6 w-full text-center md:text-left">
-            <div className="shadow-md border-2 border-slate-200/60 p-2 bg-white rounded-xl select-none shrink-0">
-              <canvas ref={canvasRef} width="160" height="106" className="rounded-lg shadow-inner block"></canvas>
+            <div className="w-24 h-24 rounded-2xl bg-gradient-to-tr from-slate-900 to-slate-800 border border-slate-700 shadow-xl flex items-center justify-center select-none shrink-0 relative overflow-hidden group">
+              {/* Subtle background glow */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 via-cyan-500/15 to-transparent opacity-60"></div>
+              {/* Geometric travel lines */}
+              <div className="absolute -inset-1 border border-dashed border-white/10 rounded-full animate-[spin_120s_linear_infinite]"></div>
+              
+              <Compass className="w-10 h-10 text-emerald-400 relative z-10 transition-transform duration-300 group-hover:rotate-45" />
+              
+              {/* Small accent dot */}
+              <div className="absolute top-2.5 right-2.5 w-2.5 h-2.5 rounded-full bg-[#10b981] animate-pulse"></div>
             </div>
-            <div>
-              <h1 className="text-2xl md:text-3xl font-extrabold text-[#0038a8] mb-1.5 tracking-tight uppercase">
+            <div className="flex-1 min-w-0">
+              <h1 className="text-2xl md:text-3.5xl font-display font-black text-slate-900 mb-1.5 tracking-tight uppercase leading-tight">
                 {activeConfig.title}
               </h1>
-              <p className="text-slate-600 text-base md:text-lg font-bold">
+              <p className="text-slate-500 text-sm md:text-base font-bold tracking-wide flex items-center justify-center md:justify-start gap-1.5">
+                <Calendar className="w-4 h-4 text-[#10b981] shrink-0" />
                 {activeConfig.date}
               </p>
-              <div className="mt-3.5 flex flex-wrap gap-2 justify-center md:justify-start">
-                <span className="px-3 py-1 bg-blue-50 border border-blue-200 text-[#0038a8] rounded-full text-xs font-black shadow-sm uppercase tracking-wide">
+              <div className="mt-4 flex flex-wrap gap-2 justify-center md:justify-start">
+                <span className="px-3.5 py-1.5 bg-[#10b981]/10 border border-[#10b981]/20 text-emerald-800 rounded-xl text-xs font-black shadow-sm uppercase tracking-wider font-mono">
                   {activeConfig.base}
                 </span>
-                <span className="px-3 py-1 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-full text-xs font-black shadow-sm uppercase tracking-wide">
+                <span className="px-3.5 py-1.5 bg-blue-500/10 border border-blue-500/20 text-blue-800 rounded-xl text-xs font-black shadow-sm uppercase tracking-wider font-mono">
                   {activeConfig.mode}
                 </span>
               </div>
@@ -1240,9 +1613,9 @@ const GuideList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                           : 'bg-white border-slate-200 text-slate-700 hover:border-blue-300 hover:bg-slate-50'
                       }`}
                     >
-                      <div className="font-extrabold text-sm">{dia.label}</div>
+                      <div className="font-extrabold text-xs md:text-sm uppercase tracking-wider">{dia.label.split('(')[0].trim().toUpperCase()}</div>
                       <div className={`text-[11px] font-bold mt-1 ${activeDayIndex === idx ? 'text-white/85' : 'text-slate-400'}`}>
-                        {dia.data}
+                        {dia.data.split('(')[0].trim()}
                       </div>
                     </button>
                   ))}
@@ -1326,8 +1699,8 @@ const GuideList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                           {idx + 1}
                         </div>
                         <div>
-                          <h3 className="font-black text-[#0038a8] text-sm md:text-base uppercase tracking-tight">{dia.label}</h3>
-                          <p className="text-[11px] text-slate-400 font-bold uppercase tracking-wide">{dia.data}</p>
+                          <h3 className="font-black text-[#0038a8] text-sm md:text-base uppercase tracking-tight">{dia.label.split('(')[0].trim().toUpperCase()}</h3>
+                          <p className="text-[11px] text-slate-400 font-bold uppercase tracking-wide">{dia.data.split('(')[0].trim()}</p>
                         </div>
                       </div>
                     </div>
@@ -1397,8 +1770,8 @@ const GuideList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                     </th>
                     {activeConfig.dias.map((dia, idx) => (
                       <th key={idx} className="p-4 bg-[#0038a8] text-white border-r border-blue-800 text-center min-w-[240px]">
-                        <div className="font-extrabold text-sm md:text-base">{dia.label}</div>
-                        <div className="text-xs md:text-sm font-bold opacity-90 mt-1 tracking-wide">{dia.data}</div>
+                        <div className="font-extrabold text-sm md:text-base uppercase tracking-wider">{dia.label.split('(')[0].trim().toUpperCase()}</div>
+                        <div className="text-xs md:text-sm font-bold opacity-90 mt-1 tracking-wide">{dia.data.split('(')[0].trim()}</div>
                       </th>
                     ))}
                   </tr>
@@ -1439,13 +1812,130 @@ const GuideList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
           )}
         </div>
 
-        {/* Detailed Information Panels (Cultura & Custos) */}
+        {/* Detailed Information Panels (Cultura, Custos & Pacotes MSC) */}
         <div className="p-6 md:p-10 bg-white">
           <h2 className="text-xl md:text-2xl font-extrabold text-[#0038a8] mb-6 flex items-center gap-3">
             <span className="w-2.5 h-8 bg-[#e8112d] inline-block rounded-full"></span>
             Informações Detalhadas de Viagem
           </h2>
-          
+
+          {/* Special MSC Cruise Packages Grid */}
+          {(activeConfig as any).cruisePackages && (
+            <div className="mb-10 p-6 rounded-3xl bg-slate-900 text-white shadow-2xl border border-slate-800">
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6 border-b border-slate-800 pb-4">
+                <div>
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 text-blue-400 text-xs font-bold uppercase tracking-wider mb-2">
+                    🚢 MSC Musica • Itajaí (SC) ➔ Santos (SP)
+                  </div>
+                  <h3 className="text-xl md:text-2xl font-black text-white">
+                    Escolha a sua Oferta no Cruzeiro MSC (14 a 15 de Março de 2027)
+                  </h3>
+                  <p className="text-xs md:text-sm text-slate-400 mt-1">
+                    3º e 4º hóspedes viajam grátis em todas as tarifas. Compare o que está incluso em cada pacote:
+                  </p>
+                </div>
+                
+                {(activeConfig as any).mscBookingUrl && (
+                  <a
+                    href={(activeConfig as any).mscBookingUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-orange-500 hover:bg-orange-600 active:scale-95 text-white font-extrabold text-sm rounded-2xl shadow-lg shadow-orange-500/30 transition-all shrink-0 cursor-pointer"
+                  >
+                    <span>RESERVAR NO SITE MSC</span>
+                    <ExternalLink className="w-4 h-4" />
+                  </a>
+                )}
+              </div>
+
+              {/* 3 Package Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {((activeConfig as any).cruisePackages as any[]).map((pkg, idx) => (
+                  <div
+                    key={idx}
+                    className={`relative rounded-2xl p-5 flex flex-col justify-between transition-all border ${
+                      pkg.highlight
+                        ? 'bg-slate-800/90 border-orange-500/80 shadow-xl shadow-orange-500/10 ring-2 ring-orange-500/40'
+                        : 'bg-slate-800/50 border-slate-700/80 hover:border-slate-600'
+                    }`}
+                  >
+                    {pkg.badge && (
+                      <span
+                        className={`absolute -top-3 left-4 px-3 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                          pkg.highlight
+                            ? 'bg-orange-500 text-white'
+                            : 'bg-blue-600 text-white'
+                        }`}
+                      >
+                        {pkg.badge}
+                      </span>
+                    )}
+
+                    <div>
+                      <h4 className="text-base font-extrabold text-slate-100 mt-2 mb-1">
+                        {pkg.title}
+                      </h4>
+                      
+                      <div className="flex items-baseline gap-1 my-3">
+                        <span className="text-xs text-slate-400">A partir de</span>
+                        <span className="text-2xl md:text-3xl font-black text-orange-400">
+                          {pkg.price}
+                        </span>
+                        <span className="text-xs text-slate-400">{pkg.priceNote}</span>
+                      </div>
+
+                      <div className="w-full h-px bg-slate-700/60 my-3" />
+
+                      <div className="text-xs text-slate-300 font-bold mb-2">Esta oferta inclui:</div>
+                      <ul className="space-y-2.5 text-xs text-slate-300">
+                        {pkg.features.map((feat: string, fIdx: number) => (
+                          <li key={fIdx} className="flex items-start gap-2">
+                            <span className="text-emerald-400 mt-0.5 font-bold text-sm">✓</span>
+                            <span className="leading-tight">{feat}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div className="mt-6 pt-3 border-t border-slate-700/60">
+                      <a
+                        href={(activeConfig as any).mscBookingUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`w-full py-2.5 px-4 rounded-xl font-black text-xs uppercase tracking-wider text-center flex items-center justify-center gap-1.5 transition-all ${
+                          pkg.highlight
+                            ? 'bg-orange-500 hover:bg-orange-600 text-white shadow-md shadow-orange-500/20'
+                            : 'bg-slate-700 hover:bg-slate-600 text-white'
+                        }`}
+                      >
+                        <span>Selecionar {pkg.price}</span>
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Notice Banner */}
+              <div className="mt-6 p-4 rounded-xl bg-slate-800/60 border border-slate-700/60 flex items-center justify-between gap-4 text-xs text-slate-400">
+                <div className="flex items-center gap-2">
+                  <span className="text-amber-400 font-bold text-base">ℹ️</span>
+                  <span>
+                    Valores pesquisados para 2 Adultos em Cabine Interna / Super Bingo (Sujeito a alteração de tarifa na plataforma da MSC).
+                  </span>
+                </div>
+                <a
+                  href={(activeConfig as any).mscBookingUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-orange-400 font-extrabold underline hover:text-orange-300 shrink-0"
+                >
+                  Ver no site MSC ↗
+                </a>
+              </div>
+            </div>
+          )}
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 text-slate-800">
             <div className="bg-blue-50/55 p-6 rounded-2xl border-2 border-blue-200 shadow-sm">
               <h3 className="font-extrabold text-base md:text-lg mb-3.5 text-[#0038a8] flex items-center gap-2">

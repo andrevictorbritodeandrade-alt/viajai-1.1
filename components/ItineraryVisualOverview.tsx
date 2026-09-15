@@ -403,6 +403,134 @@ const TEMPLATE_ITINERARIES: Record<string, ItineraryData> = {
       { type: 'checked', label: 'Mala Despachada', limit: 'Não incluso (viagem leve e econômica)', included: false, color: 'text-slate-500 bg-slate-500/10' }
     ]
   },
+  'am_marco_2027': {
+    id: 'am_marco_2027',
+    tripName: 'SC > Cruzeiro MSC > SP > Rio',
+    stops: [
+      { airport: 'NVT', city: 'Navegantes / BC', coords: '26.8800° S, 48.6514° W' },
+      { airport: 'ITJ', city: 'Porto de Itajaí (MSC Musica)', coords: '26.9078° S, 48.6619° W' },
+      { airport: 'SSZ', city: 'Porto de Santos', coords: '23.9608° S, 46.3339° W' },
+      { airport: 'SAO', city: 'São Paulo', coords: '23.5505° S, 46.6333° W' },
+      { airport: 'RIO', city: 'Rio de Janeiro / Maricá', coords: '22.9068° S, 43.1729° W' }
+    ],
+    outboundDate: '11 de Março de 2027',
+    outboundTime: '08:35',
+    returnDate: '16/17 de Março de 2027',
+    returnTime: '18:00',
+    price: '1.035,50',
+    lastResearched: 'Hoje',
+    outboundLegs: [
+      {
+        flightNumber: 'Voo Ida ✈️',
+        airline: 'Gol / Latam / Azul',
+        from: 'GIG',
+        fromCity: 'Rio de Janeiro',
+        to: 'NVT',
+        toCity: 'Navegantes (SC)',
+        depTime: '08:35',
+        arrTime: '10:15',
+        duration: '1h 40m',
+        priceInfo: 'R$ 319,00 por pessoa'
+      },
+      {
+        flightNumber: 'Cruzeiro MSC Musica 🚢',
+        airline: 'MSC Cruzeiros (Super Bingo)',
+        from: 'ITJ',
+        fromCity: 'Porto de Itajaí',
+        to: 'SSZ',
+        toCity: 'Porto de Santos (SP)',
+        depTime: 'Dom 14/03 17:00',
+        arrTime: 'Seg 15/03 08:00',
+        duration: '15h a bordo',
+        priceInfo: 'A partir de R$ 454 (Grátis 3º/4º) • R$ 634 (Bebidas Easy) • R$ 684 (Premium Extra)'
+      }
+    ],
+    inboundLegs: [
+      {
+        flightNumber: 'Voo Volta ✈️',
+        airline: 'Gol / Latam / Azul',
+        from: 'CGH/GRU',
+        fromCity: 'São Paulo',
+        to: 'SDU/GIG',
+        toCity: 'Rio de Janeiro',
+        depTime: '18:00',
+        arrTime: '19:05',
+        duration: '1h 05m',
+        priceInfo: 'R$ 236,00 por pessoa'
+      }
+    ],
+    baggage: [
+      { type: 'personal', label: 'Mochila / Item Pessoal', limit: 'Incluso', included: true, color: 'text-emerald-600 bg-emerald-500/10' },
+      { type: 'cabin', label: 'Mala de Cabine 10kg', limit: 'Incluso na tarifa aérea', included: true, color: 'text-emerald-600 bg-emerald-500/10' },
+      { type: 'checked', label: 'Alimentação & Shows no Navio', limit: '100% Incluso no Cruzeiro MSC', included: true, color: 'text-emerald-600 bg-emerald-500/10' }
+    ]
+  },
+  'am_guarapari_2027': {
+    id: 'am_guarapari_2027',
+    tripName: 'Maricá ➔ Guarapari (Espírito Santo)',
+    stops: [
+      { airport: 'MRX', city: 'Maricá (RJ)', coords: '22.9194° S, 42.8186° W' },
+      { airport: 'BR101', city: 'Rodovia Gov. Mário Covas (BR-101)', coords: '21.7545° S, 41.3245° W' },
+      { airport: 'GUA', city: 'Guarapari (ES)', coords: '20.6661° S, 40.4983° W' },
+      { airport: 'PRA', city: 'Praia da Areia Preta / Castanheiras', coords: '20.6720° S, 40.4960° W' }
+    ],
+    outboundDate: '04 de Setembro de 2026',
+    outboundTime: '06:00',
+    returnDate: '07 de Setembro de 2026',
+    returnTime: '17:20',
+    price: '553,09',
+    lastResearched: 'Hoje',
+    outboundLegs: [
+      {
+        flightNumber: 'Carro Próprio 🚗',
+        airline: 'Estrada de Ubatiba / Rod. Gov. Mário Covas (BR-101)',
+        from: 'Maricá',
+        fromCity: 'Maricá (RJ)',
+        to: 'Guarapari',
+        toCity: 'Guarapari (ES)',
+        depTime: '06:00 (04/09)',
+        arrTime: '13:20 (04/09)',
+        duration: '7h 20m (899 km ida e volta)',
+        dateInfo: 'Sexta-feira, 04/09 • Rota BR-101',
+        priceInfo: 'Pedágio: R$ 76,60 | Combustível: R$ 476,49 (Gasolina R$ 6,89 • 13 km/l) • Total: R$ 553,09'
+      }
+    ],
+    internalLegs: [
+      {
+        flightNumber: 'Passeios Locais 🌊',
+        airline: 'Carro Próprio',
+        from: 'Areia Preta / Castanheiras',
+        fromCity: 'Centro',
+        to: 'Meaípe / Enseada Azul / Morro',
+        toCity: 'Guarapari (ES)',
+        depTime: '09:00 (05 e 06/09)',
+        arrTime: '18:00',
+        duration: 'Sábado e Domingo',
+        dateInfo: '05 e 06/09 • Roteiro de Praias & Moqueca Capixaba',
+        priceInfo: 'Praia dos Padres, Areia Preta, Castanheiras & Restaurante Gaeta / Curuca'
+      }
+    ],
+    inboundLegs: [
+      {
+        flightNumber: 'Retorno 🚗',
+        airline: 'Rod. Gov. Mário Covas (BR-101) / Estrada de Ubatiba',
+        from: 'Guarapari',
+        fromCity: 'Guarapari (ES)',
+        to: 'Maricá',
+        toCity: 'Maricá (RJ)',
+        depTime: '10:00 (07/09)',
+        arrTime: '17:20 (07/09)',
+        duration: '7h 20m',
+        dateInfo: 'Segunda-feira (Feriado), 07/09',
+        priceInfo: 'Retorno seguro para Maricá'
+      }
+    ],
+    baggage: [
+      { type: 'personal', label: 'Item Pessoal / Mochila', limit: 'Incluso no carro', included: true, color: 'text-emerald-600 bg-emerald-500/10' },
+      { type: 'cabin', label: 'Malas & Cooler no Porta-Malas', limit: 'Capacidade do veículo', included: true, color: 'text-emerald-600 bg-emerald-500/10' },
+      { type: 'checked', label: 'Cadeiras de Praia & Guarda-sol', limit: '100% Liberado no carro', included: true, color: 'text-emerald-600 bg-emerald-500/10' }
+    ]
+  },
   'am_salvador_julho': {
     id: 'am_salvador_julho',
     tripName: 'Nordeste em Julho',
@@ -576,6 +704,56 @@ const TEMPLATE_ITINERARIES: Record<string, ItineraryData> = {
 };
 
 const getTerrestrialLegDetails = (tripId: string, tab: string) => {
+  if (tripId === 'am_guarapari_2027') {
+    if (tab === 'ida') {
+      return {
+        type: 'deslocamento-marica-guarapari',
+        title: 'Deslocamento Maricá (RJ) ➔ Guarapari (ES)',
+        airline: 'Carro Próprio',
+        duration: '7h 20m',
+        depLabel: 'SAÍDA MARICÁ',
+        depTime: '06:00',
+        depCode: 'MRX',
+        depSub: 'Maricá (RJ) • Estrada de Ubatiba',
+        depDate: '04 de Setembro de 2026 (Sexta)',
+        arrLabel: 'CHEGADA GUARAPARI',
+        arrTime: '13:20',
+        arrCode: 'GUA',
+        arrSub: 'Praia da Areia Preta / Castanheiras (ES)',
+        arrDate: '04 de Setembro de 2026 (Sexta)',
+        route: 'Estrada de Ubatiba / Rod. Gov. Mário Covas (BR-101)',
+        distance: '449.5 km (899 km total ida e volta)',
+        toll: 'R$ 76,60 (Pedágios BR-101)',
+        fuelGas: 'R$ 476,49 (Gasolina R$ 6,89 • Consumo 13 km/l)',
+        totalCircuitFuel: 'R$ 476,49',
+        totalCircuitToll: 'R$ 76,60'
+      };
+    } else {
+      return {
+        type: 'deslocamento-guarapari-marica',
+        title: 'Retorno Guarapari (ES) ➔ Maricá (RJ)',
+        airline: 'Carro Próprio',
+        duration: '7h 20m',
+        depLabel: 'SAÍDA GUARAPARI',
+        depTime: '10:00',
+        depCode: 'GUA',
+        depSub: 'Praia da Areia Preta / Centro (ES)',
+        depDate: '07 de Setembro de 2026 (Feriado)',
+        arrLabel: 'CHEGADA MARICÁ',
+        arrTime: '17:20',
+        arrCode: 'MRX',
+        arrSub: 'Maricá (RJ)',
+        arrDate: '07 de Setembro de 2026 (Feriado)',
+        route: 'Rod. Gov. Mário Covas (BR-101) / Estrada de Ubatiba',
+        distance: '449.5 km',
+        toll: 'Incluso no cálculo (R$ 76,60 total)',
+        fuelGas: 'Incluso no cálculo (R$ 476,49 total)',
+        totalCircuitFuel: 'R$ 476,49',
+        totalCircuitToll: 'R$ 76,60'
+      };
+    }
+  }
+
   if (tripId === 'am_salvador_julho') {
     if (tab === 'ida' || tab === 'car_ssa_mcz') {
       return {
@@ -737,7 +915,37 @@ export const ItineraryVisualOverview: React.FC<OverviewProps> = ({ tripId }) => 
     const saved = localStorage.getItem(key);
     if (saved) {
       try {
-        setData(JSON.parse(saved));
+        const parsed = JSON.parse(saved);
+        if (tripId === 'am_marco_2027') {
+          // Force update fields to match new specifications from André & Marcelly
+          parsed.outboundTime = '08:35';
+          if (parsed.outboundLegs && parsed.outboundLegs[0]) {
+            parsed.outboundLegs[0].depTime = '08:35';
+            parsed.outboundLegs[0].arrTime = '10:15';
+            parsed.outboundLegs[0].from = 'GIG';
+            parsed.outboundLegs[0].duration = '1h 40m';
+            parsed.outboundLegs[0].priceInfo = 'R$ 319,00 por pessoa';
+          }
+          if (parsed.inboundLegs && parsed.inboundLegs[0]) {
+            parsed.inboundLegs[0].priceInfo = 'R$ 236,00 por pessoa';
+          }
+          parsed.price = '1.035,50';
+          localStorage.setItem(key, JSON.stringify(parsed));
+        } else if (tripId === 'am_guarapari_2027') {
+          parsed.price = '553,09';
+          parsed.tripName = 'Maricá ➔ Guarapari (Espírito Santo)';
+          parsed.outboundDate = '04 de Setembro de 2026';
+          parsed.returnDate = '07 de Setembro de 2026';
+          if (TEMPLATE_ITINERARIES['am_guarapari_2027']) {
+            parsed.stops = TEMPLATE_ITINERARIES['am_guarapari_2027'].stops;
+            parsed.outboundLegs = TEMPLATE_ITINERARIES['am_guarapari_2027'].outboundLegs;
+            parsed.internalLegs = TEMPLATE_ITINERARIES['am_guarapari_2027'].internalLegs;
+            parsed.inboundLegs = TEMPLATE_ITINERARIES['am_guarapari_2027'].inboundLegs;
+            parsed.baggage = TEMPLATE_ITINERARIES['am_guarapari_2027'].baggage;
+          }
+          localStorage.setItem(key, JSON.stringify(parsed));
+        }
+        setData(parsed);
       } catch (err) {
         setData(TEMPLATE_ITINERARIES[tripId] || TEMPLATE_ITINERARIES['am_foz_ass_ba']);
       }
@@ -817,7 +1025,7 @@ export const ItineraryVisualOverview: React.FC<OverviewProps> = ({ tripId }) => 
 
   if (!data) return null;
 
-  const isCarTrip = !!(data.internalLegs && data.internalLegs[0]?.flightNumber.toLowerCase().includes('carro'));
+  const isCarTrip = data.id === 'am_guarapari_2027' || !!(data.internalLegs && data.internalLegs[0]?.flightNumber.toLowerCase().includes('carro')) || !!(data.outboundLegs && data.outboundLegs[0]?.flightNumber.toLowerCase().includes('carro'));
 
   let currentLegs: any[] = [];
   if (data.id === 'am_salvador_julho') {
@@ -878,12 +1086,20 @@ export const ItineraryVisualOverview: React.FC<OverviewProps> = ({ tripId }) => 
         <div className="bg-slate-50 border border-slate-200 rounded-xl sm:rounded-2xl p-3 sm:p-4 w-full md:w-auto min-w-0 sm:min-w-[280px] shrink-0">
           <div className="flex justify-between items-start gap-3">
             <div>
-              <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block font-mono">CUSTO TOTAL (VOOS)</span>
+              <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block font-mono">
+                {data.id === 'am_marco_2027' ? 'CUSTO TOTAL POR PESSOA' : data.id === 'am_guarapari_2027' ? 'CUSTO TOTAL (CARRO)' : (data.id === 'am_salvador_julho' ? 'CUSTO TOTAL (CARRO + AÉREO)' : 'CUSTO TOTAL (VOOS)')}
+              </span>
               <div className="flex items-baseline gap-1 mt-0.5">
                 <span className="text-sm font-black text-emerald-600">R$</span>
                 <span className="text-2xl sm:text-3xl font-display font-black text-slate-900 tracking-tight">{data.price}</span>
               </div>
-              <span className="text-[10px] text-slate-500 font-medium">Soma de todos os trechos por pax</span>
+              <span className="text-[10px] text-slate-500 font-medium">
+                {data.id === 'am_marco_2027' 
+                  ? 'Cruzeiro (R$ 434) + Ida (R$ 319) + Volta (R$ 236) + Ônibus (R$ 46,50)' 
+                  : data.id === 'am_guarapari_2027'
+                    ? 'R$ 76,60 Pedágio + R$ 476,49 Combustível (899 km ida e volta)'
+                    : 'Soma de todos os trechos por pax'}
+              </span>
             </div>
             <div className="text-right space-y-1 flex flex-col items-end">
               <span className="inline-block bg-[#10b981]/15 text-emerald-600 text-[8px] sm:text-[9px] font-black uppercase px-2 py-0.5 rounded border border-[#10b981]/15 tracking-wider font-mono text-center whitespace-nowrap">CONSULTADO SUCESSO</span>
@@ -1135,7 +1351,7 @@ export const ItineraryVisualOverview: React.FC<OverviewProps> = ({ tripId }) => 
           )}
 
           {/* Optional Terrestrial Connection */}
-          {(data.id === 'am_ssa_aju' || data.id === 'am_sp_ssa_aju' || data.id === 'am_salvador_julho') && (
+          {(data.id === 'am_ssa_aju' || data.id === 'am_sp_ssa_aju' || data.id === 'am_salvador_julho' || data.id === 'am_guarapari_2027') && (
                 <>
                   {isCarTrip ? (
                     <>
@@ -1147,7 +1363,7 @@ export const ItineraryVisualOverview: React.FC<OverviewProps> = ({ tripId }) => 
                             {/* Decorative dashed connector */}
                             <div className="relative pl-5 sm:pl-14 py-2">
                               <div className="flex items-center gap-2 bg-[#111827] border border-slate-200 px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest text-emerald-400 shrink-0 font-mono w-fit">
-                                <Car className="w-3.5 h-3.5 text-emerald-400" /> Deslocamento Terrestre de Carro (Carro Alugado)
+                                <Car className="w-3.5 h-3.5 text-emerald-400" /> {data.id === 'am_guarapari_2027' ? 'Deslocamento Terrestre de Carro (Carro Próprio)' : 'Deslocamento Terrestre de Carro (Carro Alugado)'}
                               </div>
                             </div>
 
@@ -1159,7 +1375,7 @@ export const ItineraryVisualOverview: React.FC<OverviewProps> = ({ tripId }) => 
 
                               <div className="flex flex-wrap items-center gap-2 mb-2">
                                 <span className="text-[9px] bg-emerald-600/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-md font-mono tracking-widest uppercase font-black">
-                                  CARRO ALUGADO
+                                  {data.id === 'am_guarapari_2027' ? 'CARRO PRÓPRIO' : 'CARRO ALUGADO'}
                                 </span>
                                 <span className="text-[10px] font-extrabold text-slate-600 uppercase">{leg.airline}</span>
                                 <span className="text-[9px] ml-auto font-bold opacity-60 text-slate-500 flex items-center gap-1 font-mono">
