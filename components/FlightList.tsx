@@ -1690,9 +1690,9 @@ const FlightList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                 {/* Vertical timeline detail matching design */}
                 <div className="bg-[#111827] rounded-[24px] border border-slate-200 p-5 relative overflow-hidden mb-4 animate-in fade-in duration-350">
                   <div className="flex items-center gap-2.5 mb-5 flex-wrap">
-                    <span className="bg-black text-slate-900 px-3 py-1 rounded-lg text-[10px] font-black font-mono tracking-wider border border-slate-200">{leg.flightNumber}</span>
-                    <span className="text-slate-500 text-xs font-bold uppercase tracking-wide">{leg.airline}</span>
-                    <span className="text-slate-500 text-[11px] font-medium ml-auto flex items-center gap-1">
+                    <span className="bg-white/10 text-white px-3 py-1 rounded-lg text-[10px] font-extrabold tabular-nums tracking-wider border border-white/10">{leg.flightNumber}</span>
+                    <span className="text-slate-300 text-xs font-bold uppercase tracking-wide">{leg.airline}</span>
+                    <span className="text-slate-400 text-[11px] font-medium ml-auto flex items-center gap-1">
                       <Clock className="w-3.5 h-3.5" /> {leg.duration}
                     </span>
                   </div>
@@ -1701,32 +1701,32 @@ const FlightList: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                   <div className="flex items-stretch gap-6 pl-1">
                     {/* Vertical line indicator */}
                     <div className="flex flex-col items-center">
-                      <div className="w-3.5 h-3.5 rounded-full bg-[#00c58e] border-[3px] border-[#111827] ring-4 ring-[#00c58e]/20"></div>
-                      <div className="flex-1 w-0.5 bg-gradient-to-b from-[#00c58e] to-rose-500 border-dashed border-l border-slate-200 my-1"></div>
+                      <div className="w-3.5 h-3.5 rounded-full bg-emerald-400 border-[3px] border-[#111827] ring-4 ring-emerald-400/20"></div>
+                      <div className="flex-1 w-0.5 bg-gradient-to-b from-emerald-400 to-rose-500 border-dashed border-l border-slate-700 my-1"></div>
                       <div className="w-3.5 h-3.5 rounded-full bg-rose-500 border-[3px] border-[#111827] ring-4 ring-rose-500/20"></div>
                     </div>
 
                     <div className="flex-1 grid grid-cols-2 gap-4">
                       {/* Departure */}
                       <div className="space-y-1">
-                        <span className="text-[9px] font-black text-rose-500 uppercase tracking-widest block">PARTIDA</span>
+                        <span className="text-[9px] font-black text-rose-400 uppercase tracking-widest block">PARTIDA</span>
                         <div className="flex items-baseline gap-1.5 flex-wrap">
-                          <span className="text-2xl font-black text-slate-900 leading-none">{leg.departure.time}</span>
-                          <span className="text-sm font-black text-slate-500">{leg.departure.code}</span>
+                          <span className="text-2xl font-black text-white leading-none tabular-nums">{leg.departure.time}</span>
+                          <span className="text-sm font-black text-slate-400">{leg.departure.code}</span>
                         </div>
-                        <p className="text-slate-500 text-[11px] font-semibold leading-tight">{leg.departure.city}</p>
-                        <p className="text-slate-500 text-[9px] font-medium font-mono">{leg.departure.date}</p>
+                        <p className="text-slate-300 text-[11px] font-semibold leading-tight">{leg.departure.city}</p>
+                        <p className="text-slate-400 text-[9px] font-medium tabular-nums">{leg.departure.date}</p>
                       </div>
 
                       {/* Arrival */}
-                      <div className="space-y-1 pl-4 border-l border-slate-200">
-                        <span className="text-[9px] font-black text-emerald-600 uppercase tracking-widest block">CHEGADA</span>
+                      <div className="space-y-1 pl-4 border-l border-slate-700">
+                        <span className="text-[9px] font-black text-emerald-400 uppercase tracking-widest block">CHEGADA</span>
                         <div className="flex items-baseline gap-1.5 flex-wrap">
-                          <span className="text-2xl font-black text-slate-900 leading-none">{leg.arrival.time}</span>
-                          <span className="text-sm font-black text-slate-500">{leg.arrival.code}</span>
+                          <span className="text-2xl font-black text-white leading-none tabular-nums">{leg.arrival.time}</span>
+                          <span className="text-sm font-black text-slate-400">{leg.arrival.code}</span>
                         </div>
-                        <p className="text-slate-500 text-[11px] font-semibold leading-tight">{leg.arrival.city}</p>
-                        <p className="text-slate-500 text-[9px] font-medium font-mono">{leg.arrival.date}</p>
+                        <p className="text-slate-300 text-[11px] font-semibold leading-tight">{leg.arrival.city}</p>
+                        <p className="text-slate-400 text-[9px] font-medium tabular-nums">{leg.arrival.date}</p>
                       </div>
                     </div>
                   </div>

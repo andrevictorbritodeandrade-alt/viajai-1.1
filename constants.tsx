@@ -20,7 +20,8 @@ import {
   ShoppingBasket,
   Shield,
   BookOpen,
-  Activity
+  Activity,
+  Coins
 } from 'lucide-react';
 import { MenuItem } from './types';
 
@@ -35,6 +36,17 @@ export const MENU_ITEMS: MenuItem[] = [
     category: 'Geral',
     description: 'Monitoramento de passagens Dez-Jan e Google Flights.',
     bgImage: '/dez_jan_radar_real.jpg'
+  },
+  {
+    id: 'milhas_pontos', 
+    title: 'Milhas & Pontos',
+    icon: <Coins className="w-12 h-12 text-white" />,
+    themeColor: 'green',
+    gradientClass: 'bg-amber-600 border-white/20',
+    bgColor: '#d97706',
+    category: 'Geral',
+    description: 'Saldo Smiles GOL (18.608) e resgate KMV Ipiranga (2.115).',
+    bgImage: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=500&auto=format&fit=crop'
   },
   {
     id: 'clima_localizacao', 

@@ -25,6 +25,7 @@ import { EXPENSES_STORAGE_KEY } from '../constants';
 import { syncDataToCloud, loadDataFromCloud } from '../services/firebase';
 import CategoryHeader from './CategoryHeader';
 import { getFinancialStrategy, FinancialStrategy } from '../services/geminiService';
+import MilesAndPointsCard from './MilesAndPointsCard';
 
 const toBRL = (val: number) => {
   return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -440,6 +441,9 @@ const FinancialControl: React.FC<{
           </div>
         </div>
       </div>
+
+      {/* CARTEIRA DE MILHAS SMILES GOL & PONTOS KMV IPIRANGA */}
+      <MilesAndPointsCard />
 
       {/* 2. DICA DE ESPECIALISTA DA IA (Estratégia de Câmbio Híbrida) */}
       <div className="bg-gradient-to-br from-amber-50 to-orange-100 rounded-3xl border border-amber-200 p-5 shadow-sm relative overflow-hidden">

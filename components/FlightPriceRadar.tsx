@@ -3,11 +3,15 @@ import {
   Plane, 
   ExternalLink, 
   Clock, 
-  ArrowLeft,
-  ArrowRight,
-  Sparkles
+  ArrowLeft, 
+  ArrowRight, 
+  Sparkles, 
+  Search, 
+  X,
+  Coins
 } from 'lucide-react';
 import CategoryHeader from './CategoryHeader';
+import MilesAndPointsCard from './MilesAndPointsCard';
 
 export interface FlightOption {
   id: string;
@@ -163,10 +167,27 @@ interface FlightPriceRadarProps {
 
 const FlightPriceRadar: React.FC<FlightPriceRadarProps> = ({ onBack }) => {
   const [selectedFilter, setSelectedFilter] = useState<string>('todos');
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
-  const filteredFlights = selectedFilter === 'todos' 
-    ? FLIGHT_OPTIONS 
-    : FLIGHT_OPTIONS.filter(f => f.destinationCity.toLowerCase().includes(selectedFilter.toLowerCase()));
+  const filteredFlights = FLIGHT_OPTIONS.filter((flight) => {
+    // Filter by destination tab
+    const matchesTab = 
+      selectedFilter === 'todos' || 
+      flight.destinationCity.toLowerCase().includes(selectedFilter.toLowerCase());
+
+    // Filter by search query (airline or destination)
+    const query = searchQuery.trim().toLowerCase();
+    const matchesSearch = 
+      !query ||
+      flight.airline.toLowerCase().includes(query) ||
+      flight.destination.toLowerCase().includes(query) ||
+      flight.destinationCity.toLowerCase().includes(query) ||
+      flight.destCity.toLowerCase().includes(query) ||
+      flight.destCode.toLowerCase().includes(query) ||
+      flight.routeTitle.toLowerCase().includes(query);
+
+    return matchesTab && matchesSearch;
+  });
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300 font-sans pb-16">
@@ -176,11 +197,37 @@ const FlightPriceRadar: React.FC<FlightPriceRadarProps> = ({ onBack }) => {
         <CategoryHeader
           title="Radar de Voos"
           category="Dezembro & Janeiro"
-          themeColor="green"
+          themeColor="dark"
           total={filteredFlights.length}
           label="Opções Encontradas"
           onBack={onBack}
         />
+      </div>
+
+      {/* Smiles Miles & KMV Ipiranga Points Card */}
+      <MilesAndPointsCard />
+
+      {/* Search Input for Airline or Destination */}
+      <div className="relative">
+        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+          <Search className="w-5 h-5" />
+        </div>
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Buscar por companhia aérea ou destino (ex: Gol, JetSMART, Montevidéu...)"
+          className="w-full bg-[#131b2e] border border-white/10 rounded-2xl pl-11 pr-10 py-3.5 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-white/30 focus:ring-1 focus:ring-white/20 transition-all shadow-inner"
+        />
+        {searchQuery && (
+          <button
+            onClick={() => setSearchQuery('')}
+            className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-white transition-colors cursor-pointer"
+            title="Limpar busca"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        )}
       </div>
 
       {/* Filter Tabs */}
@@ -194,10 +241,10 @@ const FlightPriceRadar: React.FC<FlightPriceRadarProps> = ({ onBack }) => {
           <button
             key={tab.id}
             onClick={() => setSelectedFilter(tab.id)}
-            className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all ${
+            className={`px-4 py-2.5 rounded-xl text-xs font-extrabold uppercase tracking-wider transition-all cursor-pointer ${
               selectedFilter === tab.id
-                ? 'bg-emerald-500 text-slate-950 shadow-lg shadow-emerald-500/20'
-                : 'bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-white/10'
+                ? 'bg-white text-slate-950 shadow-md shadow-white/5'
+                : 'bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 border border-white/[0.08]'
             }`}
           >
             {tab.label}
@@ -205,21 +252,43 @@ const FlightPriceRadar: React.FC<FlightPriceRadarProps> = ({ onBack }) => {
         ))}
       </div>
 
-      {/* Flights List */}
+      {/* Flights List or Empty State */}
+      {filteredFlights.length === 0 ? (
+        <div className="bg-[#131b2e] border border-white/10 rounded-3xl p-10 text-center space-y-3">
+          <div className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mx-auto text-slate-400">
+            <Search className="w-5 h-5" />
+          </div>
+          <p className="text-white font-extrabold text-sm">Nenhum voo encontrado</p>
+          <p className="text-xs text-slate-400 max-w-sm mx-auto">
+            {searchQuery 
+              ? `Nenhum voo coincide com a busca "${searchQuery}". Tente buscar por outra companhia aérea ou destino.` 
+              : 'Nenhum voo coincide com a categoria selecionada.'}
+          </p>
+          <button
+            onClick={() => {
+              setSearchQuery('');
+              setSelectedFilter('todos');
+            }}
+            className="px-4 py-2.5 bg-white hover:bg-slate-100 text-slate-950 font-extrabold text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer shadow-md"
+          >
+            Limpar Filtros
+          </button>
+        </div>
+      ) : (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {filteredFlights.map((flight) => (
           <div
             key={flight.id}
-            className="bg-slate-900/90 backdrop-blur-xl border border-white/10 hover:border-emerald-500/50 rounded-3xl p-5 sm:p-6 shadow-xl transition-all flex flex-col justify-between"
+            className="bg-[#0f172a]/95 backdrop-blur-xl border border-white/[0.08] hover:border-white/20 rounded-3xl p-5 sm:p-6 shadow-xl transition-all flex flex-col justify-between"
           >
             <div>
               {/* Header: Destination & Airline */}
               <div className="flex items-start justify-between gap-3 mb-4">
                 <div>
-                  <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full inline-block mb-1.5">
+                  <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-300 bg-white/[0.06] border border-white/10 px-2.5 py-1 rounded-full inline-block mb-1.5">
                     {flight.destination}
                   </span>
-                  <h3 className="text-base sm:text-lg font-black text-white leading-snug">
+                  <h3 className="text-base sm:text-lg font-extrabold text-white leading-snug">
                     {flight.routeTitle}
                   </h3>
                   <p className="text-xs text-slate-400 font-medium mt-0.5">
@@ -230,20 +299,20 @@ const FlightPriceRadar: React.FC<FlightPriceRadarProps> = ({ onBack }) => {
                 {/* Price Display */}
                 <div className="text-right shrink-0">
                   <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Ida e Volta</span>
-                  <span className="text-2xl sm:text-3xl font-black text-emerald-400 font-mono tracking-tight">
+                  <span className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight tabular-nums">
                     R$ {flight.bestPrice}
                   </span>
                 </div>
               </div>
 
               {/* Flight Itinerary Box */}
-              <div className="bg-slate-950/70 border border-white/5 rounded-2xl p-4 space-y-3 mb-4 text-xs">
+              <div className="bg-black/40 border border-white/[0.06] rounded-2xl p-4 space-y-3 mb-4 text-xs">
                 {/* Outbound (Ida) */}
-                <div className="flex items-center justify-between border-b border-white/5 pb-2.5">
+                <div className="flex items-center justify-between border-b border-white/[0.06] pb-2.5">
                   <div>
                     <span className="text-[10px] font-bold text-slate-400 uppercase block">Ida • {flight.departureDate}</span>
-                    <span className="text-white font-bold text-sm">
-                      {flight.departureTime} ({flight.originCode}) <ArrowRight className="w-3 h-3 inline text-emerald-400 mx-1" /> {flight.departureArriveTime} ({flight.destCode})
+                    <span className="text-white font-bold text-sm tabular-nums">
+                      {flight.departureTime} ({flight.originCode}) <ArrowRight className="w-3.5 h-3.5 inline text-slate-400 mx-1" /> {flight.departureArriveTime} ({flight.destCode})
                     </span>
                   </div>
                   <span className="text-[11px] text-slate-400 font-medium text-right">
@@ -255,8 +324,8 @@ const FlightPriceRadar: React.FC<FlightPriceRadarProps> = ({ onBack }) => {
                 <div className="flex items-center justify-between">
                   <div>
                     <span className="text-[10px] font-bold text-slate-400 uppercase block">Volta • {flight.returnDate}</span>
-                    <span className="text-white font-bold text-sm">
-                      {flight.returnTime} ({flight.destCode}) <ArrowRight className="w-3 h-3 inline text-emerald-400 mx-1" /> {flight.returnArriveTime} ({flight.originCode})
+                    <span className="text-white font-bold text-sm tabular-nums">
+                      {flight.returnTime} ({flight.destCode}) <ArrowRight className="w-3.5 h-3.5 inline text-slate-400 mx-1" /> {flight.returnArriveTime} ({flight.originCode})
                     </span>
                   </div>
                   <span className="text-[11px] text-slate-400 font-medium text-right">
@@ -265,9 +334,22 @@ const FlightPriceRadar: React.FC<FlightPriceRadarProps> = ({ onBack }) => {
                 </div>
               </div>
 
+              {/* Smiles GOL Eligibility Badge */}
+              {flight.airline.toLowerCase().includes('gol') && (
+                <div className="mb-4 px-3.5 py-2.5 rounded-2xl bg-orange-500/10 border border-orange-500/25 flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-2 text-orange-300">
+                    <Coins className="w-4 h-4 text-orange-400 shrink-0" />
+                    <span className="font-bold text-[11px]">Emissão via Smiles GOL:</span>
+                  </div>
+                  <span className="text-orange-300 text-[11px] font-extrabold tabular-nums">
+                    18.608 + até 11.000 pts KMV
+                  </span>
+                </div>
+              )}
+
               {/* Timestamp info */}
               <div className="flex items-center gap-1.5 text-[11px] text-slate-400 mb-5">
-                <Clock className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                <Clock className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                 <span>Preço verificado em <strong>{flight.recordedAt}</strong> via {flight.bestProvider}</span>
               </div>
             </div>
@@ -277,7 +359,7 @@ const FlightPriceRadar: React.FC<FlightPriceRadarProps> = ({ onBack }) => {
               href={flight.bookingUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full py-3.5 px-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 hover:scale-[1.01] active:scale-95 transition-all text-center"
+              className="w-full py-3.5 px-4 bg-white hover:bg-slate-100 text-slate-950 font-extrabold text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-white/5 hover:scale-[1.01] active:scale-95 transition-all text-center cursor-pointer"
             >
               <span>Abrir no Google Flights</span>
               <ExternalLink className="w-4 h-4" />
@@ -285,6 +367,7 @@ const FlightPriceRadar: React.FC<FlightPriceRadarProps> = ({ onBack }) => {
           </div>
         ))}
       </div>
+      )}
 
     </div>
   );

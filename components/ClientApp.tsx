@@ -24,6 +24,7 @@ import WeatherLocation from './WeatherLocation';
 import WeatherCardHome from './WeatherCardHome';
 import Supplies from './Supplies';
 import FlightPriceRadar from './FlightPriceRadar';
+import MilesAndPointsCard from './MilesAndPointsCard';
 import { MENU_ITEMS } from '../constants';
 import { Construction, ArrowLeft, Grip, Loader2 } from 'lucide-react';
 import { MenuItem } from '../types';
@@ -169,6 +170,18 @@ const ClientApp: React.FC = () => {
         return <FlightList onBack={goBack} />;
       case 'radar_passagens':
         return <FlightPriceRadar onBack={goBack} />;
+      case 'milhas_pontos':
+        return (
+          <div className="space-y-6 animate-in fade-in duration-300 font-sans pb-16">
+            <CategoryHeader
+              title="Milhas & Pontos"
+              category="Smiles GOL & KMV Ipiranga"
+              themeColor="green"
+              onBack={goBack}
+            />
+            <MilesAndPointsCard />
+          </div>
+        );
       case 'checklist':
         return <PackingList selectedTrip={selectedTrip} onBack={goBack} />;
       case 'guias':
@@ -240,7 +253,7 @@ const ClientApp: React.FC = () => {
     }
 
     const cat1Items = visibleMenuItems.filter(item => ['checklist', 'financeiro', 'gastos', 'cambio', 'mercado'].includes(item.id));
-    const cat2Items = visibleMenuItems.filter(item => ['radar_passagens', 'voos', 'hospedagem', 'reservas', 'uber_bolt', 'onibus', 'abastecimento'].includes(item.id));
+    const cat2Items = visibleMenuItems.filter(item => ['radar_passagens', 'milhas_pontos', 'voos', 'hospedagem', 'reservas', 'uber_bolt', 'onibus', 'abastecimento'].includes(item.id));
     const cat3Items = visibleMenuItems.filter(item => ['guias', 'melhores_destinos', 'tradutor', 'vacinas', 'ia_assistant'].includes(item.id));
 
     return (
@@ -324,10 +337,19 @@ const ClientApp: React.FC = () => {
 
   if (selectedTrip.id === 'am_radar_dez_jan') {
     return (
-      <div className="min-h-screen bg-[#0B0F19] text-white font-sans p-4 sm:p-8">
-        <div className="max-w-6xl mx-auto">
+      <div className="min-h-screen bg-[#0B0F19] text-white font-sans">
+        <TopBar variant="home" />
+        <Header 
+          tripName={selectedTrip.name || "Radar Dezembro & Janeiro"} 
+          lat={selectedTrip.lat || -34.9011} 
+          lon={selectedTrip.lon || -56.1645} 
+          tripId={selectedTrip.id} 
+          onBack={handleResetTrip} 
+          userName={userName} 
+        />
+        <main className="max-w-7xl mx-auto px-4 py-6 pb-24">
           <FlightPriceRadar onBack={handleResetTrip} />
-        </div>
+        </main>
       </div>
     );
   }

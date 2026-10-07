@@ -5,6 +5,7 @@
 @theme {
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-display: 'Poppins', sans-serif;
+  --font-mono: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-blenda: 'Poppins', sans-serif;
   --font-brenda: 'Poppins', sans-serif;
 
@@ -24,6 +25,13 @@
 /* Global font reset for Poppins & Inter style */
 body, input, select, textarea, button {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Overriding font-mono so numbers and codes are clean, modern, tabular sans-serif (no typewriter Courier look) */
+.font-mono, code, kbd, samp, pre {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-feature-settings: "tnum" on, "zero" on;
+  letter-spacing: -0.01em;
 }
 
 /* Titles and headings override using Poppins */

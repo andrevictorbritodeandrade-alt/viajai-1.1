@@ -4,13 +4,18 @@ import { MENU_ITEMS } from '../constants';
 
 interface CategoryHeaderProps {
   title: string;
-  onBack: () => void;
+  onBack?: () => void;
   bgImage?: string;
   id?: string;
+  category?: string;
+  themeColor?: string;
+  total?: number;
+  label?: string;
 }
 
 const getTripBgImage = (id: string) => {
   const images: Record<string, string> = {
+    'am_radar_dez_jan': '/dez_jan_radar_real.jpg',
     'am_guarapari_2027': '/guarapari_real_couple.jpg',
     'am_ssa_aju': '/ssa_aju_premium.png',
     'am_sp_ssa_aju': '/sp_ssa_aju_premium.png',
@@ -75,7 +80,7 @@ const CategoryHeader: React.FC<CategoryHeaderProps> = ({ title, onBack, bgImage,
         <div className="relative z-10 space-y-2 sm:space-y-3">
           <div className="flex items-center gap-2">
              <button 
-               onClick={onBack} 
+               onClick={() => onBack ? onBack() : window.history.back()} 
                type="button" 
                className="bg-white/20 backdrop-blur-md p-1.5 sm:p-2 rounded-full hover:bg-white/30 transition-all active:scale-90 pointer-events-auto cursor-pointer"
              >

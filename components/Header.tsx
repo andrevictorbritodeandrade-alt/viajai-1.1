@@ -176,11 +176,22 @@ const TRIP_COSTS: Record<string, CostDetails> = {
     accommodationDesc: 'Hospedagem em Guarapari (por pessoa)',
     uber: 276.55,
     uberDesc: 'Pedágios (R$ 76,60) + Combustível (R$ 476,49) = R$ 553,09 (R$ 276,55 p/pessoa)'
+  },
+  'am_radar_dez_jan': {
+    flight: 630.00,
+    flightDesc: 'Voos a partir de R$ 630 (Ida e Volta por pessoa)',
+    bus: 0.00,
+    busDesc: 'Não se aplica',
+    accommodation: 0.00,
+    accommodationDesc: 'A definir no roteiro final',
+    uber: 0.00,
+    uberDesc: 'Deslocamentos locais'
   }
 };
 
 const getTripBgImage = (id: string) => {
   const images: Record<string, string> = {
+    'am_radar_dez_jan': '/dez_jan_radar_real.jpg',
     'am_guarapari_2027': '/guarapari_real_couple.jpg',
     'am_ssa_aju': '/ssa_aju_premium.png',
     'am_sp_ssa_aju': '/sp_ssa_aju_premium.png',
