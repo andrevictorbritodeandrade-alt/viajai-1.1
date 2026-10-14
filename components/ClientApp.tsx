@@ -34,6 +34,7 @@ import { setSessionUser } from '../services/session';
 import { useDevice } from '../services/device';
 
 import TripSelection from './TripSelection';
+import { DestinyComparator } from './DestinyComparator';
 
 const ClientApp: React.FC = () => {
   const { isDesktop } = useDevice();
@@ -204,6 +205,18 @@ const ClientApp: React.FC = () => {
           return <VaccineCertificate onBack={goBack} />;
       case 'mercado':
           return <Supplies selectedTrip={selectedTrip} onBack={goBack} />;
+      case 'comparador_destinos':
+          return (
+            <div className="space-y-6 animate-in fade-in duration-300 font-sans pb-16">
+              <CategoryHeader
+                title="Comparador"
+                category="Análise de Custo-Benefício"
+                themeColor="green"
+                onBack={goBack}
+              />
+              <DestinyComparator onBack={goBack} />
+            </div>
+          );
       default:
         return (
           <div className="flex flex-col items-center justify-center py-12 text-gray-400 bg-white rounded-3xl shadow-sm border border-gray-100">
@@ -254,7 +267,7 @@ const ClientApp: React.FC = () => {
 
     const cat1Items = visibleMenuItems.filter(item => ['checklist', 'financeiro', 'gastos', 'cambio', 'mercado'].includes(item.id));
     const cat2Items = visibleMenuItems.filter(item => ['radar_passagens', 'milhas_pontos', 'voos', 'hospedagem', 'reservas', 'uber_bolt', 'onibus', 'abastecimento'].includes(item.id));
-    const cat3Items = visibleMenuItems.filter(item => ['guias', 'melhores_destinos', 'tradutor', 'vacinas', 'ia_assistant'].includes(item.id));
+    const cat3Items = visibleMenuItems.filter(item => ['guias', 'melhores_destinos', 'tradutor', 'vacinas', 'ia_assistant', 'comparador_destinos'].includes(item.id));
 
     return (
       <div className="px-3 sm:px-4 pb-20 space-y-6 pt-4">

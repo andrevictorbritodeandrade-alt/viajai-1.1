@@ -21,7 +21,8 @@ import {
   Shield,
   BookOpen,
   Activity,
-  Coins
+  Coins,
+  Calculator
 } from 'lucide-react';
 import { MenuItem } from './types';
 
@@ -234,6 +235,17 @@ export const MENU_ITEMS: MenuItem[] = [
     category: 'Geral',
     description: 'Apoio em tempo real com assistente inteligente.',
     bgImage: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=500&auto=format&fit=crop'
+  },
+  {
+    id: 'comparador_destinos', 
+    title: 'Comparador',
+    icon: <Calculator className="w-12 h-12 text-white" />,
+    themeColor: 'green',
+    gradientClass: 'bg-[#007749] border-white/20',
+    bgColor: '#007749',
+    category: 'Geral',
+    description: 'Compare custos totais entre destinos.',
+    bgImage: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=500&auto=format&fit=crop'
   },
 ];
 
